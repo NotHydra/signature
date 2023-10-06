@@ -6,14 +6,21 @@ import customtkinter as ctk
 from PIL import Image
 
 
+class Utility:
+    def combinePath(base, path):
+        return os.path.join(base, path)
+
+
 class Dependency:
     title = "Signature"
     subTitle = "Online Mail"
+
     resolution = {"width": 1000, "height": 600}
+    logoResolution = {"width": 639, "height": 799}
 
     path = os.path.dirname(os.path.realpath(__file__))
-
-    logoResolution = {"width": 639, "height": 799}
+    iconPath = "./source/asset/icon.ico"
+    logoPath = Utility.combinePath(path, "..\\asset\\logo.png")
 
     fontFamily = {"main": "DM SANS"}
     colorPalette = {"main": "#54A4F5"}
@@ -21,16 +28,11 @@ class Dependency:
     loading = False
 
 
-class Utility:
-    def combinePath(base, path):
-        return os.path.join(base, path)
-
-
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.iconbitmap("./source/asset/icon.ico")
+        self.iconbitmap(Dependency.iconPath)
         self.title(f"{Dependency.title} - {Dependency.subTitle}")
         self.geometry(
             f"{Dependency.resolution['width']}x{Dependency.resolution['height']}"
@@ -57,7 +59,7 @@ class App(ctk.CTk):
         self.loadingFrame.pack(expand=True)
 
         self.logoLoadingImage = ctk.CTkImage(
-            Image.open(Utility.combinePath(Dependency.path, "..\\asset\\logo.png")),
+            Image.open(Dependency.logoPath),
             size=(
                 Dependency.logoResolution["width"] / 4,
                 Dependency.logoResolution["height"] / 4,
