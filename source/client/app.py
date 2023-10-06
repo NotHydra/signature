@@ -18,6 +18,8 @@ class Dependency:
     fontFamily = {"main": "DM SANS"}
     colorPalette = {"main": "#54A4F5"}
 
+    loading = False
+
 
 class Utility:
     def combinePath(base, path):
@@ -39,13 +41,14 @@ class App(ctk.CTk):
 
     def loading(self):
         def increaseLoadingValue():
-            loadingValue = 0
-            while loadingValue < 1:
-                loadingValue += random.uniform(0.005, 0.01)
-                self.progressLoadingTextProgressBar.set(loadingValue)
+            if Dependency.loading:
+                loadingValue = 0
+                while loadingValue < 1:
+                    loadingValue += random.uniform(0.005, 0.01)
+                    self.progressLoadingTextProgressBar.set(loadingValue)
 
-                self.update()
-                time.sleep(0.00001)
+                    self.update()
+                    time.sleep(0.00001)
 
             self.loadingFrame.forget()
 
@@ -88,6 +91,7 @@ class App(ctk.CTk):
         self.progressLoadingTextProgressBar.set(0)
 
         self.after(500, increaseLoadingValue)
+
 
 
 if __name__ == "__main__":
