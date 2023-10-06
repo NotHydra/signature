@@ -51,6 +51,7 @@ class App(ctk.CTk):
                     time.sleep(0.00001)
 
             self.loadingFrame.forget()
+            self.login()
 
         self.loadingFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.loadingFrame.pack(expand=True)
@@ -92,6 +93,54 @@ class App(ctk.CTk):
 
         self.after(500, increaseLoadingValue)
 
+    def login(self):
+        self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.loginFrame.pack(expand=True)
+
+        self.titleLoginLabel = ctk.CTkLabel(
+            self.loginFrame,
+            text=Dependency.title.upper(),
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=40, weight="bold"
+            ),
+        )
+        self.titleLoginLabel.grid(row=0, column=0, pady=(0, 5))
+
+        self.usernameLoginEntry = ctk.CTkEntry(
+            self.loginFrame,
+            width=250,
+            height=40,
+            placeholder_text="username",
+            justify="center",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        self.usernameLoginEntry.grid(row=1, column=0, pady=(0, 5))
+
+        self.passwordLoginEntry = ctk.CTkEntry(
+            self.loginFrame,
+            width=250,
+            height=40,
+            show="*",
+            placeholder_text="password",
+            justify="center",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        self.passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
+
+        self.loginLoginButton = ctk.CTkButton(
+            self.loginFrame,
+            text="Login",
+            width=250,
+            height=40,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=25, weight="bold"
+            ),
+        )
+        self.loginLoginButton.grid(row=3, column=0)
 
 
 if __name__ == "__main__":
