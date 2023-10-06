@@ -1,0 +1,11 @@
+{
+    "_id": "integer",
+    "name": "string",
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "level": "string",
+    "isActive": "boolean",
+    "createdAt": "datetime",
+    "updatedAt": "datetime"
+}
