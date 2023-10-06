@@ -15,6 +15,14 @@ class Dependency:
 
     logoResolution = {"width": 639, "height": 799}
 
+    fontFamily = {"main": "DM SANS"}
+    colorPalette = {"main": "#54A4F5"}
+
+
+class Utility:
+    def combinePath(base, path):
+        return os.path.join(base, path)
+
 
 class App(ctk.CTk):
     def __init__(self):
@@ -45,7 +53,7 @@ class App(ctk.CTk):
         self.loadingFrame.pack(expand=True)
 
         self.logoLoadingImage = ctk.CTkImage(
-            Image.open(Dependency.path + "\\..\\asset\\logo.png"),
+            Image.open(Utility.combinePath(Dependency.path, "..\\asset\\logo.png")),
             size=(
                 Dependency.logoResolution["width"] / 4,
                 Dependency.logoResolution["height"] / 4,
@@ -64,7 +72,9 @@ class App(ctk.CTk):
         self.titleLoadingTextLabel = ctk.CTkLabel(
             self.loadingTextFrame,
             text=Dependency.title.upper(),
-            font=ctk.CTkFont(family="DM SANS", size=80, weight="bold"),
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=80, weight="bold"
+            ),
         )
         self.titleLoadingTextLabel.grid(row=0, column=0)
 
@@ -72,7 +82,7 @@ class App(ctk.CTk):
             self.loadingTextFrame,
             orientation="horizontal",
             mode="determinate",
-            progress_color="#54A4F5",
+            progress_color=Dependency.colorPalette["main"],
         )
         self.progressLoadingTextProgressBar.grid(row=1, column=0, sticky="ew")
         self.progressLoadingTextProgressBar.set(0)
