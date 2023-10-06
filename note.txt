@@ -3,3 +3,6 @@
 #BCDBF7
 #FFFFFF
 #111111
+
+cd .\source\server\
+uvicorn server:app --reload
