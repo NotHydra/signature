@@ -7,7 +7,7 @@ from PIL import Image
 
 
 class Utility:
-    def combinePath(base, path):
+    def combinePath(base: str, path: str) -> str:
         return os.path.join(base, path)
 
 
@@ -29,7 +29,7 @@ class Dependency:
 
 
 class App(ctk.CTk):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.iconbitmap(Dependency.iconPath)
@@ -41,8 +41,8 @@ class App(ctk.CTk):
 
         self.loading()
 
-    def loading(self):
-        def increaseLoadingValue():
+    def loading(self) -> None:
+        def increaseLoadingValue() -> None:
             if Dependency.loading:
                 loadingValue = 0
                 while loadingValue < 1:
@@ -95,7 +95,7 @@ class App(ctk.CTk):
 
         self.after(500, increaseLoadingValue)
 
-    def login(self):
+    def login(self) -> None:
         self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.loginFrame.pack(expand=True)
 
