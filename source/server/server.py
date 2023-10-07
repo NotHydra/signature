@@ -6,6 +6,7 @@ from database import Database
 from utility import Utility
 
 from model.user import UserModel
+from model.login import LoginModel
 
 
 app = FastAPI()
@@ -181,6 +182,42 @@ def userDelete(response: Response, id: int):
 
             return Utility.formatResponse(
                 False, response.status_code, f"User {id} Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Utility.formatResponse(False, response.status_code, str(e), None)
+
+
+@app.post("/api/auth/login")
+def auth(response: Response, body: LoginModel):
+    try:
+        user = database.getCollection("user")
+        documentObject = user.find_one(
+            {"username": body.username}, {"_id": 1, "password": 1}
+        )
+
+        if documentObject:
+            if Utility.decrypt(body.password, documentObject["password"]):
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True, response.status_code, f"Login Successful", documentObject
+                )
+
+            else:
+                response.status_code = status.HTTP_404_NOT_FOUND
+
+                return Utility.formatResponse(
+                    False, response.status_code, f"Username Or Password Incorrect", None
+                )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, f"Username Or Password Incorrect", None
             )
 
     except Exception as e:

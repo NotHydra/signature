@@ -25,7 +25,7 @@ class Dependency:
     fontFamily = {"main": "DM SANS"}
     colorPalette = {"main": "#54A4F5"}
 
-    loading = False
+    loading = True
 
 
 class App(ctk.CTk):
@@ -96,6 +96,10 @@ class App(ctk.CTk):
         self.after(500, increaseLoadingValue)
 
     def login(self) -> None:
+        def authenticate():
+            self.usernameLoginEntry.get()
+            self.passwordLoginEntry.get()
+
         self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.loginFrame.pack(expand=True)
 
@@ -141,6 +145,7 @@ class App(ctk.CTk):
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=25, weight="bold"
             ),
+            command=authenticate,
         )
         self.loginLoginButton.grid(row=3, column=0)
 
