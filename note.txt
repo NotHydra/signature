@@ -5,4 +5,4 @@
 #111111
 
 python .\source\client\app.py
-python .\source\server\server.py
+python .\source\server\main.py

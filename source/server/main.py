@@ -232,4 +232,4 @@ def auth(response: Response, body: LoginModel):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("server:app", port=8000, reload=True)
+    uvicorn.run("main:app", port=8000, reload=True)

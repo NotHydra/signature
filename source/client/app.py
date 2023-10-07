@@ -107,30 +107,38 @@ class App(ctk.CTk):
             password = self.passwordLoginEntry.get()
 
             if username != "" and password != "":
-                response = requests.post(
-                    "http://localhost:8000/api/auth/login",
-                    json={"username": username, "password": password},
-                ).json()
+                try:
+                    response = requests.post(
+                        "http://localhost:8000/api/auth/login",
+                        json={"username": username, "password": password},
+                    ).json()
 
-                if response["success"] == True:
-                    CTkMessagebox(
-                        corner_radius=8,
-                        icon="check",
-                        title="Success",
-                        message=response["message"],
-                    )
+                    if response["success"] == True:
+                        CTkMessagebox(
+                            corner_radius=8,
+                            icon="check",
+                            title="Success",
+                            message=response["message"],
+                        )
 
-                    Session.id = response["data"]["_id"]
+                        Session.id = response["data"]["_id"]
 
-                    self.loginFrame.destroy()
-                    self.main()
+                        self.loginFrame.destroy()
+                        self.main()
 
-                else:
+                    else:
+                        CTkMessagebox(
+                            corner_radius=8,
+                            icon="cancel",
+                            title="Error",
+                            message=response["message"],
+                        )
+                except:
                     CTkMessagebox(
                         corner_radius=8,
                         icon="cancel",
                         title="Error",
-                        message=response["message"],
+                        message="Server Error",
                     )
 
             else:
