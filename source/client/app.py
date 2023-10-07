@@ -1,11 +1,11 @@
 import os
-import random
 import time
-import customtkinter as ctk
-from CTkMessagebox import CTkMessagebox
+import random
 import requests
+import customtkinter as ctk
 
 from PIL import Image
+from CTkMessagebox import CTkMessagebox
 
 
 class Utility:
@@ -15,7 +15,7 @@ class Utility:
 
 class Dependency:
     title = "Signature"
-    subTitle = "Online Mail"
+    subTitle = "Online Document"
 
     resolution = {"width": 1200, "height": 700}
     logoResolution = {"width": 639, "height": 799}
