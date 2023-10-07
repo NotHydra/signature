@@ -25,6 +25,10 @@ class Database:
         self.getCollection("user").drop()
         self.getCollection("dependency").drop()
 
+    def resetCollection(self) -> None:
+        self.dropCollection()
+        self.createCollection()
+
     def newId(self, collection: str) -> int:
         dependency = self.getCollection("dependency")
 
@@ -43,5 +47,4 @@ class Database:
         return documentObject[f"{collection}Increment"]
 
 
-# Database().dropCollection()
-# Database().createCollection()
+# Database().resetCollection()
