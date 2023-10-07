@@ -213,14 +213,14 @@ def auth(response: Response, body: LoginModel):
                 response.status_code = status.HTTP_404_NOT_FOUND
 
                 return Utility.formatResponse(
-                    False, response.status_code, f"Username Or Password Incorrect", None
+                    False, response.status_code, f"Username or Password Incorrect", None
                 )
 
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, f"Username Or Password Incorrect", None
+                False, response.status_code, f"Username or Password Incorrect", None
             )
 
     except Exception as e:

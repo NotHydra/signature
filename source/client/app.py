@@ -113,17 +113,32 @@ class App(ctk.CTk):
                 ).json()
 
                 if response["success"] == True:
+                    CTkMessagebox(
+                        corner_radius=8,
+                        icon="check",
+                        title="Success",
+                        message=response["message"],
+                    )
+
                     Session.id = response["data"]["_id"]
 
                     self.loginFrame.destroy()
                     self.main()
+
+                else:
+                    CTkMessagebox(
+                        corner_radius=8,
+                        icon="cancel",
+                        title="Error",
+                        message=response["message"],
+                    )
 
             else:
                 CTkMessagebox(
                     corner_radius=8,
                     icon="cancel",
                     title="Error",
-                    message="Please Insert Username And Password",
+                    message="Please Insert Username and Password",
                 )
 
         self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
