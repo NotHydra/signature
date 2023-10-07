@@ -69,25 +69,24 @@ def user(response: Response, id: int):
 def userCreate(response: Response, body: UserModel):
     try:
         user = database.getCollection("user")
-        documentObject = user.insert_one(
-            {
-                "_id": database.newId("user"),
-                "name": body.name,
-                "username": body.username,
-                "email": body.email,
-                "password": body.password,
-                "level": body.level,
-                "isActive": body.isActive,
-                "createdAt": datetime.datetime.now(),
-                "updatedAt": datetime.datetime.now(),
-            }
-        )
+        newDocument = {
+            "_id": database.newId("user"),
+            "name": body.name,
+            "username": body.username,
+            "email": body.email,
+            "password": Utility.encrypt(body.password),
+            "level": body.level,
+            "isActive": body.isActive,
+            "createdAt": datetime.datetime.now(),
+            "updatedAt": datetime.datetime.now(),
+        }
+        documentObject = user.insert_one(newDocument)
 
         if documentObject:
             response.status_code = status.HTTP_201_CREATED
 
             return Utility.formatResponse(
-                True, response.status_code, "User Created", documentObject
+                True, response.status_code, "User Created", newDocument
             )
 
         else:
@@ -96,6 +95,8 @@ def userCreate(response: Response, body: UserModel):
             return Utility.formatResponse(
                 False, response.status_code, "User Failed To Be Created", None
             )
+
+        return
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -110,19 +111,21 @@ def userUpdate(response: Response, id: int, body: UserModel):
         documentObject = user.find_one({"_id": id})
 
         if documentObject:
+            newDocument = {
+                "name": body.name,
+                "username": body.username,
+                "email": body.email,
+                "level": body.level,
+                "isActive": body.isActive,
+                "updatedAt": datetime.datetime.now(),
+            }
+
+            if body.password:
+                newDocument["password"] = Utility.encrypt(body.password)
+
             documentObject = user.find_one_and_update(
                 {"_id": id},
-                {
-                    "$set": {
-                        "name": body.name,
-                        "username": body.username,
-                        "email": body.email,
-                        "password": body.password,
-                        "level": body.level,
-                        "isActive": body.isActive,
-                        "updatedAt": datetime.datetime.now(),
-                    }
-                },
+                {"$set": newDocument},
             )
 
             if documentObject:
