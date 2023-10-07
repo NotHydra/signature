@@ -2,6 +2,7 @@ import os
 import random
 import time
 import customtkinter as ctk
+from CTkMessagebox import CTkMessagebox
 import requests
 
 from PIL import Image
@@ -16,7 +17,7 @@ class Dependency:
     title = "Signature"
     subTitle = "Online Mail"
 
-    resolution = {"width": 1000, "height": 600}
+    resolution = {"width": 1200, "height": 700}
     logoResolution = {"width": 639, "height": 799}
 
     path = os.path.dirname(os.path.realpath(__file__))
@@ -105,16 +106,25 @@ class App(ctk.CTk):
             username = self.usernameLoginEntry.get()
             password = self.passwordLoginEntry.get()
 
-            response = requests.post(
-                "http://localhost:8000/api/auth/login",
-                json={"username": username, "password": password},
-            ).json()
+            if username != "" and password != "":
+                response = requests.post(
+                    "http://localhost:8000/api/auth/login",
+                    json={"username": username, "password": password},
+                ).json()
 
-            if response["success"] == True:
-                Session.id = response["data"]["_id"]
+                if response["success"] == True:
+                    Session.id = response["data"]["_id"]
 
-                self.loginFrame.destroy()
-                self.main()
+                    self.loginFrame.destroy()
+                    self.main()
+
+            else:
+                CTkMessagebox(
+                    corner_radius=8,
+                    icon="cancel",
+                    title="Error",
+                    message="Please Insert Username And Password",
+                )
 
         self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.loginFrame.pack(expand=True)
