@@ -203,7 +203,10 @@ def auth(response: Response, body: LoginModel):
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
-                    True, response.status_code, f"Login Successful", documentObject
+                    True,
+                    response.status_code,
+                    f"Login Successful",
+                    {"_id": documentObject["_id"]},
                 )
 
             else:
