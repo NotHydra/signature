@@ -19,18 +19,21 @@ def user(response: Response):
 
         if documentArray:
             response.status_code = status.HTTP_200_OK
+
             return Utility.formatResponse(
                 True, response.status_code, "User Found", documentArray
             )
 
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
+
             return Utility.formatResponse(
                 False, response.status_code, "User Not Found", None
             )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
         return Utility.formatResponse(False, response.status_code, str(e), None)
 
 
@@ -38,14 +41,17 @@ def user(response: Response):
 def user(response: Response, id: int):
     try:
         documentObject = database.getCollection("user").find_one({"_id": id})
+
         if documentObject:
             response.status_code = status.HTTP_200_OK
+
             return Utility.formatResponse(
                 True, response.status_code, f"User {id} Found", documentObject
             )
 
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
+
             return Utility.formatResponse(
                 False,
                 response.status_code,
@@ -55,6 +61,7 @@ def user(response: Response, id: int):
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
         return Utility.formatResponse(False, response.status_code, str(e), None)
 
 
@@ -78,18 +85,21 @@ def userCreate(response: Response, body: UserModel):
 
         if documentObject:
             response.status_code = status.HTTP_201_CREATED
+
             return Utility.formatResponse(
                 True, response.status_code, "User Created", documentObject
             )
 
         else:
             response.status_code = status.HTTP_400_BAD_REQUEST
+
             return Utility.formatResponse(
                 False, response.status_code, "User Failed To Be Created", None
             )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
         return Utility.formatResponse(False, response.status_code, str(e), None)
 
 
@@ -98,6 +108,7 @@ def userUpdate(response: Response, id: int, body: UserModel):
     try:
         user = database.getCollection("user")
         documentObject = user.find_one({"_id": id})
+
         if documentObject:
             documentObject = user.find_one_and_update(
                 {"_id": id},
@@ -116,23 +127,62 @@ def userUpdate(response: Response, id: int, body: UserModel):
 
             if documentObject:
                 response.status_code = status.HTTP_202_ACCEPTED
+
                 return Utility.formatResponse(
-                    True, response.status_code, "User Updated", documentObject
+                    True, response.status_code, f"User {id} Updated", documentObject
                 )
 
             else:
                 response.status_code = status.HTTP_400_BAD_REQUEST
+
                 return Utility.formatResponse(
-                    False, response.status_code, "User Failed To Be Updated", None
+                    False, response.status_code, f"User {id} Failed To Be Updated", None
                 )
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
+
             return Utility.formatResponse(
                 False, response.status_code, f"User {id} Not Found", None
             )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Utility.formatResponse(False, response.status_code, str(e), None)
+
+
+@app.delete("/api/user/delete/{id}")
+def userDelete(response: Response, id: int):
+    try:
+        user = database.getCollection("user")
+        documentObject = user.find_one({"_id": id})
+
+        if documentObject:
+            documentObject = user.find_one_and_delete({"_id": id})
+
+            if documentObject:
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True, response.status_code, f"User {id} Deleted", documentObject
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False, response.status_code, f"User {id} Failed To Be Deleted", None
+                )
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, f"User {id} Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
         return Utility.formatResponse(False, response.status_code, str(e), None)
 
 
