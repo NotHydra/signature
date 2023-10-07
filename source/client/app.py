@@ -2,6 +2,7 @@ import os
 import random
 import time
 import customtkinter as ctk
+import requests
 
 from PIL import Image
 
@@ -25,7 +26,11 @@ class Dependency:
     fontFamily = {"main": "DM SANS"}
     colorPalette = {"main": "#54A4F5"}
 
-    loading = True
+    loading = False
+
+
+class Session:
+    id = 0
 
 
 class App(ctk.CTk):
@@ -97,8 +102,19 @@ class App(ctk.CTk):
 
     def login(self) -> None:
         def authenticate():
-            self.usernameLoginEntry.get()
-            self.passwordLoginEntry.get()
+            username = self.usernameLoginEntry.get()
+            password = self.passwordLoginEntry.get()
+
+            response = requests.post(
+                "http://localhost:8000/api/auth/login",
+                json={"username": username, "password": password},
+            ).json()
+
+            if response["success"] == True:
+                Session.id = response["data"]["_id"]
+
+                self.loginFrame.destroy()
+                self.main()
 
         self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.loginFrame.pack(expand=True)
@@ -148,6 +164,13 @@ class App(ctk.CTk):
             command=authenticate,
         )
         self.loginLoginButton.grid(row=3, column=0)
+
+    def main(self) -> None:
+        self.mainFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.mainFrame.pack(expand=True)
+
+        self.titleMainLabel = ctk.CTkLabel(self.mainFrame, text="Test Login")
+        self.titleMainLabel.grid(row=0, column=0)
 
 
 if __name__ == "__main__":
