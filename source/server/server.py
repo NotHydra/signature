@@ -62,7 +62,7 @@ def user(response: Response, id: int):
 def userCreate(response: Response, body: UserModel):
     try:
         user = database.getCollection("user")
-        document = user.insert_one(
+        documentObject = user.insert_one(
             {
                 "_id": database.newId("user"),
                 "name": body.name,
@@ -76,10 +76,10 @@ def userCreate(response: Response, body: UserModel):
             }
         )
 
-        if document:
+        if documentObject:
             response.status_code = status.HTTP_201_CREATED
             return Utility.formatResponse(
-                False, response.status_code, "User Created", None
+                True, response.status_code, "User Created", documentObject
             )
 
         else:
@@ -91,3 +91,9 @@ def userCreate(response: Response, body: UserModel):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return Utility.formatResponse(False, response.status_code, str(e), None)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("server:app", port=8000)

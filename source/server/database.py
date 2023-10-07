@@ -19,7 +19,7 @@ class Database:
         user.create_index([("email", ASCENDING)], unique=True)
 
         dependency = self.getCollection("dependency")
-        dependency.insert_one({"_id": 1, "userIncrement": 1})
+        dependency.insert_one({"_id": 1, "userIncrement": 0})
 
     def dropCollection(self) -> None:
         self.getCollection("user").drop()
@@ -43,5 +43,5 @@ class Database:
         return documentObject[f"{collection}Increment"]
 
 
-# Database.createCollection()
-# Database.dropCollection()
+# Database().dropCollection()
+# Database().createCollection()
