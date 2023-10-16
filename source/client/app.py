@@ -15,7 +15,7 @@ class Utility:
 
 class Dependency:
     title = "Signature"
-    subTitle = "Online Document"
+    subTitle = "Online Document Application"
 
     resolution = {"width": 1200, "height": 700}
     logoResolution = {"width": 639, "height": 799}
@@ -24,8 +24,8 @@ class Dependency:
     iconPath = "./source/asset/icon.ico"
     logoPath = Utility.combinePath(path, "..\\asset\\logo.png")
 
-    fontFamily = {"main": "DM SANS"}
-    colorPalette = {"main": "#54A4F5"}
+    fontFamily = {"main": "Montserrat"}
+    colorPalette = {"main": "#54A4F5", "text": "#FFFFFF"}
 
     skip = True
 
@@ -53,51 +53,75 @@ class App(ctk.CTk):
                 loadingValue = 0
                 while loadingValue < 1:
                     loadingValue += random.uniform(0.005, 0.01)
-                    self.progressLoadingTextProgressBar.set(loadingValue)
+                    progressLoadingTextProgressBar.set(loadingValue)
 
                     self.update()
                     time.sleep(0.00001)
 
-            self.loadingFrame.forget()
+            loadingFrame.grid_forget()
             self.login()
 
-        self.loadingFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        self.loadingFrame.pack(expand=True)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
-        self.logoLoadingImage = ctk.CTkImage(
+        loadingFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        loadingFrame.rowconfigure(0, weight=1)
+        loadingFrame.columnconfigure([0, 1], weight=1)
+        loadingFrame.grid(row=0, column=0)
+
+        logoLoadingImage = ctk.CTkImage(
             Image.open(Dependency.logoPath),
             size=(
                 Dependency.logoResolution["width"] / 4,
                 Dependency.logoResolution["height"] / 4,
             ),
         )
-        self.logoLoadingLabel = ctk.CTkLabel(
-            self.loadingFrame, image=self.logoLoadingImage, text=""
+        logoLoadingLabel = ctk.CTkLabel(
+            loadingFrame,
+            image=logoLoadingImage,
+            text="",
         )
-        self.logoLoadingLabel.grid(row=0, column=0, padx=20)
+        logoLoadingLabel.grid(row=0, column=0, padx=20)
 
-        self.loadingTextFrame = ctk.CTkFrame(
-            self.loadingFrame, corner_radius=0, fg_color="transparent"
+        loadingTextFrame = ctk.CTkFrame(
+            loadingFrame, corner_radius=0, fg_color="transparent"
         )
-        self.loadingTextFrame.grid(row=0, column=1, padx=20)
+        loadingTextFrame.rowconfigure([0, 1, 2], weight=1)
+        loadingTextFrame.columnconfigure(0, weight=1)
+        loadingTextFrame.grid(row=0, column=1, padx=20)
 
-        self.titleLoadingTextLabel = ctk.CTkLabel(
-            self.loadingTextFrame,
+        titleLoadingTextLabel = ctk.CTkLabel(
+            loadingTextFrame,
             text=Dependency.title.upper(),
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=80, weight="bold"
+                family=Dependency.fontFamily["main"],
+                size=80,
+                weight="bold",
             ),
+            text_color=Dependency.colorPalette["text"],
         )
-        self.titleLoadingTextLabel.grid(row=0, column=0)
+        titleLoadingTextLabel.grid(row=0, column=0, sticky="ew")
 
-        self.progressLoadingTextProgressBar = ctk.CTkProgressBar(
-            self.loadingTextFrame,
+        subTitleLoadingTextLabel = ctk.CTkLabel(
+            loadingTextFrame,
+            text=Dependency.subTitle.upper(),
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=27,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        )
+        subTitleLoadingTextLabel.grid(row=1, column=0, sticky="ew")
+
+        progressLoadingTextProgressBar = ctk.CTkProgressBar(
+            loadingTextFrame,
             orientation="horizontal",
             mode="determinate",
             progress_color=Dependency.colorPalette["main"],
         )
-        self.progressLoadingTextProgressBar.grid(row=1, column=0, sticky="ew")
-        self.progressLoadingTextProgressBar.set(0)
+        progressLoadingTextProgressBar.grid(row=2, column=0, pady=10, sticky="ew")
+        progressLoadingTextProgressBar.set(0)
 
         self.after(500, increaseLoadingValue)
 
@@ -149,60 +173,94 @@ class App(ctk.CTk):
                     message="Please Insert Username and Password",
                 )
 
-        self.loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        self.loginFrame.pack(expand=True)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=15)
 
-        self.titleLoginLabel = ctk.CTkLabel(
-            self.loginFrame,
-            text=Dependency.title.upper(),
-            font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=40, weight="bold"
+        aboutFrame = ctk.CTkFrame(
+            self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+        )
+        aboutFrame.rowconfigure(0, weight=1)
+        aboutFrame.columnconfigure(0, weight=1)
+        aboutFrame.grid(row=0, column=0, sticky="nsew")
+
+        backgroundAboutImage = ctk.CTkImage(
+            Image.open(
+                Utility.combinePath(Dependency.path, "../asset/logo-opacity.png")
+            ),
+            size=(
+                Dependency.logoResolution["width"] / 2,
+                Dependency.logoResolution["height"] / 2,
             ),
         )
-        self.titleLoginLabel.grid(row=0, column=0, pady=(0, 5))
-
-        self.usernameLoginEntry = ctk.CTkEntry(
-            self.loginFrame,
-            width=250,
-            height=40,
-            placeholder_text="username",
-            justify="center",
+        descriptionAboutLabel = ctk.CTkLabel(
+            aboutFrame,
+            image=backgroundAboutImage,
+            text="SIGNATURE\ndesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning documents."
+            + ("\n" * 10),
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=20, weight="bold"
+                family=Dependency.fontFamily["main"],
+                size=20,
+                weight="bold",
             ),
+            text_color=Dependency.colorPalette["text"],
         )
-        self.usernameLoginEntry.grid(row=1, column=0, pady=(0, 5))
+        descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
 
-        self.passwordLoginEntry = ctk.CTkEntry(
-            self.loginFrame,
-            width=250,
-            height=40,
-            show="*",
-            placeholder_text="password",
-            justify="center",
-            font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=20, weight="bold"
-            ),
-        )
-        self.passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
+        loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        loginFrame.grid(row=0, column=1, sticky="nsew")
 
-        self.loginLoginButton = ctk.CTkButton(
-            self.loginFrame,
-            text="Login",
-            width=250,
-            height=40,
-            font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=25, weight="bold"
-            ),
-            command=authenticate,
-        )
-        self.loginLoginButton.grid(row=3, column=0)
+        # titleLoginLabel = ctk.CTkLabel(
+        #     loginFrame,
+        #     text=Dependency.title.upper(),
+        #     font=ctk.CTkFont(
+        #         family=Dependency.fontFamily["main"], size=40, weight="bold"
+        #     ),
+        # )
+        # titleLoginLabel.grid(row=0, column=0, pady=(0, 5))
 
-        if Dependency.skip:
-            Session.id = 2
+        # usernameLoginEntry = ctk.CTkEntry(
+        #     loginFrame,
+        #     width=250,
+        #     height=40,
+        #     placeholder_text="username",
+        #     justify="center",
+        #     font=ctk.CTkFont(
+        #         family=Dependency.fontFamily["main"], size=20, weight="bold"
+        #     ),
+        # )
+        # usernameLoginEntry.grid(row=1, column=0, pady=(0, 5))
 
-            self.loginFrame.destroy()
-            self.main()
+        # passwordLoginEntry = ctk.CTkEntry(
+        #     loginFrame,
+        #     width=250,
+        #     height=40,
+        #     show="*",
+        #     placeholder_text="password",
+        #     justify="center",
+        #     font=ctk.CTkFont(
+        #         family=Dependency.fontFamily["main"], size=20, weight="bold"
+        #     ),
+        # )
+        # passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
+
+        # loginLoginButton = ctk.CTkButton(
+        #     loginFrame,
+        #     text="Login",
+        #     width=250,
+        #     height=40,
+        #     font=ctk.CTkFont(
+        #         family=Dependency.fontFamily["main"], size=25, weight="bold"
+        #     ),
+        #     command=authenticate,
+        # )
+        # loginLoginButton.grid(row=3, column=0)
+
+        # if Dependency.skip:
+        #     Session.id = 2
+
+        #     loginFrame.destroy()
+        #     self.main()
 
     def main(self) -> None:
         pass
