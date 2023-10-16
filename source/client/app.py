@@ -25,9 +25,14 @@ class Dependency:
     logoPath = Utility.combinePath(path, "..\\asset\\logo.png")
 
     fontFamily = {"main": "Montserrat"}
-    colorPalette = {"main": "#54A4F5", "text": "#FFFFFF"}
+    colorPalette = {
+        "main": "#54A4F5",
+        "text": "#FFFFFF",
+        "danger": "#DC143C",
+        "danger-dark": "#8B0000",
+    }
 
-    skip = True
+    skip = False
 
 
 class Session:
@@ -127,8 +132,8 @@ class App(ctk.CTk):
 
     def login(self) -> None:
         def authenticate():
-            username = self.usernameLoginEntry.get()
-            password = self.passwordLoginEntry.get()
+            username = usernameLoginEntry.get()
+            password = passwordLoginEntry.get()
 
             if username != "" and password != "":
                 try:
@@ -147,7 +152,8 @@ class App(ctk.CTk):
 
                         Session.id = response["data"]["_id"]
 
-                        self.loginFrame.destroy()
+                        aboutFrame.grid_forget()
+                        loginFrame.grid_forget()
                         self.main()
 
                     else:
@@ -175,7 +181,7 @@ class App(ctk.CTk):
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=15)
+        self.columnconfigure(1, weight=3)
 
         aboutFrame = ctk.CTkFrame(
             self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
@@ -196,8 +202,7 @@ class App(ctk.CTk):
         descriptionAboutLabel = ctk.CTkLabel(
             aboutFrame,
             image=backgroundAboutImage,
-            text="SIGNATURE\ndesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning documents."
-            + ("\n" * 10),
+            text="SIGNATURE\ndesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=20,
@@ -208,59 +213,75 @@ class App(ctk.CTk):
         descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
 
         loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        loginFrame.columnconfigure(0, weight=1)
         loginFrame.grid(row=0, column=1, sticky="nsew")
 
-        # titleLoginLabel = ctk.CTkLabel(
-        #     loginFrame,
-        #     text=Dependency.title.upper(),
-        #     font=ctk.CTkFont(
-        #         family=Dependency.fontFamily["main"], size=40, weight="bold"
-        #     ),
-        # )
-        # titleLoginLabel.grid(row=0, column=0, pady=(0, 5))
+        titleLoginLabel = ctk.CTkLabel(
+            loginFrame,
+            text="Login Details",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=40, weight="bold"
+            ),
+        )
+        titleLoginLabel.grid(row=0, column=0, pady=(180, 20))
 
-        # usernameLoginEntry = ctk.CTkEntry(
-        #     loginFrame,
-        #     width=250,
-        #     height=40,
-        #     placeholder_text="username",
-        #     justify="center",
-        #     font=ctk.CTkFont(
-        #         family=Dependency.fontFamily["main"], size=20, weight="bold"
-        #     ),
-        # )
-        # usernameLoginEntry.grid(row=1, column=0, pady=(0, 5))
+        usernameLoginEntry = ctk.CTkEntry(
+            loginFrame,
+            width=320,
+            height=60,
+            placeholder_text="username",
+            justify="center",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        usernameLoginEntry.grid(row=1, column=0, pady=(0, 10))
 
-        # passwordLoginEntry = ctk.CTkEntry(
-        #     loginFrame,
-        #     width=250,
-        #     height=40,
-        #     show="*",
-        #     placeholder_text="password",
-        #     justify="center",
-        #     font=ctk.CTkFont(
-        #         family=Dependency.fontFamily["main"], size=20, weight="bold"
-        #     ),
-        # )
-        # passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
+        passwordLoginEntry = ctk.CTkEntry(
+            loginFrame,
+            width=320,
+            height=60,
+            show="*",
+            placeholder_text="password",
+            justify="center",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
 
-        # loginLoginButton = ctk.CTkButton(
-        #     loginFrame,
-        #     text="Login",
-        #     width=250,
-        #     height=40,
-        #     font=ctk.CTkFont(
-        #         family=Dependency.fontFamily["main"], size=25, weight="bold"
-        #     ),
-        #     command=authenticate,
-        # )
-        # loginLoginButton.grid(row=3, column=0)
+        submitLoginButton = ctk.CTkButton(
+            loginFrame,
+            text="Login",
+            width=320,
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            command=authenticate,
+        )
+        submitLoginButton.grid(row=3, column=0, pady=(0, 10))
 
-        # if Dependency.skip:
-        #     Session.id = 2
+        exitLoginButton = ctk.CTkButton(
+            loginFrame,
+            text="Exit",
+            width=320,
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["danger"],
+            hover_color=Dependency.colorPalette["danger-dark"],
+            command=lambda: self.quit(),
+        )
+        exitLoginButton.grid(row=4, column=0)
 
-        #     loginFrame.destroy()
-        #     self.main()
+        if Dependency.skip:
+            Session.id = 2
+
+            aboutFrame.grid_forget()
+            loginFrame.grid_forget()
+            self.main()
 
     def main(self) -> None:
         pass
