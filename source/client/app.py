@@ -27,7 +27,7 @@ class Dependency:
     fontFamily = {"main": "DM SANS"}
     colorPalette = {"main": "#54A4F5"}
 
-    loading = False
+    skip = True
 
 
 class Session:
@@ -49,7 +49,7 @@ class App(ctk.CTk):
 
     def loading(self) -> None:
         def increaseLoadingValue() -> None:
-            if Dependency.loading:
+            if not Dependency.skip:
                 loadingValue = 0
                 while loadingValue < 1:
                     loadingValue += random.uniform(0.005, 0.01)
@@ -198,12 +198,14 @@ class App(ctk.CTk):
         )
         self.loginLoginButton.grid(row=3, column=0)
 
-    def main(self) -> None:
-        self.mainFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        self.mainFrame.pack(expand=True)
+        if Dependency.skip:
+            Session.id = 2
 
-        self.titleMainLabel = ctk.CTkLabel(self.mainFrame, text="Test Login")
-        self.titleMainLabel.grid(row=0, column=0)
+            self.loginFrame.destroy()
+            self.main()
+
+    def main(self) -> None:
+        pass
 
 
 if __name__ == "__main__":
