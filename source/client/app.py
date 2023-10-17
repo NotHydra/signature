@@ -27,12 +27,13 @@ class Dependency:
     fontFamily = {"main": "Montserrat"}
     colorPalette = {
         "main": "#54A4F5",
+        "main-dark": "#2976C4",
         "text": "#FFFFFF",
         "danger": "#DC143C",
         "danger-dark": "#8B0000",
     }
 
-    skip = False
+    skip = True
 
 
 class App(ctk.CTk):
@@ -65,6 +66,14 @@ class App(ctk.CTk):
             title="Success",
             message=message,
         )
+
+    def line(self, master, row, column, weight=2):
+        ctk.CTkFrame(
+            master,
+            height=weight,
+            corner_radius=0,
+            fg_color=Dependency.colorPalette["text"],
+        ).grid(row=row, column=column, sticky="nsew")
 
     def loading(self) -> None:
         def increaseLoadingValue() -> None:
@@ -279,7 +288,32 @@ class App(ctk.CTk):
             self.main()
 
     def main(self) -> None:
-        pass
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        sidebarFrame = ctk.CTkFrame(
+            self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+        )
+        sidebarFrame.columnconfigure(0, weight=1)
+        sidebarFrame.grid(row=0, column=0, sticky="nsew")
+
+        brandSidebarButton = ctk.CTkButton(
+            sidebarFrame,
+            height=80,
+            text="Signature",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=28, weight="bold"
+            ),
+            cursor="hand2",
+            corner_radius=0,
+            text_color=Dependency.colorPalette["text"],
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+        )
+        brandSidebarButton.grid(row=0, column=0, sticky="nsew")
+
+        self.line(sidebarFrame, 1, 0)
 
 
 if __name__ == "__main__":
