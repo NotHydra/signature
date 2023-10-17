@@ -368,6 +368,136 @@ class App(ctk.CTk):
                 )
                 roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
 
+            def itemGroup():
+                homeSidebarButton = ctk.CTkButton(
+                    sidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/house.png"
+                            )
+                        ),
+                        size=(20, 20),
+                    ),
+                    text="Home",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                )
+                homeSidebarButton.grid(row=4, column=0, sticky="ew")
+
+                uploadSidebarButton = ctk.CTkButton(
+                    sidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/upload.png"
+                            )
+                        ),
+                        size=(20, 20),
+                    ),
+                    text="Upload",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                )
+                uploadSidebarButton.grid(row=5, column=0, sticky="ew")
+
+                downloadSidebarButton = ctk.CTkButton(
+                    sidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/download.png"
+                            )
+                        ),
+                        size=(20, 20),
+                    ),
+                    text="Download",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                )
+                downloadSidebarButton.grid(row=6, column=0, sticky="ew")
+
+                signSidebarButton = ctk.CTkButton(
+                    sidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/sign.png"
+                            )
+                        ),
+                        size=(20, 20),
+                    ),
+                    text="Sign",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                )
+                signSidebarButton.grid(row=7, column=0, sticky="ew")
+
+            def logoutGroup():
+                logoutSidebarButton = ctk.CTkButton(
+                    sidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/logout.png"
+                            )
+                        ),
+                        size=(20, 20),
+                    ),
+                    text="Logout",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                )
+                logoutSidebarButton.grid(row=9, column=0, sticky="ew")
+
+            def copyrightGroup():
+                copyrightSidebarLabel = ctk.CTkLabel(
+                    sidebarFrame,
+                    height=40,
+                    text="Copyright © 2023 Kelompok 8",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=12, weight="bold"
+                    ),
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                )
+                copyrightSidebarLabel.grid(row=11, column=0, sticky="ew")
+
             sidebarFrame = ctk.CTkFrame(
                 self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
             )
@@ -381,6 +511,16 @@ class App(ctk.CTk):
             profileGroup()
 
             self.line(sidebarFrame, 3, 0)
+
+            itemGroup()
+
+            self.line(sidebarFrame, 8, 0)
+
+            logoutGroup()
+
+            self.line(sidebarFrame, 10, 0)
+
+            copyrightGroup()
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
