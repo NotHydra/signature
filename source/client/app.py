@@ -35,11 +35,9 @@ class Dependency:
     skip = False
 
 
-class Session:
-    id = 0
-
-
 class App(ctk.CTk):
+    userId = 0
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -161,7 +159,7 @@ class App(ctk.CTk):
                     if response["success"] == True:
                         self.showSuccess(response["message"])
 
-                        Session.id = response["data"]["_id"]
+                        self.userId = response["data"]["_id"]
 
                         aboutFrame.grid_forget()
                         loginFrame.grid_forget()
@@ -274,7 +272,7 @@ class App(ctk.CTk):
         exitLoginButton.grid(row=4, column=0)
 
         if Dependency.skip:
-            Session.id = 2
+            self.userId = 2
 
             aboutFrame.grid_forget()
             loginFrame.grid_forget()
