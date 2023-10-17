@@ -307,6 +307,13 @@ class App(ctk.CTk):
                 brandSidebarButton = ctk.CTkButton(
                     sidebarFrame,
                     height=80,
+                    image=ctk.CTkImage(
+                        Image.open(Dependency.logoPath),
+                        size=(
+                            Dependency.logoResolution["width"] / 16,
+                            Dependency.logoResolution["height"] / 16,
+                        ),
+                    ),
                     text="Signature",
                     font=ctk.CTkFont(
                         family=Dependency.fontFamily["main"], size=28, weight="bold"
