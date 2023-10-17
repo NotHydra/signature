@@ -311,9 +311,50 @@ class App(ctk.CTk):
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
         )
-        brandSidebarButton.grid(row=0, column=0, sticky="nsew")
+        brandSidebarButton.grid(row=0, column=0, sticky="ew")
 
         self.line(sidebarFrame, 1, 0)
+
+        profileSidebarFrame = ctk.CTkFrame(
+            sidebarFrame, corner_radius=0, fg_color="transparent"
+        )
+        profileSidebarFrame.rowconfigure(0, weight=1)
+        profileSidebarFrame.columnconfigure([0, 1], weight=1)
+        profileSidebarFrame.grid(row=2, column=0, sticky="ew")
+
+        roleProfileImage = ctk.CTkLabel(
+            profileSidebarFrame,
+            image=ctk.CTkImage(
+                Image.open(
+                    Utility.combinePath(Dependency.path, "../asset/icon/user.png")
+                ),
+                size=(32, 32),
+            ),
+            text="",
+        )
+        roleProfileImage.grid(row=0, column=0, padx=10, rowspan=2, sticky="e")
+
+        usernameProfileLabel = ctk.CTkLabel(
+            profileSidebarFrame,
+            text="Username",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+            text_color=Dependency.colorPalette["text"],
+        )
+        usernameProfileLabel.grid(row=0, column=1, padx=10, sticky="w")
+
+        roleProfileLabel = ctk.CTkLabel(
+            profileSidebarFrame,
+            text="Role",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=12, weight="bold"
+            ),
+            text_color=Dependency.colorPalette["text"],
+        )
+        roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
+
+        self.line(sidebarFrame, 3, 0)
 
 
 if __name__ == "__main__":
