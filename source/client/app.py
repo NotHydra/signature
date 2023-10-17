@@ -15,7 +15,7 @@ class Utility:
 
 class Dependency:
     title = "Signature"
-    subTitle = "Online Document Application"
+    subtitle = "Online Document Application"
 
     resolution = {"width": 1200, "height": 700}
     logoResolution = {"width": 639, "height": 799}
@@ -33,7 +33,7 @@ class Dependency:
         "danger-dark": "#8B0000",
     }
 
-    skip = True
+    skip = False
 
 
 class App(ctk.CTk):
@@ -43,7 +43,7 @@ class App(ctk.CTk):
         super().__init__()
 
         self.iconbitmap(Dependency.iconPath)
-        self.title(f"{Dependency.title} - {Dependency.subTitle}")
+        self.title(f"{Dependency.title} - {Dependency.subtitle}")
         self.geometry(
             f"{Dependency.resolution['width']}x{Dependency.resolution['height']}"
         )
@@ -81,7 +81,7 @@ class App(ctk.CTk):
                 loadingValue = 0
                 while loadingValue < 1:
                     loadingValue += random.uniform(0.005, 0.01)
-                    progressLoadingTextProgressBar.set(loadingValue)
+                    progressTextProgressBar.set(loadingValue)
 
                     self.update()
                     time.sleep(0.00001)
@@ -97,29 +97,28 @@ class App(ctk.CTk):
         loadingFrame.columnconfigure([0, 1], weight=1)
         loadingFrame.grid(row=0, column=0)
 
-        logoLoadingImage = ctk.CTkImage(
-            Image.open(Dependency.logoPath),
-            size=(
-                Dependency.logoResolution["width"] / 4,
-                Dependency.logoResolution["height"] / 4,
-            ),
-        )
-        logoLoadingLabel = ctk.CTkLabel(
+        logoLoadingImage = ctk.CTkLabel(
             loadingFrame,
-            image=logoLoadingImage,
+            image=ctk.CTkImage(
+                Image.open(Dependency.logoPath),
+                size=(
+                    Dependency.logoResolution["width"] / 4,
+                    Dependency.logoResolution["height"] / 4,
+                ),
+            ),
             text="",
         )
-        logoLoadingLabel.grid(row=0, column=0, padx=20)
+        logoLoadingImage.grid(row=0, column=0, padx=20)
 
-        loadingTextFrame = ctk.CTkFrame(
+        textLoadingFrame = ctk.CTkFrame(
             loadingFrame, corner_radius=0, fg_color="transparent"
         )
-        loadingTextFrame.rowconfigure([0, 1, 2], weight=1)
-        loadingTextFrame.columnconfigure(0, weight=1)
-        loadingTextFrame.grid(row=0, column=1, padx=20)
+        textLoadingFrame.rowconfigure([0, 1, 2], weight=1)
+        textLoadingFrame.columnconfigure(0, weight=1)
+        textLoadingFrame.grid(row=0, column=1, padx=20)
 
-        titleLoadingTextLabel = ctk.CTkLabel(
-            loadingTextFrame,
+        titleTextLabel = ctk.CTkLabel(
+            textLoadingFrame,
             text=Dependency.title.upper(),
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
@@ -128,11 +127,11 @@ class App(ctk.CTk):
             ),
             text_color=Dependency.colorPalette["text"],
         )
-        titleLoadingTextLabel.grid(row=0, column=0, sticky="ew")
+        titleTextLabel.grid(row=0, column=0, sticky="ew")
 
-        subTitleLoadingTextLabel = ctk.CTkLabel(
-            loadingTextFrame,
-            text=Dependency.subTitle.upper(),
+        subtitleTextLabel = ctk.CTkLabel(
+            textLoadingFrame,
+            text=Dependency.subtitle.upper(),
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=27,
@@ -140,16 +139,16 @@ class App(ctk.CTk):
             ),
             text_color=Dependency.colorPalette["text"],
         )
-        subTitleLoadingTextLabel.grid(row=1, column=0, sticky="ew")
+        subtitleTextLabel.grid(row=1, column=0, sticky="ew")
 
-        progressLoadingTextProgressBar = ctk.CTkProgressBar(
-            loadingTextFrame,
+        progressTextProgressBar = ctk.CTkProgressBar(
+            textLoadingFrame,
             orientation="horizontal",
             mode="determinate",
             progress_color=Dependency.colorPalette["main"],
         )
-        progressLoadingTextProgressBar.grid(row=2, column=0, pady=10, sticky="ew")
-        progressLoadingTextProgressBar.set(0)
+        progressTextProgressBar.grid(row=2, column=0, pady=10, sticky="ew")
+        progressTextProgressBar.set(0)
 
         self.after(500, increaseLoadingValue)
 
@@ -194,18 +193,17 @@ class App(ctk.CTk):
         aboutFrame.columnconfigure(0, weight=1)
         aboutFrame.grid(row=0, column=0, sticky="nsew")
 
-        backgroundAboutImage = ctk.CTkImage(
-            Image.open(
-                Utility.combinePath(Dependency.path, "../asset/logo-opacity.png")
-            ),
-            size=(
-                Dependency.logoResolution["width"] / 2,
-                Dependency.logoResolution["height"] / 2,
-            ),
-        )
         descriptionAboutLabel = ctk.CTkLabel(
             aboutFrame,
-            image=backgroundAboutImage,
+            image=ctk.CTkImage(
+                Image.open(
+                    Utility.combinePath(Dependency.path, "../asset/logo-opacity.png")
+                ),
+                size=(
+                    Dependency.logoResolution["width"] / 2,
+                    Dependency.logoResolution["height"] / 2,
+                ),
+            ),
             text="SIGNATURE\ndesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
