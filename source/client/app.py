@@ -52,6 +52,22 @@ class App(ctk.CTk):
 
         self.loading()
 
+    def showError(self, message: str) -> None:
+        CTkMessagebox(
+            corner_radius=8,
+            icon="cancel",
+            title="Error",
+            message=message,
+        )
+
+    def showSuccess(self, message: str) -> None:
+        CTkMessagebox(
+            corner_radius=8,
+            icon="check",
+            title="Success",
+            message=message,
+        )
+
     def loading(self) -> None:
         def increaseLoadingValue() -> None:
             if not Dependency.skip:
@@ -143,12 +159,7 @@ class App(ctk.CTk):
                     ).json()
 
                     if response["success"] == True:
-                        CTkMessagebox(
-                            corner_radius=8,
-                            icon="check",
-                            title="Success",
-                            message=response["message"],
-                        )
+                        self.showSuccess(response["message"])
 
                         Session.id = response["data"]["_id"]
 
@@ -157,27 +168,13 @@ class App(ctk.CTk):
                         self.main()
 
                     else:
-                        CTkMessagebox(
-                            corner_radius=8,
-                            icon="cancel",
-                            title="Error",
-                            message=response["message"],
-                        )
+                        self.showError(response["message"])
+
                 except:
-                    CTkMessagebox(
-                        corner_radius=8,
-                        icon="cancel",
-                        title="Error",
-                        message="Server Error",
-                    )
+                    self.showError("Server Error")
 
             else:
-                CTkMessagebox(
-                    corner_radius=8,
-                    icon="cancel",
-                    title="Error",
-                    message="Please Insert Username and Password",
-                )
+                self.showError("Please Insert Username and Password")
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
