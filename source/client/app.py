@@ -304,6 +304,10 @@ class App(ctk.CTk):
     def main(self) -> None:
         def sidebar():
             def contentGroup():
+                def brandButtonEvent():
+                    sidebarFrame.grid_forget()
+                    self.main()
+
                 def brandGroup():
                     brandSidebarButton = ctk.CTkButton(
                         contentSidebarFrame,
@@ -324,6 +328,7 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
+                        command=brandButtonEvent
                     )
                     brandSidebarButton.grid(row=0, column=0, sticky="ew")
 
