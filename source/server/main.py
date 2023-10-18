@@ -49,6 +49,7 @@ def auth(response: Response, body: LoginModel):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
@@ -74,6 +75,7 @@ def user(response: Response):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
@@ -102,6 +104,7 @@ def user(response: Response, id: int):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
@@ -153,6 +156,7 @@ def userCreate(response: Response, body: UserModel):
 
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
@@ -217,6 +221,7 @@ def userUpdate(response: Response, id: int, body: UserModel):
 
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
@@ -252,6 +257,7 @@ def userDelete(response: Response, id: int):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
+        print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
