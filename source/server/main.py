@@ -125,7 +125,7 @@ def userCreate(response: Response, body: UserModel):
     try:
         if Utility.checkEmail(body.email):
             if len(body.password) >= 8:
-                if body.level in ["user", "admin"]:
+                if body.role in ["user", "admin"]:
                     user = database.getCollection("user")
                     newDocument = {
                         "_id": database.newId("user"),
@@ -133,7 +133,7 @@ def userCreate(response: Response, body: UserModel):
                         "username": body.username,
                         "email": body.email,
                         "password": Utility.encrypt(body.password),
-                        "level": body.level,
+                        "role": body.role,
                         "isActive": body.isActive,
                         "createdAt": datetime.datetime.now(),
                         "updatedAt": datetime.datetime.now(),
@@ -212,7 +212,7 @@ def userCreate(response: Response, body: UserModel):
 def userUpdate(response: Response, id: int, body: UserUpdateModel):
     try:
         if Utility.checkEmail(body.email):
-            if body.level in ["user", "admin"]:
+            if body.role in ["user", "admin"]:
                 user = database.getCollection("user")
                 documentObject = user.find_one({"_id": id})
 
@@ -224,7 +224,7 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                                 "name": body.name,
                                 "username": body.username,
                                 "email": body.email,
-                                "level": body.level,
+                                "role": body.role,
                                 "updatedAt": datetime.datetime.now(),
                             }
                         },

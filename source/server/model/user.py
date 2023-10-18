@@ -11,7 +11,7 @@ class UserModel(BaseModel):
     username: str
     email: str
     password: str
-    level: str
+    role: str
     isActive: bool
 
 
@@ -19,7 +19,7 @@ class UserUpdateModel(BaseModel):
     name: str
     username: str
     email: str
-    level: str
+    role: str
 
 
 class UserUpdatePasswordModel(BaseModel):

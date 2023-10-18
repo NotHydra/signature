@@ -4,7 +4,7 @@
     "username": "string",
     "email": "string",
     "password": "string",
-    "level": "string",
+    "role": "string",
     "isActive": "boolean",
     "createdAt": "datetime",
     "updatedAt": "datetime"
