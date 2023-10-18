@@ -328,7 +328,7 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
-                        command=brandButtonEvent
+                        command=brandButtonEvent,
                     )
                     brandSidebarButton.grid(row=0, column=0, sticky="ew")
 
@@ -377,6 +377,10 @@ class App(ctk.CTk):
                     roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
 
                 def itemGroup():
+                    def homeButtonEvent():
+                        sidebarFrame.grid_forget()
+                        self.main()
+
                     homeSidebarButton = ctk.CTkButton(
                         contentSidebarFrame,
                         height=40,
@@ -397,6 +401,7 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
+                        command=homeButtonEvent,
                     )
                     homeSidebarButton.grid(row=4, column=0, sticky="ew")
 
