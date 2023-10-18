@@ -5,7 +5,7 @@ from fastapi import FastAPI, Response, status
 from database import Database
 from utility import Utility
 
-from model.user import UserModel, UserUpdateModel
+from model.user import UserModel, UserUpdateModel, UserUpdatePasswordModel
 from model.login import LoginModel
 
 
@@ -146,12 +146,12 @@ def userCreate(response: Response, body: UserModel):
 
             if "username" in errorMessage:
                 return Utility.formatResponse(
-                    False, response.status_code, "Username already used", None
+                    False, response.status_code, "Username Already Used", None
                 )
 
             elif "email" in errorMessage:
                 return Utility.formatResponse(
-                    False, response.status_code, "Email already used", None
+                    False, response.status_code, "Email Already Used", None
                 )
 
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -215,6 +215,56 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                     False, response.status_code, "Email Already Used", None
                 )
 
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.put("/api/user/update-password/{id}")
+def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordModel):
+    try:
+        user = database.getCollection("user")
+        documentObject = user.find_one({"_id": id})
+
+        if documentObject:
+            documentObject = user.find_one_and_update(
+                {"_id": id},
+                {
+                    "$set": {
+                        "password": Utility.encrypt(body.password),
+                        "updatedAt": datetime.datetime.now(),
+                    }
+                },
+            )
+
+            if documentObject:
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True,
+                    response.status_code,
+                    f"User {id} Password Updated",
+                    documentObject,
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    f"User {id} Password Failed To Be Updated",
+                    None,
+                )
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, f"User {id} Not Found", None
+            )
+
+    except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
         print(str(e))
