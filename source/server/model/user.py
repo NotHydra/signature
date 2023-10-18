@@ -5,6 +5,21 @@ class UserModel(BaseModel):
     name: str
     username: str
     email: str
-    password: str = None
+    password: str
     level: str
+    isActive: bool
+
+
+class UserUpdateModel(BaseModel):
+    name: str
+    username: str
+    email: str
+    level: str
+
+
+class UserUpdatePasswordModel(BaseModel):
+    password: str
+
+
+class UserUpdateActiveModel(BaseModel):
     isActive: bool
