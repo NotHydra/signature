@@ -33,11 +33,11 @@ class Dependency:
         "danger-dark": "#8B0000",
     }
 
-    skip = True
+    skip = False
 
 
 class App(ctk.CTk):
-    userId = 1
+    userId = 0
 
     def __init__(self) -> None:
         super().__init__()
@@ -295,7 +295,7 @@ class App(ctk.CTk):
         loginGroup()
 
         if Dependency.skip:
-            self.userId = 2
+            self.userId = 1
 
             aboutFrame.grid_forget()
             loginFrame.grid_forget()
@@ -494,6 +494,12 @@ class App(ctk.CTk):
 
             def footerGroup():
                 def logoutGroup():
+                    def logoutButtonEvent():
+                        self.userId = 0
+
+                        sidebarFrame.forget()
+                        self.login()
+
                     logoutSidebarButton = ctk.CTkButton(
                         footerSidebarFrame,
                         height=40,
@@ -514,6 +520,7 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
+                        command=logoutButtonEvent,
                     )
                     logoutSidebarButton.grid(row=0, column=0, sticky="ew")
 
