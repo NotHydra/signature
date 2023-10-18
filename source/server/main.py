@@ -167,24 +167,27 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
         documentObject = user.find_one({"_id": id})
 
         if documentObject:
-            newDocument = {
-                "name": body.name,
-                "username": body.username,
-                "email": body.email,
-                "level": body.level,
-                "updatedAt": datetime.datetime.now(),
-            }
-
-            documentObject = user.find_one_and_update(
+            documentObject = user.update_one(
                 {"_id": id},
-                {"$set": newDocument},
+                {
+                    "$set": {
+                        "name": body.name,
+                        "username": body.username,
+                        "email": body.email,
+                        "level": body.level,
+                        "updatedAt": datetime.datetime.now(),
+                    }
+                },
             )
 
             if documentObject:
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
-                    True, response.status_code, f"User {id} Updated", documentObject
+                    True,
+                    response.status_code,
+                    f"User {id} Updated",
+                    user.find_one({"_id": id}),
                 )
 
             else:
