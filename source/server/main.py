@@ -281,7 +281,7 @@ def userUpdateActive(response: Response, id: int):
         documentObject = user.find_one({"_id": id}, {"isActive": 1})
 
         if documentObject:
-            documentObject = user.find_one_and_update(
+            documentObject = user.update_one(
                 {"_id": id},
                 {
                     "$set": {
@@ -298,7 +298,7 @@ def userUpdateActive(response: Response, id: int):
                     True,
                     response.status_code,
                     f"User {id} Status Updated",
-                    documentObject,
+                    user.find_one({"_id": id}),
                 )
 
             else:
