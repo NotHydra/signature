@@ -13,6 +13,45 @@ app = FastAPI()
 database = Database()
 
 
+@app.post("/api/auth/login")
+def auth(response: Response, body: LoginModel):
+    try:
+        user = database.getCollection("user")
+        documentObject = user.find_one(
+            {"username": body.username}, {"_id": 1, "password": 1}
+        )
+
+        if documentObject:
+            if Utility.decrypt(body.password, documentObject["password"]):
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True,
+                    response.status_code,
+                    f"Login Successful",
+                    {"_id": documentObject["_id"]},
+                )
+
+            else:
+                response.status_code = status.HTTP_404_NOT_FOUND
+
+                return Utility.formatResponse(
+                    False, response.status_code, f"Username or Password Incorrect", None
+                )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, f"Username or Password Incorrect", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Utility.formatResponse(False, response.status_code, str(e), None)
+
+
 @app.get("/api/user")
 def user(response: Response):
     try:
@@ -35,7 +74,7 @@ def user(response: Response):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Utility.formatResponse(False, response.status_code, str(e), None)
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
 @app.get("/api/user/{id}")
@@ -63,7 +102,7 @@ def user(response: Response, id: int):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Utility.formatResponse(False, response.status_code, str(e), None)
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
 @app.post("/api/user/create")
@@ -97,12 +136,24 @@ def userCreate(response: Response, body: UserModel):
                 False, response.status_code, "User Failed To Be Created", None
             )
 
-        return
-
     except Exception as e:
+        errorMessage = str(e)
+        if "E11000 duplicate key error collection" in errorMessage:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+
+            if "username" in errorMessage:
+                return Utility.formatResponse(
+                    False, response.status_code, "Username already used", None
+                )
+
+            elif "email" in errorMessage:
+                return Utility.formatResponse(
+                    False, response.status_code, "Email already used", None
+                )
+
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Utility.formatResponse(False, response.status_code, str(e), None)
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
 @app.put("/api/user/update/{id}")
@@ -150,9 +201,23 @@ def userUpdate(response: Response, id: int, body: UserModel):
             )
 
     except Exception as e:
+        errorMessage = str(e)
+        if "E11000 duplicate key error collection" in errorMessage:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+
+            if "username" in errorMessage:
+                return Utility.formatResponse(
+                    False, response.status_code, "Username already used", None
+                )
+
+            elif "email" in errorMessage:
+                return Utility.formatResponse(
+                    False, response.status_code, "Email already used", None
+                )
+
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Utility.formatResponse(False, response.status_code, str(e), None)
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
 @app.delete("/api/user/delete/{id}")
@@ -182,45 +247,6 @@ def userDelete(response: Response, id: int):
 
             return Utility.formatResponse(
                 False, response.status_code, f"User {id} Not Found", None
-            )
-
-    except Exception as e:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-
-        return Utility.formatResponse(False, response.status_code, str(e), None)
-
-
-@app.post("/api/auth/login")
-def auth(response: Response, body: LoginModel):
-    try:
-        user = database.getCollection("user")
-        documentObject = user.find_one(
-            {"username": body.username}, {"_id": 1, "password": 1}
-        )
-
-        if documentObject:
-            if Utility.decrypt(body.password, documentObject["password"]):
-                response.status_code = status.HTTP_202_ACCEPTED
-
-                return Utility.formatResponse(
-                    True,
-                    response.status_code,
-                    f"Login Successful",
-                    {"_id": documentObject["_id"]},
-                )
-
-            else:
-                response.status_code = status.HTTP_404_NOT_FOUND
-
-                return Utility.formatResponse(
-                    False, response.status_code, f"Username or Password Incorrect", None
-                )
-
-        else:
-            response.status_code = status.HTTP_404_NOT_FOUND
-
-            return Utility.formatResponse(
-                False, response.status_code, f"Username or Password Incorrect", None
             )
 
     except Exception as e:
