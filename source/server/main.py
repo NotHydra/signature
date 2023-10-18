@@ -250,44 +250,56 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
 @app.put("/api/user/update-password/{id}")
 def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordModel):
     try:
-        user = database.getCollection("user")
-        documentObject = user.find_one({"_id": id})
-
-        if documentObject:
-            documentObject = user.update_one(
-                {"_id": id},
-                {
-                    "$set": {
-                        "password": Utility.encrypt(body.password),
-                        "updatedAt": datetime.datetime.now(),
-                    }
-                },
-            )
+        if len(body.password) >= 8:
+            user = database.getCollection("user")
+            documentObject = user.find_one({"_id": id})
 
             if documentObject:
-                response.status_code = status.HTTP_202_ACCEPTED
-
-                return Utility.formatResponse(
-                    True,
-                    response.status_code,
-                    "User Password Updated",
-                    user.find_one({"_id": id}),
+                documentObject = user.update_one(
+                    {"_id": id},
+                    {
+                        "$set": {
+                            "password": Utility.encrypt(body.password),
+                            "updatedAt": datetime.datetime.now(),
+                        }
+                    },
                 )
+
+                if documentObject:
+                    response.status_code = status.HTTP_202_ACCEPTED
+
+                    return Utility.formatResponse(
+                        True,
+                        response.status_code,
+                        "User Password Updated",
+                        user.find_one({"_id": id}),
+                    )
+
+                else:
+                    response.status_code = status.HTTP_400_BAD_REQUEST
+
+                    return Utility.formatResponse(
+                        False,
+                        response.status_code,
+                        "User Password Failed To Be Updated",
+                        None,
+                    )
 
             else:
-                response.status_code = status.HTTP_400_BAD_REQUEST
+                response.status_code = status.HTTP_404_NOT_FOUND
 
                 return Utility.formatResponse(
-                    False,
-                    response.status_code,
-                    "User Password Failed To Be Updated",
-                    None,
+                    False, response.status_code, "User Not Found", None
                 )
+
         else:
-            response.status_code = status.HTTP_404_NOT_FOUND
+            response.status_code = status.HTTP_400_BAD_REQUEST
 
             return Utility.formatResponse(
-                False, response.status_code, "User Not Found", None
+                False,
+                response.status_code,
+                "User Password Needs To Be Atleast 8 Characters Long",
+                None,
             )
 
     except Exception as e:
