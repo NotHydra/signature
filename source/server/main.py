@@ -88,7 +88,7 @@ def user(response: Response, id: int):
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, f"User {id} Found", documentObject
+                True, response.status_code, "User Found", documentObject
             )
 
         else:
@@ -97,7 +97,7 @@ def user(response: Response, id: int):
             return Utility.formatResponse(
                 False,
                 response.status_code,
-                f"User {id} Not Found",
+                "User Not Found",
                 None,
             )
 
@@ -186,7 +186,7 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                 return Utility.formatResponse(
                     True,
                     response.status_code,
-                    f"User {id} Updated",
+                    "User Updated",
                     user.find_one({"_id": id}),
                 )
 
@@ -194,13 +194,13 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                 response.status_code = status.HTTP_400_BAD_REQUEST
 
                 return Utility.formatResponse(
-                    False, response.status_code, f"User {id} Failed To Be Updated", None
+                    False, response.status_code, "User Failed To Be Updated", None
                 )
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, f"User {id} Not Found", None
+                False, response.status_code, "User Not Found", None
             )
 
     except Exception as e:
@@ -247,7 +247,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
                 return Utility.formatResponse(
                     True,
                     response.status_code,
-                    f"User {id} Password Updated",
+                    "User Password Updated",
                     user.find_one({"_id": id}),
                 )
 
@@ -257,14 +257,14 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
                 return Utility.formatResponse(
                     False,
                     response.status_code,
-                    f"User {id} Password Failed To Be Updated",
+                    "User Password Failed To Be Updated",
                     None,
                 )
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, f"User {id} Not Found", None
+                False, response.status_code, "User Not Found", None
             )
 
     except Exception as e:
@@ -297,7 +297,7 @@ def userUpdateActive(response: Response, id: int):
                 return Utility.formatResponse(
                     True,
                     response.status_code,
-                    f"User {id} Status Updated",
+                    "User Status Updated",
                     user.find_one({"_id": id}),
                 )
 
@@ -307,14 +307,14 @@ def userUpdateActive(response: Response, id: int):
                 return Utility.formatResponse(
                     False,
                     response.status_code,
-                    f"User {id} Status Failed To Be Updated",
+                    "User Status Failed To Be Updated",
                     None,
                 )
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, f"User {id} Not Found", None
+                False, response.status_code, "User Not Found", None
             )
 
     except Exception as e:
@@ -337,20 +337,20 @@ def userDelete(response: Response, id: int):
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
-                    True, response.status_code, f"User {id} Deleted", documentObject
+                    True, response.status_code, "User Deleted", documentObject
                 )
 
             else:
                 response.status_code = status.HTTP_400_BAD_REQUEST
 
                 return Utility.formatResponse(
-                    False, response.status_code, f"User {id} Failed To Be Deleted", None
+                    False, response.status_code, "User Failed To Be Deleted", None
                 )
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, f"User {id} Not Found", None
+                False, response.status_code, "User Not Found", None
             )
 
     except Exception as e:
