@@ -252,7 +252,7 @@ def userDelete(response: Response, id: int):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Utility.formatResponse(False, response.status_code, str(e), None)
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
 if __name__ == "__main__":
