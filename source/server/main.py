@@ -272,7 +272,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
 
 
 @app.put("/api/user/update-active/{id}")
-def userUpdatePassword(response: Response, id: int):
+def userUpdateActive(response: Response, id: int):
     try:
         user = database.getCollection("user")
         documentObject = user.find_one({"_id": id}, {"isActive": 1})
