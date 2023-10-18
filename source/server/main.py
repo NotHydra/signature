@@ -231,7 +231,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
         documentObject = user.find_one({"_id": id})
 
         if documentObject:
-            documentObject = user.find_one_and_update(
+            documentObject = user.update_one(
                 {"_id": id},
                 {
                     "$set": {
@@ -248,7 +248,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
                     True,
                     response.status_code,
                     f"User {id} Password Updated",
-                    documentObject,
+                    user.find_one({"_id": id}),
                 )
 
             else:
