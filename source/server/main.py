@@ -271,6 +271,56 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.put("/api/user/update-active/{id}")
+def userUpdatePassword(response: Response, id: int):
+    try:
+        user = database.getCollection("user")
+        documentObject = user.find_one({"_id": id}, {"isActive": 1})
+
+        if documentObject:
+            documentObject = user.find_one_and_update(
+                {"_id": id},
+                {
+                    "$set": {
+                        "isActive": not documentObject["isActive"],
+                        "updatedAt": datetime.datetime.now(),
+                    }
+                },
+            )
+
+            if documentObject:
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True,
+                    response.status_code,
+                    f"User {id} Status Updated",
+                    documentObject,
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    f"User {id} Status Failed To Be Updated",
+                    None,
+                )
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, f"User {id} Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 @app.delete("/api/user/delete/{id}")
 def userDelete(response: Response, id: int):
     try:

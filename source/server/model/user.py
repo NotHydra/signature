@@ -19,7 +19,3 @@ class UserUpdateModel(BaseModel):
 
 class UserUpdatePasswordModel(BaseModel):
     password: str
-
-
-class UserUpdateActiveModel(BaseModel):
-    isActive: bool
