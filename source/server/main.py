@@ -28,7 +28,7 @@ def auth(response: Response, body: LoginModel):
                 return Utility.formatResponse(
                     True,
                     response.status_code,
-                    f"Login Successful",
+                    "Login Successful",
                     {"_id": documentObject["_id"]},
                 )
 
@@ -36,20 +36,20 @@ def auth(response: Response, body: LoginModel):
                 response.status_code = status.HTTP_404_NOT_FOUND
 
                 return Utility.formatResponse(
-                    False, response.status_code, f"Username or Password Incorrect", None
+                    False, response.status_code, "Username or Password Incorrect", None
                 )
 
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, f"Username or Password Incorrect", None
+                False, response.status_code, "Username or Password Incorrect", None
             )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Utility.formatResponse(False, response.status_code, str(e), None)
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
 @app.get("/api/user")
