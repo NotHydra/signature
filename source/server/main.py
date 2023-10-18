@@ -211,46 +211,60 @@ def userCreate(response: Response, body: UserModel):
 @app.put("/api/user/update/{id}")
 def userUpdate(response: Response, id: int, body: UserUpdateModel):
     try:
-        if body.level in ["user", "admin"]:
-            user = database.getCollection("user")
-            documentObject = user.find_one({"_id": id})
-
-            if documentObject:
-                documentObject = user.update_one(
-                    {"_id": id},
-                    {
-                        "$set": {
-                            "name": body.name,
-                            "username": body.username,
-                            "email": body.email,
-                            "level": body.level,
-                            "updatedAt": datetime.datetime.now(),
-                        }
-                    },
-                )
+        if Utility.checkEmail(body.email):
+            if body.level in ["user", "admin"]:
+                user = database.getCollection("user")
+                documentObject = user.find_one({"_id": id})
 
                 if documentObject:
-                    response.status_code = status.HTTP_202_ACCEPTED
-
-                    return Utility.formatResponse(
-                        True,
-                        response.status_code,
-                        "User Updated",
-                        user.find_one({"_id": id}),
+                    documentObject = user.update_one(
+                        {"_id": id},
+                        {
+                            "$set": {
+                                "name": body.name,
+                                "username": body.username,
+                                "email": body.email,
+                                "level": body.level,
+                                "updatedAt": datetime.datetime.now(),
+                            }
+                        },
                     )
 
+                    if documentObject:
+                        response.status_code = status.HTTP_202_ACCEPTED
+
+                        return Utility.formatResponse(
+                            True,
+                            response.status_code,
+                            "User Updated",
+                            user.find_one({"_id": id}),
+                        )
+
+                    else:
+                        response.status_code = status.HTTP_400_BAD_REQUEST
+
+                        return Utility.formatResponse(
+                            False,
+                            response.status_code,
+                            "User Failed To Be Updated",
+                            None,
+                        )
+
                 else:
-                    response.status_code = status.HTTP_400_BAD_REQUEST
+                    response.status_code = status.HTTP_404_NOT_FOUND
 
                     return Utility.formatResponse(
-                        False, response.status_code, "User Failed To Be Updated", None
+                        False, response.status_code, "User Not Found", None
                     )
 
             else:
-                response.status_code = status.HTTP_404_NOT_FOUND
+                response.status_code = status.HTTP_400_BAD_REQUEST
 
                 return Utility.formatResponse(
-                    False, response.status_code, "User Not Found", None
+                    False,
+                    response.status_code,
+                    "User Role Needs To Be User or Admin",
+                    None,
                 )
 
         else:
@@ -259,7 +273,7 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
             return Utility.formatResponse(
                 False,
                 response.status_code,
-                "User Role Needs To Be User or Admin",
+                "User Email Format Is Incorrect",
                 None,
             )
 
