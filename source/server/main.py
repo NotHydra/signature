@@ -123,34 +123,48 @@ def user(response: Response, id: int):
 @app.post("/api/user/create")
 def userCreate(response: Response, body: UserModel):
     try:
-        if len(body.password) >= 8:
-            if body.level in ["user", "admin"]:
-                user = database.getCollection("user")
-                newDocument = {
-                    "_id": database.newId("user"),
-                    "name": body.name,
-                    "username": body.username,
-                    "email": body.email,
-                    "password": Utility.encrypt(body.password),
-                    "level": body.level,
-                    "isActive": body.isActive,
-                    "createdAt": datetime.datetime.now(),
-                    "updatedAt": datetime.datetime.now(),
-                }
-                documentObject = user.insert_one(newDocument)
+        if Utility.checkEmail(body.email):
+            if len(body.password) >= 8:
+                if body.level in ["user", "admin"]:
+                    user = database.getCollection("user")
+                    newDocument = {
+                        "_id": database.newId("user"),
+                        "name": body.name,
+                        "username": body.username,
+                        "email": body.email,
+                        "password": Utility.encrypt(body.password),
+                        "level": body.level,
+                        "isActive": body.isActive,
+                        "createdAt": datetime.datetime.now(),
+                        "updatedAt": datetime.datetime.now(),
+                    }
+                    documentObject = user.insert_one(newDocument)
 
-                if documentObject:
-                    response.status_code = status.HTTP_201_CREATED
+                    if documentObject:
+                        response.status_code = status.HTTP_201_CREATED
 
-                    return Utility.formatResponse(
-                        True, response.status_code, "User Created", newDocument
-                    )
+                        return Utility.formatResponse(
+                            True, response.status_code, "User Created", newDocument
+                        )
+
+                    else:
+                        response.status_code = status.HTTP_400_BAD_REQUEST
+
+                        return Utility.formatResponse(
+                            False,
+                            response.status_code,
+                            "User Failed To Be Created",
+                            None,
+                        )
 
                 else:
                     response.status_code = status.HTTP_400_BAD_REQUEST
 
                     return Utility.formatResponse(
-                        False, response.status_code, "User Failed To Be Created", None
+                        False,
+                        response.status_code,
+                        "User Role Needs To Be User or Admin",
+                        None,
                     )
 
             else:
@@ -159,7 +173,7 @@ def userCreate(response: Response, body: UserModel):
                 return Utility.formatResponse(
                     False,
                     response.status_code,
-                    "User Role Needs To Be User or Admin",
+                    "User Password Needs To Be Atleast 8 Characters Long",
                     None,
                 )
 
@@ -169,7 +183,7 @@ def userCreate(response: Response, body: UserModel):
             return Utility.formatResponse(
                 False,
                 response.status_code,
-                "User Password Needs To Be Atleast 8 Characters Long",
+                "User Email Format Is Incorrect",
                 None,
             )
 
