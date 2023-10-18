@@ -5,7 +5,12 @@ from fastapi import FastAPI, Response, status
 from database import Database
 from utility import Utility
 
-from model.user import UserModel, UserUpdateModel, UserUpdatePasswordModel
+from model.user import (
+    UserModel,
+    UserPageModel,
+    UserUpdateModel,
+    UserUpdatePasswordModel,
+)
 from model.login import LoginModel
 
 
@@ -54,9 +59,16 @@ def auth(response: Response, body: LoginModel):
 
 
 @app.get("/api/user")
-def user(response: Response):
+def user(response: Response, body: UserPageModel):
     try:
-        documentArray = list(database.getCollection("user").find())
+        documentArray = list(
+            database.getCollection("user")
+            .find()
+            .skip(body.count * (body.page - 1))
+            .limit(body.count)
+            if body.count == 0 and body.page == 0
+            else database.getCollection("user").find()
+        )
 
         if documentArray:
             response.status_code = status.HTTP_200_OK

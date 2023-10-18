@@ -1,6 +1,11 @@
 from pydantic import BaseModel
 
 
+class UserPageModel(BaseModel):
+    count: int
+    page: int
+
+
 class UserModel(BaseModel):
     name: str
     username: str
