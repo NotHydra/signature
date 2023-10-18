@@ -33,11 +33,18 @@ class Dependency:
         "danger-dark": "#8B0000",
     }
 
-    skip = False
+    skip = True
 
 
 class App(ctk.CTk):
-    userId = 0
+    userObject = {
+        "_id": 0,
+        "name": None,
+        "username": None,
+        "email": None,
+        "role": None,
+        "isActive": None,
+    }
 
     def __init__(self) -> None:
         super().__init__()
@@ -50,6 +57,21 @@ class App(ctk.CTk):
         self.resizable(False, False)
 
         self.loading()
+
+    def refreshSessionData(self):
+        response = requests.get(
+            f"http://localhost:8000/api/user/{self.userObject['_id']}"
+        ).json()
+
+        if response["success"] == True:
+            self.userObject["name"] = response["data"]["name"]
+            self.userObject["username"] = response["data"]["username"]
+            self.userObject["email"] = response["data"]["email"]
+            self.userObject["role"] = response["data"]["role"]
+            self.userObject["isActive"] = response["data"]["isActive"]
+
+        else:
+            self.showError(response["message"])
 
     def showError(self, message: str) -> None:
         CTkMessagebox(
@@ -208,7 +230,7 @@ class App(ctk.CTk):
                         if response["success"] == True:
                             self.showSuccess(response["message"])
 
-                            self.userId = response["data"]["_id"]
+                            self.userObject["_id"] = response["data"]["_id"]
 
                             aboutFrame.grid_forget()
                             loginFrame.grid_forget()
@@ -295,7 +317,7 @@ class App(ctk.CTk):
         loginGroup()
 
         if Dependency.skip:
-            self.userId = 1
+            self.userObject["_id"] = 1
 
             aboutFrame.grid_forget()
             loginFrame.grid_forget()
@@ -345,7 +367,8 @@ class App(ctk.CTk):
                         image=ctk.CTkImage(
                             Image.open(
                                 Utility.combinePath(
-                                    Dependency.path, "../asset/icon/user.png"
+                                    Dependency.path,
+                                    f"../asset/icon/{self.userObject['role']}.png",
                                 )
                             ),
                             size=(32, 32),
@@ -358,7 +381,7 @@ class App(ctk.CTk):
 
                     usernameProfileLabel = ctk.CTkLabel(
                         profileSidebarFrame,
-                        text="Username",
+                        text=self.userObject["username"],
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"], size=20, weight="bold"
                         ),
@@ -368,7 +391,7 @@ class App(ctk.CTk):
 
                     roleProfileLabel = ctk.CTkLabel(
                         profileSidebarFrame,
-                        text="Role",
+                        text=str(self.userObject["role"]).upper(),
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"], size=12, weight="bold"
                         ),
@@ -495,7 +518,14 @@ class App(ctk.CTk):
             def footerGroup():
                 def logoutGroup():
                     def logoutButtonEvent():
-                        self.userId = 0
+                        self.userObject = {
+                            "_id": 0,
+                            "name": None,
+                            "username": None,
+                            "email": None,
+                            "role": None,
+                            "isActive": None,
+                        }
 
                         sidebarFrame.forget()
                         self.login()
@@ -558,6 +588,8 @@ class App(ctk.CTk):
             sidebarFrame.rowconfigure(1, weight=1)
             sidebarFrame.columnconfigure(0, weight=1)
             sidebarFrame.grid(row=0, column=0, sticky="nsew")
+
+            self.refreshSessionData()
 
             contentGroup()
             footerGroup()
