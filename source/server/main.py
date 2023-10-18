@@ -5,7 +5,7 @@ from fastapi import FastAPI, Response, status
 from database import Database
 from utility import Utility
 
-from model.user import UserModel
+from model.user import UserModel, UserUpdateModel
 from model.login import LoginModel
 
 
@@ -161,7 +161,7 @@ def userCreate(response: Response, body: UserModel):
 
 
 @app.put("/api/user/update/{id}")
-def userUpdate(response: Response, id: int, body: UserModel):
+def userUpdate(response: Response, id: int, body: UserUpdateModel):
     try:
         user = database.getCollection("user")
         documentObject = user.find_one({"_id": id})
@@ -172,12 +172,8 @@ def userUpdate(response: Response, id: int, body: UserModel):
                 "username": body.username,
                 "email": body.email,
                 "level": body.level,
-                "isActive": body.isActive,
                 "updatedAt": datetime.datetime.now(),
             }
-
-            if body.password:
-                newDocument["password"] = Utility.encrypt(body.password)
 
             documentObject = user.find_one_and_update(
                 {"_id": id},
@@ -211,12 +207,12 @@ def userUpdate(response: Response, id: int, body: UserModel):
 
             if "username" in errorMessage:
                 return Utility.formatResponse(
-                    False, response.status_code, "Username already used", None
+                    False, response.status_code, "Username Already Used", None
                 )
 
             elif "email" in errorMessage:
                 return Utility.formatResponse(
-                    False, response.status_code, "Email already used", None
+                    False, response.status_code, "Email Already Used", None
                 )
 
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
