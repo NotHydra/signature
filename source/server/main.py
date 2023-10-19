@@ -91,6 +91,30 @@ def user(response: Response, body: UserPageModel):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.get("/api/user/count")
+def user(response: Response):
+    try:
+        response.status_code = status.HTTP_200_OK
+
+        user = database.getCollection("user")
+        return Utility.formatResponse(
+            True,
+            response.status_code,
+            "User Count",
+            {
+                "total": user.count_documents({}),
+                "user": user.count_documents({"role": "user"}),
+                "admin": user.count_documents({"role": "admin"}),
+            },
+        )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 @app.get("/api/user/{id}")
 def user(response: Response, id: int):
     try:
