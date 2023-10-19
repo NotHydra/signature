@@ -117,6 +117,21 @@ class App(ctk.CTk):
             message=message,
         )
 
+    def showConfirmation(self, message: str = "Are You Sure?") -> None:
+        return (
+            True
+            if CTkMessagebox(
+                corner_radius=8,
+                icon="question",
+                title="Confirmation",
+                message=message,
+                option_1="Yes",
+                option_2="No",
+            ).get()
+            == "Yes"
+            else False
+        )
+
     def line(self, master, row, column, weight=2):
         ctk.CTkFrame(
             master,
@@ -240,33 +255,38 @@ class App(ctk.CTk):
             descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
 
         def loginGroup():
-            def authenticate():
-                username = usernameLoginEntry.get()
-                password = passwordLoginEntry.get()
+            def submitButtonEvent():
+                if self.showConfirmation():
+                    username = usernameLoginEntry.get()
+                    password = passwordLoginEntry.get()
 
-                if username != "" and password != "":
-                    try:
-                        response = requests.post(
-                            "http://localhost:8000/api/auth/login",
-                            json={"username": username, "password": password},
-                        ).json()
+                    if username != "" and password != "":
+                        try:
+                            response = requests.post(
+                                "http://localhost:8000/api/auth/login",
+                                json={"username": username, "password": password},
+                            ).json()
 
-                        if response["success"] == True:
-                            self.showSuccess(response["message"])
+                            if response["success"] == True:
+                                self.showSuccess(response["message"])
 
-                            self.userObject["_id"] = response["data"]["_id"]
+                                self.userObject["_id"] = response["data"]["_id"]
 
-                            self.forgetFrame()
-                            self.home()
+                                self.forgetFrame()
+                                self.home()
 
-                        else:
-                            self.showError(response["message"])
+                            else:
+                                self.showError(response["message"])
 
-                    except:
-                        self.showError("Server Error")
+                        except:
+                            self.showError("Server Error")
 
-                else:
-                    self.showError("Please Insert Username and Password")
+                    else:
+                        self.showError("Please Insert Username and Password")
+
+            def exitButtonEvent():
+                if self.showConfirmation():
+                    self.quit()
 
             loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
             loginFrame.columnconfigure(0, weight=1)
@@ -314,7 +334,7 @@ class App(ctk.CTk):
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"], size=24, weight="bold"
                 ),
-                command=authenticate,
+                command=submitButtonEvent,
             )
             submitLoginButton.grid(row=3, column=0, pady=(0, 10))
 
@@ -328,7 +348,7 @@ class App(ctk.CTk):
                 ),
                 fg_color=Dependency.colorPalette["danger"],
                 hover_color=Dependency.colorPalette["danger-dark"],
-                command=lambda: self.quit(),
+                command=exitButtonEvent,
             )
             exitLoginButton.grid(row=4, column=0)
 
@@ -569,6 +589,10 @@ class App(ctk.CTk):
 
         def footerGroup():
             def logoutGroup():
+                def logoutButtonEvent():
+                    if self.showConfirmation():
+                        self.logoutEvent()
+
                 logoutSidebarButton = ctk.CTkButton(
                     footerSidebarFrame,
                     height=40,
@@ -589,7 +613,7 @@ class App(ctk.CTk):
                     text_color=Dependency.colorPalette["text"],
                     fg_color=Dependency.colorPalette["main"],
                     hover_color=Dependency.colorPalette["main-dark"],
-                    command=self.logoutEvent,
+                    command=logoutButtonEvent,
                 )
                 logoutSidebarButton.grid(row=0, column=0, sticky="ew")
 
