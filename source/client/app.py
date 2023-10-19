@@ -234,7 +234,7 @@ class App(ctk.CTk):
 
                             aboutFrame.grid_forget()
                             loginFrame.grid_forget()
-                            self.main()
+                            self.home()
 
                         else:
                             self.showError(response["message"])
@@ -321,13 +321,13 @@ class App(ctk.CTk):
 
             aboutFrame.grid_forget()
             loginFrame.grid_forget()
-            self.main()
+            self.home()
 
-    def sidebar(self):
+    def sidebar(self) -> None:
         def contentGroup():
             def brandButtonEvent():
                 sidebarFrame.grid_forget()
-                self.main()
+                self.home()
 
             def brandGroup():
                 brandSidebarButton = ctk.CTkButton(
@@ -399,7 +399,7 @@ class App(ctk.CTk):
             def itemGroup():
                 def homeButtonEvent():
                     sidebarFrame.grid_forget()
-                    self.main()
+                    self.home()
 
                 homeSidebarButton = ctk.CTkButton(
                     contentSidebarFrame,
@@ -616,7 +616,75 @@ class App(ctk.CTk):
         contentGroup()
         footerGroup()
 
-    def main(self) -> None:
+    def home(self) -> None:
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        self.sidebar()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        titleContentLabel = ctk.CTkLabel(
+            contentFrame,
+            text="HOME",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=36,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        )
+        titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
+
+        boxContentFrame = ctk.CTkFrame(
+            contentFrame,
+            height=80,
+            corner_radius=8,
+            fg_color="transparent",
+        )
+        boxContentFrame.rowconfigure(0, weight=1)
+        boxContentFrame.columnconfigure([0, 1, 2], weight=1)
+        boxContentFrame.grid(row=1, column=0, sticky="nsew")
+
+        boxButtonArray = [
+            {"id": 1, "icon": "user", "text": "Total\n10"},
+            {"id": 2, "icon": "user", "text": "User\n10"},
+            {"id": 3, "icon": "user", "text": "Admin\n10"},
+        ]
+
+        for boxButtonIndex, boxButtonObject in enumerate(boxButtonArray):
+            ctk.CTkButton(
+                boxContentFrame,
+                height=72,
+                image=ctk.CTkImage(
+                    Image.open(
+                        Utility.combinePath(
+                            Dependency.path,
+                            f"../asset/icon/{boxButtonObject['icon']}.png",
+                        )
+                    ),
+                    size=(40, 40),
+                ),
+                text=boxButtonObject["text"],
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"], size=20, weight="bold"
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["main"],
+                hover_color=Dependency.colorPalette["main-dark"],
+            ).grid(
+                row=0,
+                column=boxButtonIndex,
+                padx=(0, 20) if boxButtonIndex != (len(boxButtonArray) - 1) else 0,
+                sticky="nsew",
+            )
+
+    def user(self) -> None:
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=31)
