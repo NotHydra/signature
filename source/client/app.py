@@ -33,7 +33,7 @@ class Dependency:
         "danger-dark": "#8B0000",
     }
 
-    skip = True
+    skip = False
 
 
 class App(ctk.CTk):
@@ -58,20 +58,48 @@ class App(ctk.CTk):
 
         self.loading()
 
+    def forgetFrame(self) -> None:
+        for widget in self.winfo_children():
+            if "frame" in str(widget):
+                widget.grid_forget()
+
+    def logoutEvent(self) -> None:
+        self.userObject = {
+            "_id": 0,
+            "name": None,
+            "username": None,
+            "email": None,
+            "role": None,
+            "isActive": None,
+        }
+
+        self.forgetFrame()
+        self.login()
+
     def refreshSessionData(self):
-        response = requests.get(
-            f"http://localhost:8000/api/user/{self.userObject['_id']}"
-        ).json()
+        try:
+            response = requests.get(
+                f"http://localhost:8000/api/user/{self.userObject['_id']}"
+            ).json()
 
-        if response["success"] == True:
-            self.userObject["name"] = response["data"]["name"]
-            self.userObject["username"] = response["data"]["username"]
-            self.userObject["email"] = response["data"]["email"]
-            self.userObject["role"] = response["data"]["role"]
-            self.userObject["isActive"] = response["data"]["isActive"]
+            if response["success"] == True:
+                self.userObject["name"] = response["data"]["name"]
+                self.userObject["username"] = response["data"]["username"]
+                self.userObject["email"] = response["data"]["email"]
+                self.userObject["role"] = response["data"]["role"]
+                self.userObject["isActive"] = response["data"]["isActive"]
 
-        else:
-            self.showError(response["message"])
+                return True
+
+            else:
+                self.showError(response["message"])
+                self.logoutEvent()
+
+        except:
+            self.showError("Server Error")
+            self.logoutEvent()
+
+        return False
 
     def showError(self, message: str) -> None:
         CTkMessagebox(
@@ -326,7 +354,7 @@ class App(ctk.CTk):
     def sidebar(self) -> None:
         def contentGroup():
             def brandButtonEvent():
-                sidebarFrame.grid_forget()
+                self.forgetFrame()
                 self.home()
 
             def brandGroup():
@@ -398,7 +426,7 @@ class App(ctk.CTk):
 
             def itemGroup():
                 def homeButtonEvent():
-                    sidebarFrame.grid_forget()
+                    self.forgetFrame()
                     self.home()
 
                 homeSidebarButton = ctk.CTkButton(
@@ -439,7 +467,9 @@ class App(ctk.CTk):
                         ),
                         text="Upload",
                         font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=16, weight="bold"
+                            family=Dependency.fontFamily["main"],
+                            size=16,
+                            weight="bold",
                         ),
                         cursor="hand2",
                         corner_radius=0,
@@ -462,7 +492,9 @@ class App(ctk.CTk):
                         ),
                         text="Download",
                         font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=16, weight="bold"
+                            family=Dependency.fontFamily["main"],
+                            size=16,
+                            weight="bold",
                         ),
                         cursor="hand2",
                         corner_radius=0,
@@ -485,7 +517,9 @@ class App(ctk.CTk):
                         ),
                         text="Sign",
                         font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=16, weight="bold"
+                            family=Dependency.fontFamily["main"],
+                            size=16,
+                            weight="bold",
                         ),
                         cursor="hand2",
                         corner_radius=0,
@@ -509,7 +543,9 @@ class App(ctk.CTk):
                         ),
                         text="User",
                         font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=16, weight="bold"
+                            family=Dependency.fontFamily["main"],
+                            size=16,
+                            weight="bold",
                         ),
                         cursor="hand2",
                         corner_radius=0,
@@ -539,19 +575,6 @@ class App(ctk.CTk):
 
         def footerGroup():
             def logoutGroup():
-                def logoutButtonEvent():
-                    self.userObject = {
-                        "_id": 0,
-                        "name": None,
-                        "username": None,
-                        "email": None,
-                        "role": None,
-                        "isActive": None,
-                    }
-
-                    sidebarFrame.forget()
-                    self.login()
-
                 logoutSidebarButton = ctk.CTkButton(
                     footerSidebarFrame,
                     height=40,
@@ -572,7 +595,7 @@ class App(ctk.CTk):
                     text_color=Dependency.colorPalette["text"],
                     fg_color=Dependency.colorPalette["main"],
                     hover_color=Dependency.colorPalette["main-dark"],
-                    command=logoutButtonEvent,
+                    command=self.logoutEvent,
                 )
                 logoutSidebarButton.grid(row=0, column=0, sticky="ew")
 
@@ -611,101 +634,100 @@ class App(ctk.CTk):
         sidebarFrame.columnconfigure(0, weight=1)
         sidebarFrame.grid(row=0, column=0, sticky="nsew")
 
-        self.refreshSessionData()
-
         contentGroup()
         footerGroup()
 
     def home(self) -> None:
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=31)
+        if self.refreshSessionData():
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
 
-        self.sidebar()
+            self.sidebar()
 
-        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        contentFrame.columnconfigure(0, weight=1)
-        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.columnconfigure(0, weight=1)
+            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-        titleContentLabel = ctk.CTkLabel(
-            contentFrame,
-            text="HOME",
-            font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"],
-                size=36,
-                weight="bold",
-            ),
-            text_color=Dependency.colorPalette["text"],
-        )
-        titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
-
-        boxContentFrame = ctk.CTkFrame(
-            contentFrame,
-            height=80,
-            corner_radius=8,
-            fg_color="transparent",
-        )
-        boxContentFrame.rowconfigure(0, weight=1)
-        boxContentFrame.columnconfigure([0, 1, 2], weight=1)
-        boxContentFrame.grid(row=1, column=0, sticky="nsew")
-
-        try:
-            response = requests.get(
-                "http://localhost:8000/api/user/count",
-            ).json()
-
-        except:
-            pass
-
-        boxButtonArray = [
-            {
-                "id": 1,
-                "icon": "User Total",
-                "display": "Total",
-                "value": response["data"]["total"] | 0,
-            },
-            {
-                "id": 2,
-                "icon": "User",
-                "display": "User",
-                "value": response["data"]["user"] | 0,
-            },
-            {
-                "id": 3,
-                "icon": "Admin",
-                "display": "Admin",
-                "value": response["data"]["admin"] | 0,
-            },
-        ]
-
-        for boxButtonIndex, boxButtonObject in enumerate(boxButtonArray):
-            ctk.CTkButton(
-                boxContentFrame,
-                height=72,
-                image=ctk.CTkImage(
-                    Image.open(
-                        Utility.combinePath(
-                            Dependency.path,
-                            f"../asset/icon/{boxButtonObject['icon']}.png",
-                        )
-                    ),
-                    size=(40, 40),
-                ),
-                text=f"{boxButtonObject['display']}\n{boxButtonObject['value']}",
+            titleContentLabel = ctk.CTkLabel(
+                contentFrame,
+                text="HOME",
                 font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"], size=20, weight="bold"
+                    family=Dependency.fontFamily["main"],
+                    size=36,
+                    weight="bold",
                 ),
-                cursor="hand2",
-                corner_radius=8,
                 text_color=Dependency.colorPalette["text"],
-                fg_color=Dependency.colorPalette["main"],
-                hover_color=Dependency.colorPalette["main-dark"],
-            ).grid(
-                row=0,
-                column=boxButtonIndex,
-                padx=(0, 20) if boxButtonIndex != (len(boxButtonArray) - 1) else 0,
-                sticky="nsew",
             )
+            titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
+
+            boxContentFrame = ctk.CTkFrame(
+                contentFrame,
+                height=80,
+                corner_radius=8,
+                fg_color="transparent",
+            )
+            boxContentFrame.rowconfigure(0, weight=1)
+            boxContentFrame.columnconfigure([0, 1, 2], weight=1)
+            boxContentFrame.grid(row=1, column=0, sticky="nsew")
+
+            try:
+                response = requests.get(
+                    "http://localhost:8000/api/user/count",
+                ).json()
+
+            except:
+                pass
+
+            boxButtonArray = [
+                {
+                    "id": 1,
+                    "icon": "User Total",
+                    "display": "Total",
+                    "value": response["data"]["total"] | 0,
+                },
+                {
+                    "id": 2,
+                    "icon": "User",
+                    "display": "User",
+                    "value": response["data"]["user"] | 0,
+                },
+                {
+                    "id": 3,
+                    "icon": "Admin",
+                    "display": "Admin",
+                    "value": response["data"]["admin"] | 0,
+                },
+            ]
+
+            for boxButtonIndex, boxButtonObject in enumerate(boxButtonArray):
+                ctk.CTkButton(
+                    boxContentFrame,
+                    height=72,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path,
+                                f"../asset/icon/{boxButtonObject['icon']}.png",
+                            )
+                        ),
+                        size=(40, 40),
+                    ),
+                    text=f"{boxButtonObject['display']}\n{boxButtonObject['value']}",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=20, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=8,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                ).grid(
+                    row=0,
+                    column=boxButtonIndex,
+                    padx=(0, 20) if boxButtonIndex != (len(boxButtonArray) - 1) else 0,
+                    sticky="nsew",
+                )
 
     def user(self) -> None:
         self.rowconfigure(0, weight=1)
