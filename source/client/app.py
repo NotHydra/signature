@@ -151,7 +151,7 @@ class App(ctk.CTk):
                         self.update()
                         time.sleep(0.00001)
 
-                loadingFrame.grid_forget()
+                self.forgetFrame()
                 self.login()
 
             textLoadingFrame = ctk.CTkFrame(
@@ -209,8 +209,6 @@ class App(ctk.CTk):
 
     def login(self) -> None:
         def aboutGroup():
-            global aboutFrame
-
             aboutFrame = ctk.CTkFrame(
                 self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
             )
@@ -242,8 +240,6 @@ class App(ctk.CTk):
             descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
 
         def loginGroup():
-            global loginFrame
-
             def authenticate():
                 username = usernameLoginEntry.get()
                 password = passwordLoginEntry.get()
@@ -260,8 +256,7 @@ class App(ctk.CTk):
 
                             self.userObject["_id"] = response["data"]["_id"]
 
-                            aboutFrame.grid_forget()
-                            loginFrame.grid_forget()
+                            self.forgetFrame()
                             self.home()
 
                         else:
@@ -347,8 +342,7 @@ class App(ctk.CTk):
         if Dependency.skip:
             self.userObject["_id"] = 1
 
-            aboutFrame.grid_forget()
-            loginFrame.grid_forget()
+            self.forgetFrame()
             self.home()
 
     def sidebar(self) -> None:
