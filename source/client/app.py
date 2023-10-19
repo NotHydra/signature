@@ -323,111 +323,109 @@ class App(ctk.CTk):
             loginFrame.grid_forget()
             self.main()
 
-    def main(self) -> None:
-        def sidebar():
-            def contentGroup():
-                def brandButtonEvent():
+    def sidebar(self):
+        def contentGroup():
+            def brandButtonEvent():
+                sidebarFrame.grid_forget()
+                self.main()
+
+            def brandGroup():
+                brandSidebarButton = ctk.CTkButton(
+                    contentSidebarFrame,
+                    height=80,
+                    image=ctk.CTkImage(
+                        Image.open(Dependency.logoPath),
+                        size=(
+                            Dependency.logoResolution["width"] / 16,
+                            Dependency.logoResolution["height"] / 16,
+                        ),
+                    ),
+                    text="Signature",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=28, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                    command=brandButtonEvent,
+                )
+                brandSidebarButton.grid(row=0, column=0, sticky="ew")
+
+            def profileGroup():
+                profileSidebarFrame = ctk.CTkFrame(
+                    contentSidebarFrame, corner_radius=0, fg_color="transparent"
+                )
+                profileSidebarFrame.rowconfigure(0, weight=1)
+                profileSidebarFrame.columnconfigure([0, 1], weight=1)
+                profileSidebarFrame.grid(row=2, column=0, sticky="ew")
+
+                roleProfileImage = ctk.CTkLabel(
+                    profileSidebarFrame,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path,
+                                f"../asset/icon/{self.userObject['role']}.png",
+                            )
+                        ),
+                        size=(32, 32),
+                    ),
+                    text="",
+                )
+                roleProfileImage.grid(row=0, column=0, padx=10, rowspan=2, sticky="e")
+
+                usernameProfileLabel = ctk.CTkLabel(
+                    profileSidebarFrame,
+                    text=self.userObject["username"],
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=20, weight="bold"
+                    ),
+                    text_color=Dependency.colorPalette["text"],
+                )
+                usernameProfileLabel.grid(row=0, column=1, padx=10, sticky="w")
+
+                roleProfileLabel = ctk.CTkLabel(
+                    profileSidebarFrame,
+                    text=str(self.userObject["role"]).upper(),
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=12, weight="bold"
+                    ),
+                    text_color=Dependency.colorPalette["text"],
+                )
+                roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
+
+            def itemGroup():
+                def homeButtonEvent():
                     sidebarFrame.grid_forget()
                     self.main()
 
-                def brandGroup():
-                    brandSidebarButton = ctk.CTkButton(
-                        contentSidebarFrame,
-                        height=80,
-                        image=ctk.CTkImage(
-                            Image.open(Dependency.logoPath),
-                            size=(
-                                Dependency.logoResolution["width"] / 16,
-                                Dependency.logoResolution["height"] / 16,
-                            ),
+                homeSidebarButton = ctk.CTkButton(
+                    contentSidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/house.png"
+                            )
                         ),
-                        text="Signature",
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=28, weight="bold"
-                        ),
-                        cursor="hand2",
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"],
-                        hover_color=Dependency.colorPalette["main-dark"],
-                        command=brandButtonEvent,
-                    )
-                    brandSidebarButton.grid(row=0, column=0, sticky="ew")
+                        size=(20, 20),
+                    ),
+                    text="Home",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                    command=homeButtonEvent,
+                )
+                homeSidebarButton.grid(row=4, column=0, sticky="ew")
 
-                def profileGroup():
-                    profileSidebarFrame = ctk.CTkFrame(
-                        contentSidebarFrame, corner_radius=0, fg_color="transparent"
-                    )
-                    profileSidebarFrame.rowconfigure(0, weight=1)
-                    profileSidebarFrame.columnconfigure([0, 1], weight=1)
-                    profileSidebarFrame.grid(row=2, column=0, sticky="ew")
-
-                    roleProfileImage = ctk.CTkLabel(
-                        profileSidebarFrame,
-                        image=ctk.CTkImage(
-                            Image.open(
-                                Utility.combinePath(
-                                    Dependency.path,
-                                    f"../asset/icon/{self.userObject['role']}.png",
-                                )
-                            ),
-                            size=(32, 32),
-                        ),
-                        text="",
-                    )
-                    roleProfileImage.grid(
-                        row=0, column=0, padx=10, rowspan=2, sticky="e"
-                    )
-
-                    usernameProfileLabel = ctk.CTkLabel(
-                        profileSidebarFrame,
-                        text=self.userObject["username"],
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=20, weight="bold"
-                        ),
-                        text_color=Dependency.colorPalette["text"],
-                    )
-                    usernameProfileLabel.grid(row=0, column=1, padx=10, sticky="w")
-
-                    roleProfileLabel = ctk.CTkLabel(
-                        profileSidebarFrame,
-                        text=str(self.userObject["role"]).upper(),
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=12, weight="bold"
-                        ),
-                        text_color=Dependency.colorPalette["text"],
-                    )
-                    roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
-
-                def itemGroup():
-                    def homeButtonEvent():
-                        sidebarFrame.grid_forget()
-                        self.main()
-
-                    homeSidebarButton = ctk.CTkButton(
-                        contentSidebarFrame,
-                        height=40,
-                        image=ctk.CTkImage(
-                            Image.open(
-                                Utility.combinePath(
-                                    Dependency.path, "../asset/icon/house.png"
-                                )
-                            ),
-                            size=(20, 20),
-                        ),
-                        text="Home",
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=16, weight="bold"
-                        ),
-                        cursor="hand2",
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"],
-                        hover_color=Dependency.colorPalette["main-dark"],
-                        command=homeButtonEvent,
-                    )
-                    homeSidebarButton.grid(row=4, column=0, sticky="ew")
-
+                if self.userObject["role"] == "user":
                     uploadSidebarButton = ctk.CTkButton(
                         contentSidebarFrame,
                         height=40,
@@ -497,51 +495,19 @@ class App(ctk.CTk):
                     )
                     signSidebarButton.grid(row=7, column=0, sticky="ew")
 
-                contentSidebarFrame = ctk.CTkFrame(
-                    sidebarFrame,
-                    corner_radius=0,
-                    fg_color=Dependency.colorPalette["main"],
-                )
-                contentSidebarFrame.columnconfigure(0, weight=1)
-                contentSidebarFrame.grid(row=0, column=0, sticky="new")
-
-                brandGroup()
-
-                self.line(contentSidebarFrame, 1, 0)
-
-                profileGroup()
-
-                self.line(contentSidebarFrame, 3, 0)
-
-                itemGroup()
-
-            def footerGroup():
-                def logoutGroup():
-                    def logoutButtonEvent():
-                        self.userObject = {
-                            "_id": 0,
-                            "name": None,
-                            "username": None,
-                            "email": None,
-                            "role": None,
-                            "isActive": None,
-                        }
-
-                        sidebarFrame.forget()
-                        self.login()
-
-                    logoutSidebarButton = ctk.CTkButton(
-                        footerSidebarFrame,
+                elif self.userObject["role"] == "admin":
+                    userSidebarButton = ctk.CTkButton(
+                        contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
                             Image.open(
                                 Utility.combinePath(
-                                    Dependency.path, "../asset/icon/logout.png"
+                                    Dependency.path, "../asset/icon/user.png"
                                 )
                             ),
                             size=(20, 20),
                         ),
-                        text="Logout",
+                        text="User",
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"], size=16, weight="bold"
                         ),
@@ -550,55 +516,112 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
-                        command=logoutButtonEvent,
                     )
-                    logoutSidebarButton.grid(row=0, column=0, sticky="ew")
+                    userSidebarButton.grid(row=5, column=0, sticky="ew")
 
-                def copyrightGroup():
-                    copyrightSidebarLabel = ctk.CTkLabel(
-                        footerSidebarFrame,
-                        height=40,
-                        text="Copyright © 2023 Kelompok 8",
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=12, weight="bold"
-                        ),
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                    )
-                    copyrightSidebarLabel.grid(row=2, column=0, sticky="ew")
-
-                footerSidebarFrame = ctk.CTkFrame(
-                    sidebarFrame,
-                    corner_radius=0,
-                    fg_color=Dependency.colorPalette["main"],
-                )
-                footerSidebarFrame.columnconfigure(0, weight=1)
-                footerSidebarFrame.grid(row=1, column=0, sticky="sew")
-
-                logoutGroup()
-
-                self.line(footerSidebarFrame, 1, 0)
-
-                copyrightGroup()
-
-            sidebarFrame = ctk.CTkFrame(
-                self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+            contentSidebarFrame = ctk.CTkFrame(
+                sidebarFrame,
+                corner_radius=0,
+                fg_color=Dependency.colorPalette["main"],
             )
-            sidebarFrame.rowconfigure(0, weight=15)
-            sidebarFrame.rowconfigure(1, weight=1)
-            sidebarFrame.columnconfigure(0, weight=1)
-            sidebarFrame.grid(row=0, column=0, sticky="nsew")
+            contentSidebarFrame.columnconfigure(0, weight=1)
+            contentSidebarFrame.grid(row=0, column=0, sticky="new")
 
-            self.refreshSessionData()
+            brandGroup()
 
-            contentGroup()
-            footerGroup()
+            self.line(contentSidebarFrame, 1, 0)
 
+            profileGroup()
+
+            self.line(contentSidebarFrame, 3, 0)
+
+            itemGroup()
+
+        def footerGroup():
+            def logoutGroup():
+                def logoutButtonEvent():
+                    self.userObject = {
+                        "_id": 0,
+                        "name": None,
+                        "username": None,
+                        "email": None,
+                        "role": None,
+                        "isActive": None,
+                    }
+
+                    sidebarFrame.forget()
+                    self.login()
+
+                logoutSidebarButton = ctk.CTkButton(
+                    footerSidebarFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(
+                            Utility.combinePath(
+                                Dependency.path, "../asset/icon/logout.png"
+                            )
+                        ),
+                        size=(20, 20),
+                    ),
+                    text="Logout",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=16, weight="bold"
+                    ),
+                    cursor="hand2",
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=Dependency.colorPalette["main"],
+                    hover_color=Dependency.colorPalette["main-dark"],
+                    command=logoutButtonEvent,
+                )
+                logoutSidebarButton.grid(row=0, column=0, sticky="ew")
+
+            def copyrightGroup():
+                copyrightSidebarLabel = ctk.CTkLabel(
+                    footerSidebarFrame,
+                    height=40,
+                    text="Copyright © 2023 Kelompok 8",
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"], size=12, weight="bold"
+                    ),
+                    corner_radius=0,
+                    text_color=Dependency.colorPalette["text"],
+                )
+                copyrightSidebarLabel.grid(row=2, column=0, sticky="ew")
+
+            footerSidebarFrame = ctk.CTkFrame(
+                sidebarFrame,
+                corner_radius=0,
+                fg_color=Dependency.colorPalette["main"],
+            )
+            footerSidebarFrame.columnconfigure(0, weight=1)
+            footerSidebarFrame.grid(row=1, column=0, sticky="sew")
+
+            logoutGroup()
+
+            self.line(footerSidebarFrame, 1, 0)
+
+            copyrightGroup()
+
+        sidebarFrame = ctk.CTkFrame(
+            self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+        )
+        sidebarFrame.rowconfigure(0, weight=15)
+        sidebarFrame.rowconfigure(1, weight=1)
+        sidebarFrame.columnconfigure(0, weight=1)
+        sidebarFrame.grid(row=0, column=0, sticky="nsew")
+
+        self.refreshSessionData()
+
+        contentGroup()
+        footerGroup()
+
+    def main(self) -> None:
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=31)
 
-        sidebar()
+        self.sidebar()
 
 
 if __name__ == "__main__":
