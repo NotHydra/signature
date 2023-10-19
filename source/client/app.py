@@ -649,10 +649,33 @@ class App(ctk.CTk):
         boxContentFrame.columnconfigure([0, 1, 2], weight=1)
         boxContentFrame.grid(row=1, column=0, sticky="nsew")
 
+        try:
+            response = requests.get(
+                "http://localhost:8000/api/user/count",
+            ).json()
+
+        except:
+            pass
+
         boxButtonArray = [
-            {"id": 1, "icon": "user", "text": "Total\n10"},
-            {"id": 2, "icon": "user", "text": "User\n10"},
-            {"id": 3, "icon": "user", "text": "Admin\n10"},
+            {
+                "id": 1,
+                "icon": "User Total",
+                "display": "Total",
+                "value": response["data"]["total"] | 0,
+            },
+            {
+                "id": 2,
+                "icon": "User",
+                "display": "User",
+                "value": response["data"]["user"] | 0,
+            },
+            {
+                "id": 3,
+                "icon": "Admin",
+                "display": "Admin",
+                "value": response["data"]["admin"] | 0,
+            },
         ]
 
         for boxButtonIndex, boxButtonObject in enumerate(boxButtonArray):
@@ -668,7 +691,7 @@ class App(ctk.CTk):
                     ),
                     size=(40, 40),
                 ),
-                text=boxButtonObject["text"],
+                text=f"{boxButtonObject['display']}\n{boxButtonObject['value']}",
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"], size=20, weight="bold"
                 ),
