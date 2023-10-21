@@ -15,6 +15,9 @@ class Utility:
     def getAsset(file):
         return Utility.combinePath(Dependency.assetPath, file)
 
+    def getIcon(file):
+        return Utility.combinePath(Dependency.iconPath, file)
+
 
 class Dependency:
     title = "Signature"
@@ -25,7 +28,8 @@ class Dependency:
 
     path = os.path.dirname(os.path.realpath(__file__))
     assetPath = Utility.combinePath(path, "..\\asset")
-    iconPath = "./source/asset/icon.ico"
+    iconPath = Utility.combinePath(assetPath, "icon")
+    appIconPath = "./source/asset/icon.ico"
 
     fontFamily = {"main": "Montserrat"}
     colorPalette = {
@@ -56,7 +60,7 @@ class App(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
 
-        self.iconbitmap(Dependency.iconPath)
+        self.iconbitmap(Dependency.appIconPath)
         self.title(f"{Dependency.title} - {Dependency.subtitle}")
         self.geometry(
             f"{Dependency.resolution['width']}x{Dependency.resolution['height']}"
@@ -410,12 +414,7 @@ class App(ctk.CTk):
                 roleProfileImage = ctk.CTkLabel(
                     profileSidebarFrame,
                     image=ctk.CTkImage(
-                        Image.open(
-                            Utility.combinePath(
-                                Dependency.path,
-                                f"../asset/icon/{self.userObject['role']}.png",
-                            )
-                        ),
+                        Image.open(Utility.getIcon(f"{self.userObject['role']}.png")),
                         size=(32, 32),
                     ),
                     text="",
@@ -451,11 +450,7 @@ class App(ctk.CTk):
                     contentSidebarFrame,
                     height=40,
                     image=ctk.CTkImage(
-                        Image.open(
-                            Utility.combinePath(
-                                Dependency.path, "../asset/icon/house.png"
-                            )
-                        ),
+                        Image.open(Utility.getAsset("house.png")),
                         size=(20, 20),
                     ),
                     text="Home",
@@ -476,11 +471,7 @@ class App(ctk.CTk):
                         contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
-                            Image.open(
-                                Utility.combinePath(
-                                    Dependency.path, "../asset/icon/upload.png"
-                                )
-                            ),
+                            Image.open(Utility.getAsset("upload.png")),
                             size=(20, 20),
                         ),
                         text="Upload",
@@ -501,11 +492,7 @@ class App(ctk.CTk):
                         contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
-                            Image.open(
-                                Utility.combinePath(
-                                    Dependency.path, "../asset/icon/download.png"
-                                )
-                            ),
+                            Image.open(Utility.getIcon("download.png")),
                             size=(20, 20),
                         ),
                         text="Download",
@@ -526,11 +513,7 @@ class App(ctk.CTk):
                         contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
-                            Image.open(
-                                Utility.combinePath(
-                                    Dependency.path, "../asset/icon/sign.png"
-                                )
-                            ),
+                            Image.open(Utility.getIcon("sign.png")),
                             size=(20, 20),
                         ),
                         text="Sign",
@@ -557,11 +540,7 @@ class App(ctk.CTk):
                         contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
-                            Image.open(
-                                Utility.combinePath(
-                                    Dependency.path, "../asset/icon/user.png"
-                                )
-                            ),
+                            Image.open(Utility.getIcon("user.png")),
                             size=(20, 20),
                         ),
                         text="User",
@@ -607,11 +586,7 @@ class App(ctk.CTk):
                     footerSidebarFrame,
                     height=40,
                     image=ctk.CTkImage(
-                        Image.open(
-                            Utility.combinePath(
-                                Dependency.path, "../asset/icon/logout.png"
-                            )
-                        ),
+                        Image.open(Utility.getIcon("logout.png")),
                         size=(20, 20),
                     ),
                     text="Logout",
@@ -880,12 +855,7 @@ class App(ctk.CTk):
                             dataContainerFrame,
                             height=40,
                             image=ctk.CTkImage(
-                                Image.open(
-                                    Utility.combinePath(
-                                        Dependency.path,
-                                        f"../asset/icon/change.png",
-                                    )
-                                ),
+                                Image.open(Utility.getIcon("change.png")),
                                 size=(24, 24),
                             ),
                             text="Change",
@@ -911,12 +881,7 @@ class App(ctk.CTk):
                             dataContainerFrame,
                             height=40,
                             image=ctk.CTkImage(
-                                Image.open(
-                                    Utility.combinePath(
-                                        Dependency.path,
-                                        f"../asset/icon/password.png",
-                                    )
-                                ),
+                                Image.open(Utility.getIcon("password.png")),
                                 size=(24, 24),
                             ),
                             text="Change Password",
@@ -1040,12 +1005,7 @@ class App(ctk.CTk):
                     boxContentFrame,
                     height=72,
                     image=ctk.CTkImage(
-                        Image.open(
-                            Utility.combinePath(
-                                Dependency.path,
-                                f"../asset/icon/{boxButtonObject['icon']}.png",
-                            )
-                        ),
+                        Image.open(Utility.getIcon(f"{boxButtonObject['icon']}.png")),
                         size=(40, 40),
                     ),
                     text=f"{boxButtonObject['display']}\n{boxButtonObject['value']}",
