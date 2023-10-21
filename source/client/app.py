@@ -27,10 +27,14 @@ class Dependency:
     fontFamily = {"main": "Montserrat"}
     colorPalette = {
         "main": "#54A4F5",
-        "main-dark": "#2976C4",
+        "main-dark": "#3498DB",
         "text": "#FFFFFF",
-        "danger": "#DC143C",
-        "danger-dark": "#8B0000",
+        "success": "#2ECC71",
+        "success-dark": "#28B463",
+        "warning": "#F1C40F",
+        "warning-dark": "#D4AC0D",
+        "danger": "#E74C3C",
+        "danger-dark": "#CB4335",
     }
 
     skip = True
@@ -333,6 +337,8 @@ class App(ctk.CTk):
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"], size=24, weight="bold"
                 ),
+                fg_color=Dependency.colorPalette["main"],
+                hover_color=Dependency.colorPalette["main-dark"],
                 command=submitButtonEvent,
             )
             submitLoginButton.grid(row=3, column=0, pady=(0, 10))
@@ -662,44 +668,310 @@ class App(ctk.CTk):
 
     def home(self) -> None:
         if self.refreshSessionData():
+
+            def contentGroup():
+                def titleGroup():
+                    titleContentLabel = ctk.CTkLabel(
+                        contentFrame,
+                        text="HOME",
+                        font=ctk.CTkFont(
+                            family=Dependency.fontFamily["main"],
+                            size=36,
+                            weight="bold",
+                        ),
+                        text_color=Dependency.colorPalette["text"],
+                    )
+                    titleContentLabel.grid(row=0, column=0, pady=5, sticky="nsw")
+
+                def welcomeGroup():
+                    welcomeContentLabel = ctk.CTkLabel(
+                        contentFrame,
+                        height=40,
+                        corner_radius=8,
+                        text=f"Welcome to Signature {self.userObject['username']}!",
+                        font=ctk.CTkFont(
+                            family=Dependency.fontFamily["main"],
+                            size=20,
+                            weight="bold",
+                        ),
+                        text_color=Dependency.colorPalette["text"],
+                        fg_color=Dependency.colorPalette["main"],
+                    )
+                    welcomeContentLabel.grid(
+                        row=1, column=0, pady=(0, 20), sticky="nsew"
+                    )
+
+                def containerGroup():
+                    def titleGroup():
+                        titleContainerLabel = ctk.CTkLabel(
+                            containerContentFrame,
+                            text="Profile",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                        )
+                        titleContainerLabel.grid(
+                            row=0, column=0, padx=10, pady=10, sticky="nsw"
+                        )
+
+                    def dataGroup():
+                        dataContainerFrame = ctk.CTkFrame(
+                            containerContentFrame,
+                            corner_radius=0,
+                            fg_color="transparent",
+                        )
+                        dataContainerFrame.columnconfigure([0, 1], weight=1)
+                        dataContainerFrame.grid(
+                            row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
+                        )
+
+                        # Name
+                        nameDataLabel = ctk.CTkLabel(
+                            dataContainerFrame,
+                            text="Name",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                        )
+                        nameDataLabel.grid(
+                            row=0, column=0, padx=(0, 5), pady=(0, 5), sticky="nsw"
+                        )
+
+                        nameDataValue = ctk.StringVar()
+                        nameDataValue.set(self.userObject["name"])
+                        nameDataEntry = ctk.CTkEntry(
+                            dataContainerFrame,
+                            height=40,
+                            placeholder_text="name",
+                            textvariable=nameDataValue,
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                            placeholder_text_color=Dependency.colorPalette["text"],
+                            fg_color="transparent",
+                            border_color=Dependency.colorPalette["text"],
+                            state="disabled",
+                        )
+                        nameDataEntry.grid(
+                            row=1, column=0, padx=(0, 5), pady=(0, 10), sticky="nsew"
+                        )
+
+                        # Username
+                        usernameDataLabel = ctk.CTkLabel(
+                            dataContainerFrame,
+                            text="Username",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                        )
+                        usernameDataLabel.grid(
+                            row=0, column=1, padx=(0, 5), pady=(0, 5), sticky="nsw"
+                        )
+
+                        usernameDataValue = ctk.StringVar()
+                        usernameDataValue.set(self.userObject["username"])
+                        usernameDataEntry = ctk.CTkEntry(
+                            dataContainerFrame,
+                            height=40,
+                            placeholder_text="username",
+                            textvariable=usernameDataValue,
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                            placeholder_text_color=Dependency.colorPalette["text"],
+                            fg_color="transparent",
+                            border_color=Dependency.colorPalette["text"],
+                            state="disabled",
+                        )
+                        usernameDataEntry.grid(
+                            row=1, column=1, padx=(5, 0), pady=(0, 10), sticky="nsew"
+                        )
+
+                        # Email
+                        emailDataLabel = ctk.CTkLabel(
+                            dataContainerFrame,
+                            text="Email",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                        )
+                        emailDataLabel.grid(
+                            row=2, column=0, padx=(0, 5), pady=(0, 5), sticky="nsw"
+                        )
+
+                        emailDataValue = ctk.StringVar()
+                        emailDataValue.set(self.userObject["email"])
+                        emailDataEntry = ctk.CTkEntry(
+                            dataContainerFrame,
+                            height=40,
+                            placeholder_text="email",
+                            textvariable=emailDataValue,
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                            placeholder_text_color=Dependency.colorPalette["text"],
+                            fg_color="transparent",
+                            border_color=Dependency.colorPalette["text"],
+                            state="disabled",
+                        )
+                        emailDataEntry.grid(
+                            row=3, column=0, padx=(0, 5), pady=(0, 10), sticky="nsew"
+                        )
+
+                        # Role
+                        roleDataLabel = ctk.CTkLabel(
+                            dataContainerFrame,
+                            text="Role",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                        )
+                        roleDataLabel.grid(
+                            row=2, column=1, padx=(0, 5), pady=(0, 5), sticky="nsw"
+                        )
+
+                        roleDataValue = ctk.StringVar()
+                        roleDataValue.set(self.userObject["role"].capitalize())
+                        roleDataEntry = ctk.CTkEntry(
+                            dataContainerFrame,
+                            height=40,
+                            placeholder_text="role",
+                            textvariable=roleDataValue,
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            text_color=Dependency.colorPalette["text"],
+                            placeholder_text_color=Dependency.colorPalette["text"],
+                            fg_color="transparent",
+                            border_color=Dependency.colorPalette["text"],
+                            state="disabled",
+                        )
+                        roleDataEntry.grid(
+                            row=3, column=1, padx=(5, 0), pady=(0, 10), sticky="nsew"
+                        )
+
+                        # Button
+                        changeDataButton = ctk.CTkButton(
+                            dataContainerFrame,
+                            height=40,
+                            image=ctk.CTkImage(
+                                Image.open(
+                                    Utility.combinePath(
+                                        Dependency.path,
+                                        f"../asset/icon/change.png",
+                                    )
+                                ),
+                                size=(24, 24),
+                            ),
+                            text="Change",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            cursor="hand2",
+                            corner_radius=8,
+                            text_color=Dependency.colorPalette["text"],
+                            fg_color=Dependency.colorPalette["warning"],
+                            hover_color=Dependency.colorPalette["warning-dark"],
+                        )
+                        changeDataButton.grid(
+                            row=4,
+                            column=0,
+                            padx=(0, 5),
+                            sticky="nsew",
+                        )
+
+                        changePasswordDataButton = ctk.CTkButton(
+                            dataContainerFrame,
+                            height=40,
+                            image=ctk.CTkImage(
+                                Image.open(
+                                    Utility.combinePath(
+                                        Dependency.path,
+                                        f"../asset/icon/password.png",
+                                    )
+                                ),
+                                size=(24, 24),
+                            ),
+                            text="Change Password",
+                            font=ctk.CTkFont(
+                                family=Dependency.fontFamily["main"],
+                                size=20,
+                                weight="bold",
+                            ),
+                            cursor="hand2",
+                            corner_radius=8,
+                            text_color=Dependency.colorPalette["text"],
+                            fg_color=Dependency.colorPalette["danger"],
+                            hover_color=Dependency.colorPalette["danger-dark"],
+                        )
+                        changePasswordDataButton.grid(
+                            row=4,
+                            column=1,
+                            padx=(5, 0),
+                            sticky="nsew",
+                        )
+
+                    containerContentFrame = ctk.CTkFrame(
+                        contentFrame,
+                        corner_radius=8,
+                        fg_color=Dependency.colorPalette["main"],
+                    )
+                    containerContentFrame.columnconfigure(0, weight=1)
+                    containerContentFrame.grid(
+                        row=2, column=0, pady=(0, 20), sticky="nsew"
+                    )
+
+                    titleGroup()
+
+                    self.line(containerContentFrame, row=1, column=0)
+
+                    dataGroup()
+
+                contentFrame = ctk.CTkFrame(
+                    self, corner_radius=0, fg_color="transparent"
+                )
+                contentFrame.rowconfigure(2, weight=1)
+                contentFrame.columnconfigure(0, weight=1)
+                contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+                titleGroup()
+                welcomeGroup()
+                containerGroup()
+
             self.rowconfigure(0, weight=1)
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
 
             self.sidebar()
-
-            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-            contentFrame.columnconfigure(0, weight=1)
-            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
-
-            titleContentLabel = ctk.CTkLabel(
-                contentFrame,
-                text="HOME",
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"],
-                    size=36,
-                    weight="bold",
-                ),
-                text_color=Dependency.colorPalette["text"],
-            )
-            titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
-
-            welcomeContentLabel = ctk.CTkLabel(
-                contentFrame,
-                height=40,
-                corner_radius=8,
-                text=f"Welcome to Signature {self.userObject['username']}!",
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"],
-                    size=20,
-                    weight="bold",
-                ),
-                text_color=Dependency.colorPalette["text"],
-                fg_color=Dependency.colorPalette["main"],
-            )
-            welcomeContentLabel.grid(row=1, column=0, sticky="nsew")
-
-            
+            contentGroup()
 
     def user(self) -> None:
         if self.refreshSessionData():
