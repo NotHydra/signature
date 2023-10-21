@@ -446,89 +446,36 @@ class App(ctk.CTk):
                     self.forgetFrame()
                     self.home()
 
-                homeSidebarButton = ctk.CTkButton(
-                    contentSidebarFrame,
-                    height=40,
-                    image=ctk.CTkImage(
-                        Image.open(Utility.getIcon("house.png")),
-                        size=(20, 20),
-                    ),
-                    text="Home",
-                    font=ctk.CTkFont(
-                        family=Dependency.fontFamily["main"], size=16, weight="bold"
-                    ),
-                    cursor="hand2",
-                    corner_radius=0,
-                    text_color=Dependency.colorPalette["text"],
-                    fg_color=Dependency.colorPalette["main"],
-                    hover_color=Dependency.colorPalette["main-dark"],
-                    command=homeButtonEvent,
-                )
-                homeSidebarButton.grid(row=4, column=0, sticky="ew")
+                navigationItemArray = [
+                    {
+                        "id": 1,
+                        "title": "Home",
+                        "icon": "house",
+                        "event": homeButtonEvent,
+                    }
+                ]
 
                 if self.userObject["role"] == "user":
-                    uploadSidebarButton = ctk.CTkButton(
-                        contentSidebarFrame,
-                        height=40,
-                        image=ctk.CTkImage(
-                            Image.open(Utility.getIcon("upload.png")),
-                            size=(20, 20),
-                        ),
-                        text="Upload",
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"],
-                            size=16,
-                            weight="bold",
-                        ),
-                        cursor="hand2",
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"],
-                        hover_color=Dependency.colorPalette["main-dark"],
-                    )
-                    uploadSidebarButton.grid(row=5, column=0, sticky="ew")
-
-                    downloadSidebarButton = ctk.CTkButton(
-                        contentSidebarFrame,
-                        height=40,
-                        image=ctk.CTkImage(
-                            Image.open(Utility.getIcon("download.png")),
-                            size=(20, 20),
-                        ),
-                        text="Download",
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"],
-                            size=16,
-                            weight="bold",
-                        ),
-                        cursor="hand2",
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"],
-                        hover_color=Dependency.colorPalette["main-dark"],
-                    )
-                    downloadSidebarButton.grid(row=6, column=0, sticky="ew")
-
-                    signSidebarButton = ctk.CTkButton(
-                        contentSidebarFrame,
-                        height=40,
-                        image=ctk.CTkImage(
-                            Image.open(Utility.getIcon("sign.png")),
-                            size=(20, 20),
-                        ),
-                        text="Sign",
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"],
-                            size=16,
-                            weight="bold",
-                        ),
-                        cursor="hand2",
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"],
-                        hover_color=Dependency.colorPalette["main-dark"],
-                    )
-                    signSidebarButton.grid(row=7, column=0, sticky="ew")
+                    navigationItemArray = navigationItemArray + [
+                        {
+                            "id": 2,
+                            "title": "Upload",
+                            "icon": "upload",
+                            "event": lambda: None,
+                        },
+                        {
+                            "id": 3,
+                            "title": "Download",
+                            "icon": "download",
+                            "event": lambda: None,
+                        },
+                        {
+                            "id": 4,
+                            "title": "Sign",
+                            "icon": "sign",
+                            "event": lambda: None,
+                        },
+                    ]
 
                 elif self.userObject["role"] == "admin":
 
@@ -536,27 +483,38 @@ class App(ctk.CTk):
                         self.forgetFrame()
                         self.user()
 
-                    userSidebarButton = ctk.CTkButton(
+                    navigationItemArray = navigationItemArray + [
+                        {
+                            "id": 2,
+                            "title": "User",
+                            "icon": "user",
+                            "event": userButtonEvent,
+                        }
+                    ]
+
+                for navigationItemIndex, navigationItemObject in enumerate(
+                    navigationItemArray
+                ):
+                    ctk.CTkButton(
                         contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
-                            Image.open(Utility.getIcon("user.png")),
+                            Image.open(
+                                Utility.getIcon(f"{navigationItemObject['icon']}.png")
+                            ),
                             size=(20, 20),
                         ),
-                        text="User",
+                        text=navigationItemObject["title"],
                         font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"],
-                            size=16,
-                            weight="bold",
+                            family=Dependency.fontFamily["main"], size=16, weight="bold"
                         ),
                         cursor="hand2",
                         corner_radius=0,
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
-                        command=userButtonEvent,
-                    )
-                    userSidebarButton.grid(row=5, column=0, sticky="ew")
+                        command=navigationItemObject["event"],
+                    ).grid(row=(4 + navigationItemIndex), column=0, sticky="ew")
 
             contentSidebarFrame = ctk.CTkFrame(
                 sidebarFrame,
