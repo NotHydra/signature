@@ -57,7 +57,7 @@ class App(ctk.CTk):
         "isActive": None,
     }
 
-    navigationId = 1
+    sidebarId = 1
 
     def __init__(self) -> None:
         super().__init__()
@@ -376,6 +376,28 @@ class App(ctk.CTk):
             self.home()
 
     def sidebar(self) -> None:
+        def sidebarButton(master, item, start=0, index=0, highlight=False):
+            ctk.CTkButton(
+                master,
+                height=40,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon(f"{item['icon']}.png")),
+                    size=(20, 20),
+                ),
+                text=item["title"],
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"], size=16, weight="bold"
+                ),
+                cursor="hand2",
+                corner_radius=0,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["main-dark"]
+                if (highlight and self.sidebarId == item["id"])
+                else Dependency.colorPalette["main"],
+                hover_color=Dependency.colorPalette["main-dark"],
+                command=item["event"],
+            ).grid(row=(start + index), column=0, sticky="ew")
+
         def contentGroup():
             def brandButtonEvent():
                 self.forgetFrame()
@@ -445,12 +467,10 @@ class App(ctk.CTk):
 
             def itemGroup():
                 def homeButtonEvent():
-                    self.navigationId = 1
-
                     self.forgetFrame()
                     self.home()
 
-                navigationItemArray = [
+                sidebarItemArray = [
                     {
                         "id": 1,
                         "title": "Home",
@@ -460,7 +480,7 @@ class App(ctk.CTk):
                 ]
 
                 if self.userObject["role"] == "user":
-                    navigationItemArray = navigationItemArray + [
+                    sidebarItemArray = sidebarItemArray + [
                         {
                             "id": 2,
                             "title": "Upload",
@@ -484,12 +504,10 @@ class App(ctk.CTk):
                 elif self.userObject["role"] == "admin":
 
                     def userButtonEvent():
-                        self.navigationId = 2
-
                         self.forgetFrame()
                         self.user()
 
-                    navigationItemArray = navigationItemArray + [
+                    sidebarItemArray = sidebarItemArray + [
                         {
                             "id": 2,
                             "title": "User",
@@ -498,31 +516,14 @@ class App(ctk.CTk):
                         }
                     ]
 
-                for navigationItemIndex, navigationItemObject in enumerate(
-                    navigationItemArray
-                ):
-                    ctk.CTkButton(
+                for sidebarItemIndex, sidebarItemObject in enumerate(sidebarItemArray):
+                    sidebarButton(
                         contentSidebarFrame,
-                        height=40,
-                        image=ctk.CTkImage(
-                            Image.open(
-                                Utility.getIcon(f"{navigationItemObject['icon']}.png")
-                            ),
-                            size=(20, 20),
-                        ),
-                        text=navigationItemObject["title"],
-                        font=ctk.CTkFont(
-                            family=Dependency.fontFamily["main"], size=16, weight="bold"
-                        ),
-                        cursor="hand2",
-                        corner_radius=0,
-                        text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"]
-                        if self.navigationId != navigationItemObject["id"]
-                        else Dependency.colorPalette["main-dark"],
-                        hover_color=Dependency.colorPalette["main-dark"],
-                        command=navigationItemObject["event"],
-                    ).grid(row=(4 + navigationItemIndex), column=0, sticky="ew")
+                        sidebarItemObject,
+                        4,
+                        sidebarItemIndex,
+                        True,
+                    )
 
             contentSidebarFrame = ctk.CTkFrame(
                 sidebarFrame,
@@ -548,25 +549,15 @@ class App(ctk.CTk):
                     if self.showConfirmation():
                         self.logoutEvent()
 
-                logoutSidebarButton = ctk.CTkButton(
+                sidebarButton(
                     footerSidebarFrame,
-                    height=40,
-                    image=ctk.CTkImage(
-                        Image.open(Utility.getIcon("logout.png")),
-                        size=(20, 20),
-                    ),
-                    text="Logout",
-                    font=ctk.CTkFont(
-                        family=Dependency.fontFamily["main"], size=16, weight="bold"
-                    ),
-                    cursor="hand2",
-                    corner_radius=0,
-                    text_color=Dependency.colorPalette["text"],
-                    fg_color=Dependency.colorPalette["main"],
-                    hover_color=Dependency.colorPalette["main-dark"],
-                    command=logoutButtonEvent,
+                    {
+                        "id": 1,
+                        "title": "Logout",
+                        "icon": "logout",
+                        "event": logoutButtonEvent,
+                    },
                 )
-                logoutSidebarButton.grid(row=0, column=0, sticky="ew")
 
             def copyrightGroup():
                 copyrightSidebarLabel = ctk.CTkLabel(
@@ -896,6 +887,8 @@ class App(ctk.CTk):
                 welcomeGroup()
                 containerGroup()
 
+            self.sidebarId = 1
+
             self.rowconfigure(0, weight=1)
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
@@ -905,6 +898,8 @@ class App(ctk.CTk):
 
     def user(self) -> None:
         if self.refreshSessionData():
+            self.sidebarId = 2
+
             self.rowconfigure(0, weight=1)
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
