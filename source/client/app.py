@@ -684,6 +684,23 @@ class App(ctk.CTk):
             )
             titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
 
+            welcomeContentLabel = ctk.CTkLabel(
+                contentFrame,
+                height=40,
+                corner_radius=8,
+                text=f"Welcome to Signature {self.userObject['username']}!",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=20,
+                    weight="bold",
+                ),
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["main"],
+            )
+            welcomeContentLabel.grid(row=1, column=0, sticky="nsew")
+
+            
+
     def user(self) -> None:
         if self.refreshSessionData():
             self.rowconfigure(0, weight=1)
