@@ -12,6 +12,9 @@ class Utility:
     def combinePath(base: str, path: str) -> str:
         return os.path.join(base, path)
 
+    def getAsset(file):
+        return Utility.combinePath(Dependency.assetPath, file)
+
 
 class Dependency:
     title = "Signature"
@@ -21,8 +24,8 @@ class Dependency:
     logoResolution = {"width": 639, "height": 799}
 
     path = os.path.dirname(os.path.realpath(__file__))
+    assetPath = Utility.combinePath(path, "..\\asset")
     iconPath = "./source/asset/icon.ico"
-    logoPath = Utility.combinePath(path, "..\\asset\\logo.png")
 
     fontFamily = {"main": "Montserrat"}
     colorPalette = {
@@ -37,7 +40,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = True
+    skip = False
 
 
 class App(ctk.CTk):
@@ -149,7 +152,7 @@ class App(ctk.CTk):
             logoLoadingImage = ctk.CTkLabel(
                 loadingFrame,
                 image=ctk.CTkImage(
-                    Image.open(Dependency.logoPath),
+                    Image.open(Utility.getAsset("logo.png")),
                     size=(
                         Dependency.logoResolution["width"] / 4,
                         Dependency.logoResolution["height"] / 4,
@@ -238,17 +241,13 @@ class App(ctk.CTk):
             descriptionAboutLabel = ctk.CTkLabel(
                 aboutFrame,
                 image=ctk.CTkImage(
-                    Image.open(
-                        Utility.combinePath(
-                            Dependency.path, "../asset/logo-opacity.png"
-                        )
-                    ),
+                    Image.open(Utility.getAsset("logo-opacity.png")),
                     size=(
                         Dependency.logoResolution["width"] / 2,
                         Dependency.logoResolution["height"] / 2,
                     ),
                 ),
-                text="SIGNATURE\ndesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
+                text="SIGNATURE\nDesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"],
                     size=20,
@@ -381,7 +380,7 @@ class App(ctk.CTk):
                     contentSidebarFrame,
                     height=80,
                     image=ctk.CTkImage(
-                        Image.open(Dependency.logoPath),
+                        Image.open(Utility.getAsset("logo.png")),
                         size=(
                             Dependency.logoResolution["width"] / 16,
                             Dependency.logoResolution["height"] / 16,
