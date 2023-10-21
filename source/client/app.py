@@ -450,7 +450,7 @@ class App(ctk.CTk):
                     contentSidebarFrame,
                     height=40,
                     image=ctk.CTkImage(
-                        Image.open(Utility.getAsset("house.png")),
+                        Image.open(Utility.getIcon("house.png")),
                         size=(20, 20),
                     ),
                     text="Home",
@@ -471,7 +471,7 @@ class App(ctk.CTk):
                         contentSidebarFrame,
                         height=40,
                         image=ctk.CTkImage(
-                            Image.open(Utility.getAsset("upload.png")),
+                            Image.open(Utility.getIcon("upload.png")),
                             size=(20, 20),
                         ),
                         text="Upload",
@@ -982,19 +982,19 @@ class App(ctk.CTk):
             boxButtonArray = [
                 {
                     "id": 1,
-                    "icon": "User Total",
+                    "icon": "user-total",
                     "display": "Total",
                     "value": response["data"]["total"] | 0,
                 },
                 {
                     "id": 2,
-                    "icon": "User",
+                    "icon": "user",
                     "display": "User",
                     "value": response["data"]["user"] | 0,
                 },
                 {
                     "id": 3,
-                    "icon": "Admin",
+                    "icon": "admin",
                     "display": "Admin",
                     "value": response["data"]["admin"] | 0,
                 },
