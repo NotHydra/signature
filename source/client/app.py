@@ -543,6 +543,10 @@ class App(ctk.CTk):
                     signSidebarButton.grid(row=7, column=0, sticky="ew")
 
                 elif self.userObject["role"] == "admin":
+                    def userButtonEvent():
+                        self.forgetFrame()
+                        self.user()
+
                     userSidebarButton = ctk.CTkButton(
                         contentSidebarFrame,
                         height=40,
@@ -565,6 +569,7 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
+                        command=userButtonEvent
                     )
                     userSidebarButton.grid(row=5, column=0, sticky="ew")
 
@@ -678,6 +683,30 @@ class App(ctk.CTk):
             )
             titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
 
+    def user(self) -> None:
+        if self.refreshSessionData():
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
+
+            self.sidebar()
+
+            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.columnconfigure(0, weight=1)
+            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+            titleContentLabel = ctk.CTkLabel(
+                contentFrame,
+                text="USER",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=36,
+                    weight="bold",
+                ),
+                text_color=Dependency.colorPalette["text"],
+            )
+            titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
+
             boxContentFrame = ctk.CTkFrame(
                 contentFrame,
                 height=80,
@@ -745,13 +774,6 @@ class App(ctk.CTk):
                     padx=(0, 20) if boxButtonIndex != (len(boxButtonArray) - 1) else 0,
                     sticky="nsew",
                 )
-
-    def user(self) -> None:
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=31)
-
-        self.sidebar()
 
 
 if __name__ == "__main__":
