@@ -24,6 +24,6 @@ class Utility:
     def checkEmail(email: str) -> bool:
         if re.match(r"^[\w\.-]+@[\w\.-]+\.\w+", email):
             return True
-        
+
         else:
             return False

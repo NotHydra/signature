@@ -256,33 +256,32 @@ class App(ctk.CTk):
 
         def loginGroup():
             def submitButtonEvent():
-                if self.showConfirmation():
-                    username = usernameLoginEntry.get()
-                    password = passwordLoginEntry.get()
+                username = usernameLoginEntry.get()
+                password = passwordLoginEntry.get()
 
-                    if username != "" and password != "":
-                        try:
-                            response = requests.post(
-                                "http://localhost:8000/api/auth/login",
-                                json={"username": username, "password": password},
-                            ).json()
+                if username != "" and password != "":
+                    try:
+                        response = requests.post(
+                            "http://localhost:8000/api/auth/login",
+                            json={"username": username, "password": password},
+                        ).json()
 
-                            if response["success"] == True:
-                                self.showSuccess(response["message"])
+                        if response["success"] == True:
+                            self.showSuccess(response["message"])
 
-                                self.userObject["_id"] = response["data"]["_id"]
+                            self.userObject["_id"] = response["data"]["_id"]
 
-                                self.forgetFrame()
-                                self.home()
+                            self.forgetFrame()
+                            self.home()
 
-                            else:
-                                self.showError(response["message"])
+                        else:
+                            self.showError(response["message"])
 
-                        except:
-                            self.showError("Server Error")
+                    except:
+                        self.showError("Server Error")
 
-                    else:
-                        self.showError("Please Insert Username and Password")
+                else:
+                    self.showError("Please Insert Username and Password")
 
             def exitButtonEvent():
                 if self.showConfirmation():
