@@ -33,7 +33,7 @@ class Dependency:
         "danger-dark": "#8B0000",
     }
 
-    skip = False
+    skip = True
 
 
 class App(ctk.CTk):
@@ -543,6 +543,7 @@ class App(ctk.CTk):
                     signSidebarButton.grid(row=7, column=0, sticky="ew")
 
                 elif self.userObject["role"] == "admin":
+
                     def userButtonEvent():
                         self.forgetFrame()
                         self.user()
@@ -569,7 +570,7 @@ class App(ctk.CTk):
                         text_color=Dependency.colorPalette["text"],
                         fg_color=Dependency.colorPalette["main"],
                         hover_color=Dependency.colorPalette["main-dark"],
-                        command=userButtonEvent
+                        command=userButtonEvent,
                     )
                     userSidebarButton.grid(row=5, column=0, sticky="ew")
 
@@ -763,11 +764,10 @@ class App(ctk.CTk):
                     font=ctk.CTkFont(
                         family=Dependency.fontFamily["main"], size=20, weight="bold"
                     ),
-                    cursor="hand2",
                     corner_radius=8,
                     text_color=Dependency.colorPalette["text"],
                     fg_color=Dependency.colorPalette["main"],
-                    hover_color=Dependency.colorPalette["main-dark"],
+                    hover_color=Dependency.colorPalette["main"],
                 ).grid(
                     row=0,
                     column=boxButtonIndex,
