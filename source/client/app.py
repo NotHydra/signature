@@ -57,6 +57,8 @@ class App(ctk.CTk):
         "isActive": None,
     }
 
+    navigationId = 1
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -443,6 +445,8 @@ class App(ctk.CTk):
 
             def itemGroup():
                 def homeButtonEvent():
+                    self.navigationId = 1
+
                     self.forgetFrame()
                     self.home()
 
@@ -480,6 +484,8 @@ class App(ctk.CTk):
                 elif self.userObject["role"] == "admin":
 
                     def userButtonEvent():
+                        self.navigationId = 2
+
                         self.forgetFrame()
                         self.user()
 
@@ -511,7 +517,9 @@ class App(ctk.CTk):
                         cursor="hand2",
                         corner_radius=0,
                         text_color=Dependency.colorPalette["text"],
-                        fg_color=Dependency.colorPalette["main"],
+                        fg_color=Dependency.colorPalette["main"]
+                        if self.navigationId != navigationItemObject["id"]
+                        else Dependency.colorPalette["main-dark"],
                         hover_color=Dependency.colorPalette["main-dark"],
                         command=navigationItemObject["event"],
                     ).grid(row=(4 + navigationItemIndex), column=0, sticky="ew")
