@@ -2,7 +2,7 @@ import customtkinter as ctk
 
 from PIL import Image
 
-from environment import Utility, Dependency
+from module import Utility, Dependency
 
 
 class Widget:
@@ -39,8 +39,8 @@ class Widget:
 
         def contentGroup():
             def brandButtonEvent():
-                self.forgetFrameEvent()
-                self.home()
+                self.forgetCall()
+                self.homeFrame()
 
             def brandGroup():
                 brandSidebarButton = ctk.CTkButton(
@@ -106,8 +106,8 @@ class Widget:
 
             def itemGroup():
                 def homeButtonEvent():
-                    self.forgetFrameEvent()
-                    self.home()
+                    self.forgetCall()
+                    self.homeFrame()
 
                 sidebarItemArray = [
                     {
@@ -143,8 +143,8 @@ class Widget:
                 elif self.userObject["role"] == "admin":
 
                     def userButtonEvent():
-                        self.forgetFrameEvent()
-                        self.user()
+                        self.forgetCall()
+                        self.userFrame()
 
                     sidebarItemArray = sidebarItemArray + [
                         {
@@ -185,8 +185,8 @@ class Widget:
         def footerGroup():
             def logoutGroup():
                 def logoutButtonEvent():
-                    if self.showConfirmation():
-                        self.logoutEvent()
+                    if self.confirmationMessage():
+                        self.logoutCall()
 
                 sidebarButton(
                     footerSidebarFrame,
@@ -236,10 +236,10 @@ class Widget:
         contentGroup()
         footerGroup()
 
-    def titleContentWidget(self, master, text) -> None:
+    def titleContentWidget(self, master, title) -> None:
         titleContentLabel = ctk.CTkLabel(
             master,
-            text=text,
+            text=title,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=36,
@@ -249,103 +249,133 @@ class Widget:
         )
         titleContentLabel.grid(row=0, column=0, pady=5, sticky="nsw")
 
-    def dataContainerWidget(self, master, row, entryArray, buttonArray) -> None:
-        def entry(text, placeholder, value, state, row, column):
-            ctk.CTkLabel(
-                dataContainerFrame,
-                text=text,
+    def containerWidget(self, master, row, title, entryArray, buttonArray):
+        def titleContainerGroup():
+            titleContainerLabel = ctk.CTkLabel(
+                containerContentFrame,
+                text=title,
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"],
                     size=20,
                     weight="bold",
                 ),
                 text_color=Dependency.colorPalette["text"],
-            ).grid(
-                row=0 + row,
-                column=column,
-                padx=(0, 5) if column == 0 else (5, 0),
-                pady=(0, 5),
-                sticky="nsw",
             )
+            titleContainerLabel.grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
 
-            entryValue = ctk.StringVar()
-            entryValue.set(value)
-            ctk.CTkEntry(
-                dataContainerFrame,
-                height=40,
-                placeholder_text=placeholder,
-                textvariable=entryValue,
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"],
-                    size=20,
-                    weight="bold",
-                ),
-                text_color=Dependency.colorPalette["text"],
-                placeholder_text_color=Dependency.colorPalette["text"],
-                fg_color="transparent",
-                border_color=Dependency.colorPalette["text"],
-                state="normal" if state else "disabled",
-            ).grid(
-                row=1 + row,
-                column=column,
-                padx=(0, 5) if column == 0 else (5, 0),
-                pady=(0, 10),
-                sticky="nsew",
-            )
-
-        def button(text, icon, color, hover, event, row):
-            ctk.CTkButton(
-                dataContainerFrame,
-                height=40,
-                image=ctk.CTkImage(
-                    Image.open(Utility.getIcon(f"{icon}.png")),
-                    size=(24, 24),
-                ),
-                text=text,
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"],
-                    size=20,
-                    weight="bold",
-                ),
-                cursor="hand2",
-                corner_radius=8,
-                text_color=Dependency.colorPalette["text"],
-                fg_color=color,
-                hover_color=hover,
-                event=event,
-            ).grid(
-                row=row,
-                column=0,
-                columnspan=2,
-                pady=(0, 10),
-                sticky="nsew",
-            )
-
-        dataContainerFrame = ctk.CTkFrame(
-            master,
-            corner_radius=0,
-            fg_color="transparent",
-        )
-        dataContainerFrame.columnconfigure([0, 1], weight=1)
-        dataContainerFrame.grid(row=row, column=0, padx=10, pady=(5, 0), sticky="nsew")
-
-        for entryRowIndex, entryRowObject in enumerate(entryArray):
-            for entryIndex, entryObject in enumerate(entryRowObject["entry"]):
-                entry(
-                    entryObject["text"],
-                    entryObject["placeholder"],
-                    entryObject["value"],
-                    entryObject["state"],
-                    entryRowIndex * 2,
-                    entryIndex % 2,
+        def dataContainerGroup() -> None:
+            def entry(text, placeholder, value, state, row, column):
+                ctk.CTkLabel(
+                    dataContainerFrame,
+                    text=text,
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"],
+                        size=20,
+                        weight="bold",
+                    ),
+                    text_color=Dependency.colorPalette["text"],
+                ).grid(
+                    row=0 + row,
+                    column=column,
+                    padx=(0, 5) if column == 0 else (5, 0),
+                    pady=(0, 5),
+                    sticky="nsw",
                 )
 
-        for buttonIndex, buttonObject in enumerate(buttonArray):
-            button(
-                buttonObject["text"],
-                buttonObject["icon"],
-                buttonObject["color"],
-                buttonObject["hover"],
-                buttonObject["event"],
-                buttonIndex + (len(entryArray) * 2),
+                entryValue = ctk.StringVar()
+                entryValue.set(value)
+                ctk.CTkEntry(
+                    dataContainerFrame,
+                    height=40,
+                    placeholder_text=placeholder,
+                    textvariable=entryValue,
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"],
+                        size=20,
+                        weight="bold",
+                    ),
+                    text_color=Dependency.colorPalette["text"],
+                    placeholder_text_color=Dependency.colorPalette["text"],
+                    fg_color="transparent",
+                    border_color=Dependency.colorPalette["text"],
+                    state="normal" if state else "disabled",
+                ).grid(
+                    row=1 + row,
+                    column=column,
+                    padx=(0, 5) if column == 0 else (5, 0),
+                    pady=(0, 10),
+                    sticky="nsew",
+                )
+
+            def button(text, icon, color, hover, event, row):
+                ctk.CTkButton(
+                    dataContainerFrame,
+                    height=40,
+                    image=ctk.CTkImage(
+                        Image.open(Utility.getIcon(f"{icon}.png")),
+                        size=(24, 24),
+                    ),
+                    text=text,
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"],
+                        size=20,
+                        weight="bold",
+                    ),
+                    cursor="hand2",
+                    corner_radius=8,
+                    text_color=Dependency.colorPalette["text"],
+                    fg_color=color,
+                    hover_color=hover,
+                    command=event,
+                ).grid(
+                    row=row,
+                    column=0,
+                    columnspan=2,
+                    pady=(0, 10),
+                    sticky="nsew",
+                )
+
+            dataContainerFrame = ctk.CTkFrame(
+                containerContentFrame,
+                corner_radius=0,
+                fg_color="transparent",
             )
+            dataContainerFrame.columnconfigure([0, 1], weight=1)
+            dataContainerFrame.grid(
+                row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
+            )
+
+            for entryRowIndex, entryRowObject in enumerate(entryArray):
+                for entryIndex, entryObject in enumerate(entryRowObject["entry"]):
+                    entry(
+                        entryObject["text"],
+                        entryObject["placeholder"],
+                        entryObject["value"],
+                        entryObject["state"],
+                        entryRowIndex * 2,
+                        entryIndex % 2,
+                    )
+
+            for buttonIndex, buttonObject in enumerate(buttonArray):
+                button(
+                    buttonObject["text"],
+                    buttonObject["icon"],
+                    buttonObject["color"],
+                    buttonObject["hover"],
+                    buttonObject["event"],
+                    buttonIndex + (len(entryArray) * 2),
+                )
+
+        containerContentFrame = ctk.CTkFrame(
+            master,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=row, column=0, pady=(0, 20), sticky="nsew")
+
+        titleContainerGroup()
+
+        self.lineWidget(containerContentFrame, row=1, column=0)
+
+        dataContainerGroup()

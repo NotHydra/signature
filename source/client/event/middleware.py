@@ -18,11 +18,11 @@ class Middleware:
                 return True
 
             else:
-                self.showError(response["message"])
-                self.logoutEvent()
+                self.errorMessage(response["message"])
+                self.logoutCall()
 
         except:
-            self.showError("Server Error")
-            self.logoutEvent()
+            self.errorMessage("Server Error")
+            self.logoutCall()
 
         return False

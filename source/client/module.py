@@ -37,4 +37,4 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = False
+    skip = True

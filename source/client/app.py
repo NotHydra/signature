@@ -10,7 +10,7 @@ from component.widget import Widget
 from event.call import Call
 from event.middleware import Middleware
 
-from environment import Dependency, Utility
+from module import Dependency, Utility
 
 
 class App(ctk.CTk, Message, Widget, Call, Middleware):
@@ -153,12 +153,17 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
                 password = passwordLoginEntry.get()
 
                 if username != "" and password != "":
+                    response = None
                     try:
                         response = requests.post(
                             "http://localhost:8000/api/auth/login",
                             json={"username": username, "password": password},
                         ).json()
 
+                    except:
+                        self.errorMessage("Server Error")
+
+                    if (response != None):
                         if response["success"] == True:
                             self.successMessage(response["message"])
 
@@ -169,9 +174,6 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
 
                         else:
                             self.errorMessage(response["message"])
-
-                    except:
-                        self.errorMessage("Server Error")
 
                 else:
                     self.errorMessage("Please Insert Username and Password")
@@ -281,98 +283,11 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
                         row=1, column=0, pady=(0, 20), sticky="nsew"
                     )
 
-                def containerGroup():
-                    def titleGroup():
-                        titleContainerLabel = ctk.CTkLabel(
-                            containerContentFrame,
-                            text="Profile",
-                            font=ctk.CTkFont(
-                                family=Dependency.fontFamily["main"],
-                                size=20,
-                                weight="bold",
-                            ),
-                            text_color=Dependency.colorPalette["text"],
-                        )
-                        titleContainerLabel.grid(
-                            row=0, column=0, padx=10, pady=10, sticky="nsw"
-                        )
+                def changeButtonEvent():
+                    pass
 
-                    containerContentFrame = ctk.CTkFrame(
-                        contentFrame,
-                        corner_radius=8,
-                        fg_color=Dependency.colorPalette["main"],
-                    )
-                    containerContentFrame.columnconfigure(0, weight=1)
-                    containerContentFrame.grid(
-                        row=2, column=0, pady=(0, 20), sticky="nsew"
-                    )
-
-                    titleGroup()
-
-                    self.lineWidget(containerContentFrame, row=1, column=0)
-
-                    self.dataContainerWidget(
-                        containerContentFrame,
-                        2,
-                        [
-                            {
-                                "id": 1,
-                                "entry": [
-                                    {
-                                        "id": 1,
-                                        "text": "Name",
-                                        "placeholder": "name",
-                                        "value": self.userObject["name"],
-                                        "state": False,
-                                    },
-                                    {
-                                        "id": 2,
-                                        "text": "Username",
-                                        "placeholder": "username",
-                                        "value": self.userObject["username"],
-                                        "state": False,
-                                    },
-                                ],
-                            },
-                            {
-                                "id": 2,
-                                "entry": [
-                                    {
-                                        "id": 1,
-                                        "text": "Email",
-                                        "placeholder": "email",
-                                        "value": self.userObject["email"],
-                                        "state": False,
-                                    },
-                                    {
-                                        "id": 2,
-                                        "text": "Role",
-                                        "placeholder": "role",
-                                        "value": self.userObject["role"],
-                                        "state": False,
-                                    },
-                                ],
-                            },
-                        ],
-                        [
-                            {
-                                "id": 1,
-                                "text": "Change",
-                                "icon": "change",
-                                "color": Dependency.colorPalette["warning"],
-                                "hover": Dependency.colorPalette["warning-dark"],
-                                "event": lambda: None,
-                            },
-                            {
-                                "id": 2,
-                                "text": "Change Password",
-                                "icon": "password",
-                                "color": Dependency.colorPalette["danger"],
-                                "hover": Dependency.colorPalette["danger-dark"],
-                                "event": lambda: None,
-                            },
-                        ],
-                    )
+                def changePasswordButtonEvent():
+                    pass
 
                 contentFrame = ctk.CTkFrame(
                     self, corner_radius=0, fg_color="transparent"
@@ -382,8 +297,72 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
                 contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
                 self.titleContentWidget(contentFrame, "HOME")
+
                 welcomeGroup()
-                containerGroup()
+
+                self.containerWidget(
+                    contentFrame,
+                    2,
+                    "Profile",
+                    [
+                        {
+                            "id": 1,
+                            "entry": [
+                                {
+                                    "id": 1,
+                                    "text": "Name",
+                                    "placeholder": "name",
+                                    "value": self.userObject["name"],
+                                    "state": False,
+                                },
+                                {
+                                    "id": 2,
+                                    "text": "Username",
+                                    "placeholder": "username",
+                                    "value": self.userObject["username"],
+                                    "state": False,
+                                },
+                            ],
+                        },
+                        {
+                            "id": 2,
+                            "entry": [
+                                {
+                                    "id": 1,
+                                    "text": "Email",
+                                    "placeholder": "email",
+                                    "value": self.userObject["email"],
+                                    "state": False,
+                                },
+                                {
+                                    "id": 2,
+                                    "text": "Role",
+                                    "placeholder": "role",
+                                    "value": self.userObject["role"],
+                                    "state": False,
+                                },
+                            ],
+                        },
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "text": "Change",
+                            "icon": "change",
+                            "color": Dependency.colorPalette["warning"],
+                            "hover": Dependency.colorPalette["warning-dark"],
+                            "event": changeButtonEvent,
+                        },
+                        {
+                            "id": 2,
+                            "text": "Change Password",
+                            "icon": "password",
+                            "color": Dependency.colorPalette["danger"],
+                            "hover": Dependency.colorPalette["danger-dark"],
+                            "event": changePasswordButtonEvent,
+                        },
+                    ],
+                )
 
             self.sidebarId = 1
 
@@ -392,9 +371,10 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
             self.columnconfigure(1, weight=31)
 
             self.sidebarWidget()
+
             contentGroup()
 
-    def userFramem(self) -> None:
+    def userFrame(self) -> None:
         if self.refreshSessionDataMiddleware():
             self.sidebarId = 2
 

@@ -15,4 +15,4 @@ class Call:
         }
 
         self.forgetCall()
-        self.login()
+        self.loginFrame()
