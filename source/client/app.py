@@ -163,7 +163,7 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
                     except:
                         self.errorMessage("Server Error")
 
-                    if (response != None):
+                    if response != None:
                         if response["success"] == True:
                             self.successMessage(response["message"])
 
@@ -284,7 +284,8 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
                     )
 
                 def changeButtonEvent():
-                    pass
+                    self.forgetCall()
+                    self.homeChangeFrame()
 
                 def changePasswordButtonEvent():
                     pass
@@ -360,6 +361,94 @@ class App(ctk.CTk, Message, Widget, Call, Middleware):
                             "color": Dependency.colorPalette["danger"],
                             "hover": Dependency.colorPalette["danger-dark"],
                             "event": changePasswordButtonEvent,
+                        },
+                    ],
+                )
+
+            self.sidebarId = 1
+
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
+
+            self.sidebarWidget()
+
+            contentGroup()
+
+    def homeChangeFrame(self) -> None:
+        if self.refreshSessionDataMiddleware():
+
+            def contentGroup():
+                def changeButtonEvent():
+                    if self.confirmationMessage():
+                        pass
+
+                def backButtonEvent():
+                    self.forgetCall()
+                    self.homeFrame()
+
+                contentFrame = ctk.CTkFrame(
+                    self, corner_radius=0, fg_color="transparent"
+                )
+                contentFrame.rowconfigure(1, weight=1)
+                contentFrame.columnconfigure(0, weight=1)
+                contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+                self.titleContentWidget(contentFrame, "HOME CHANGE PROFILE")
+
+                self.containerWidget(
+                    contentFrame,
+                    1,
+                    "Change Profile",
+                    [
+                        {
+                            "id": 1,
+                            "entry": [
+                                {
+                                    "id": 1,
+                                    "text": "Name",
+                                    "placeholder": "name",
+                                    "value": self.userObject["name"],
+                                    "state": True,
+                                },
+                                {
+                                    "id": 2,
+                                    "text": "Username",
+                                    "placeholder": "username",
+                                    "value": self.userObject["username"],
+                                    "state": True,
+                                },
+                            ],
+                        },
+                        {
+                            "id": 2,
+                            "entry": [
+                                {
+                                    "id": 1,
+                                    "text": "Email",
+                                    "placeholder": "email",
+                                    "value": self.userObject["email"],
+                                    "state": True,
+                                }
+                            ],
+                        },
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "text": "Change",
+                            "icon": "change",
+                            "color": Dependency.colorPalette["warning"],
+                            "hover": Dependency.colorPalette["warning-dark"],
+                            "event": changeButtonEvent,
+                        },
+                        {
+                            "id": 2,
+                            "text": "Back",
+                            "icon": "back",
+                            "color": Dependency.colorPalette["danger"],
+                            "hover": Dependency.colorPalette["danger-dark"],
+                            "event": backButtonEvent,
                         },
                     ],
                 )
