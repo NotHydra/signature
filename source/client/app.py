@@ -439,12 +439,18 @@ class Call:
 
 
 class Middleware:
-    def refreshSessionDataMiddleware(self):
+    def refreshSessionDataMiddleware(self) -> bool:
+        response = None
         try:
             response = requests.get(
                 f"http://localhost:8000/api/user/{self.userObject['_id']}"
             ).json()
 
+        except:
+            self.errorMessage("Server Error")
+            self.logoutCall()
+
+        if response != None:
             if response["success"] == True:
                 self.userObject["name"] = response["data"]["name"]
                 self.userObject["username"] = response["data"]["username"]
@@ -457,10 +463,6 @@ class Middleware:
             else:
                 self.errorMessage(response["message"])
                 self.logoutCall()
-
-        except:
-            self.errorMessage("Server Error")
-            self.logoutCall()
 
         return False
 
