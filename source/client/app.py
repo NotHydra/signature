@@ -372,7 +372,6 @@ class Component:
             border_color=Dependency.colorPalette["text"],
             state="normal" if state else "disabled",
         )
-
         entryObject.grid(
             row=row + 1,
             column=column,
@@ -380,6 +379,8 @@ class Component:
             pady=(0, 10),
             sticky="nsew",
         )
+
+        return entryObject
 
     def buttonDataComponent(
         self, master, text, icon, mainColor, hoverColor, event, row
