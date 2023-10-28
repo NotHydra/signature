@@ -313,7 +313,9 @@ class Component:
         contentGroup()
         footerGroup()
 
-    def titleContentComponent(self, master, title: str, row: int) -> None:
+    def titleContentComponent(
+        self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
+    ) -> None:
         ctk.CTkLabel(
             master,
             text=title,
