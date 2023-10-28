@@ -12,10 +12,10 @@ class Utility:
     def combinePath(base: str, path: str) -> str:
         return os.path.join(base, path)
 
-    def getAsset(file):
+    def getAsset(file: str) -> str:
         return Utility.combinePath(Dependency.assetPath, file)
 
-    def getIcon(file):
+    def getIcon(file: str) -> str:
         return Utility.combinePath(Dependency.iconPath, file)
 
 
