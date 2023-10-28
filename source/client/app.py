@@ -324,7 +324,7 @@ class Component:
         ).grid(row=row, column=0, pady=5, sticky="nsw")
 
     def titleContainerComponent(self, master, title, row):
-        titleContainerLabel = ctk.CTkLabel(
+        ctk.CTkLabel(
             master,
             text=title,
             font=ctk.CTkFont(
@@ -333,8 +333,7 @@ class Component:
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
-        )
-        titleContainerLabel.grid(row=row, column=0, padx=10, pady=10, sticky="nsw")
+        ).grid(row=row, column=0, padx=10, pady=10, sticky="nsw")
 
     def entryDataComponent(self, master, title, placeholder, value, state, row, column):
         ctk.CTkLabel(
