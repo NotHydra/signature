@@ -306,7 +306,7 @@ class Component:
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
-        ).grid(row=row, column=0, padx=5, sticky="nsw")
+        ).grid(row=row, column=0, padx=10, sticky="nsw")
 
     def titleContainerComponent(
         self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
