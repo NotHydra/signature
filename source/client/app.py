@@ -64,7 +64,7 @@ class Message:
             message=message,
         )
 
-    def confirmationMessage(self, message: str = "Are You Sure?") -> None:
+    def confirmationMessage(self, message: str = "Are You Sure?") -> bool:
         return (
             True
             if CTkMessagebox(
