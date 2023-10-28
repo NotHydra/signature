@@ -327,7 +327,7 @@ class Component:
             text_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=0, pady=5, sticky="nsw")
 
-    def titleContainerComponent(self, master, title, row):
+    def titleContainerComponent(self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int) -> None:
         ctk.CTkLabel(
             master,
             text=title,
