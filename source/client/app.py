@@ -832,120 +832,138 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=3,
             )
 
-    # def homeChangeFrame(self) -> None:
-    #     if self.refreshSessionDataMiddleware():
-    #         self.sidebarId = 1
+    def homeChangeFrame(self) -> None:
+        if self.refreshSessionDataMiddleware():
 
-    #         self.rowconfigure(0, weight=1)
-    #         self.columnconfigure(0, weight=1)
-    #         self.columnconfigure(1, weight=31)
+            def changeButtonEvent():
+                if self.confirmationMessage():
+                    name = nameDataEntry.get()
+                    username = usernameDataEntry.get()
+                    email = emailDataEntry.get()
 
-    #         self.sidebarComponent()
+                    if "" not in [name, username, email]:
+                        response = None
+                        try:
+                            response = requests.put(
+                                f"http://localhost:8000/api/user/update/{self.userObject['_id']}",
+                                json={
+                                    "name": name,
+                                    "username": username,
+                                    "email": email,
+                                    "role": self.userObject["role"],
+                                },
+                            ).json()
 
-    #         def changeButtonEvent():
-    #             if self.confirmationMessage():
-    #                 name = entryArray[0].get()
-    #                 username = entryArray[1].get()
-    #                 email = entryArray[2].get()
+                        except requests.ConnectionError:
+                            self.errorMessage(
+                                "Make Sure You Are Connected To The Internet"
+                            )
 
-    #                 if name != "" and username != "" and email != "":
-    #                     response = None
-    #                     try:
-    #                         response = requests.post(
-    #                             f"http://localhost:8000/api/user/update/{self.userObject['_id']}",
-    #                             json={
-    #                                 "name": name,
-    #                                 "username": username,
-    #                                 "email": email,
-    #                                 "role": self.userObject["role"],
-    #                             },
-    #                         ).json()
+                        except:
+                            self.errorMessage("Server Error")
 
-    #                     except:
-    #                         self.errorMessage("Server Error")
+                        if response != None:
+                            if response["success"] == True:
+                                self.successMessage(response["message"])
 
-    #                     if response != None:
-    #                         if response["success"] == True:
-    #                             self.successMessage(response["message"])
+                                self.forgetCall()
+                                self.homeChangeFrame()
 
-    #                             self.userObject["_id"] = response["data"]["_id"]
+                            else:
+                                self.errorMessage(response["message"])
 
-    #                             self.forgetCall()
-    #                             self.homeChangeFrame()
+                    else:
+                        self.errorMessage("Please Insert Name, Username and Email")
 
-    #                         else:
-    #                             self.errorMessage(response["message"])
+            def backButtonEvent():
+                self.forgetCall()
+                self.homeFrame()
 
-    #                 else:
-    #                     self.errorMessage("Please Insert Name, Username and Email")
+            self.sidebarId = 1
 
-    #         def backButtonEvent():
-    #             self.forgetCall()
-    #             self.homeFrame()
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
 
-    #         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-    #         contentFrame.rowconfigure(1, weight=1)
-    #         contentFrame.columnconfigure(0, weight=1)
-    #         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+            self.sidebarComponent()
 
-    #         self.titleContentComponent(contentFrame, "HOME CHANGE PROFILE")
+            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.rowconfigure(2, weight=1)
+            contentFrame.columnconfigure(0, weight=1)
+            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-    #         entryArray = self.containerComponent(
-    #             contentFrame,
-    #             1,
-    #             "Change Profile",
-    #             [
-    #                 {
-    #                     "id": 1,
-    #                     "entry": [
-    #                         {
-    #                             "id": 1,
-    #                             "text": "Name",
-    #                             "placeholder": "name",
-    #                             "value": self.userObject["name"],
-    #                             "state": True,
-    #                         },
-    #                         {
-    #                             "id": 2,
-    #                             "text": "Username",
-    #                             "placeholder": "username",
-    #                             "value": self.userObject["username"],
-    #                             "state": True,
-    #                         },
-    #                     ],
-    #                 },
-    #                 {
-    #                     "id": 2,
-    #                     "entry": [
-    #                         {
-    #                             "id": 1,
-    #                             "text": "Email",
-    #                             "placeholder": "email",
-    #                             "value": self.userObject["email"],
-    #                             "state": True,
-    #                         }
-    #                     ],
-    #                 },
-    #             ],
-    #             [
-    #                 {
-    #                     "id": 1,
-    #                     "text": "Change",
-    #                     "icon": "change",
-    #                     "color": Dependency.colorPalette["warning"],
-    #                     "hover": Dependency.colorPalette["warning-dark"],
-    #                     "event": changeButtonEvent,
-    #                 },
-    #                 {
-    #                     "id": 2,
-    #                     "text": "Back",
-    #                     "icon": "back",
-    #                     "color": Dependency.colorPalette["danger"],
-    #                     "hover": Dependency.colorPalette["danger-dark"],
-    #                     "event": backButtonEvent,
-    #                 },
-    #             ],
-    #         )
+            self.titleContentComponent(contentFrame, title="HOME", row=0)
+
+            containerContentFrame = ctk.CTkFrame(
+                contentFrame,
+                corner_radius=8,
+                fg_color=Dependency.colorPalette["main"],
+            )
+            containerContentFrame.columnconfigure(0, weight=1)
+            containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+            self.titleContainerComponent(
+                containerContentFrame, title="Change Profile", row=0
+            )
+            self.lineComponent(containerContentFrame, row=1)
+
+            dataContainerFrame = ctk.CTkFrame(
+                containerContentFrame,
+                corner_radius=0,
+                fg_color="transparent",
+            )
+            dataContainerFrame.columnconfigure([0, 1], weight=1)
+            dataContainerFrame.grid(
+                row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
+            )
+
+            nameDataEntry = self.entryDataComponent(
+                dataContainerFrame,
+                title="Name",
+                placeholder="name",
+                value=self.userObject["name"],
+                state=True,
+                row=0,
+                column=0,
+            )
+            usernameDataEntry = self.entryDataComponent(
+                dataContainerFrame,
+                title="Username",
+                placeholder="username",
+                value=self.userObject["username"],
+                state=True,
+                row=0,
+                column=1,
+            )
+
+            emailDataEntry = self.entryDataComponent(
+                dataContainerFrame,
+                title="Email",
+                placeholder="email",
+                value=self.userObject["email"],
+                state=True,
+                row=1,
+                column=0,
+            )
+
+            self.buttonDataComponent(
+                dataContainerFrame,
+                text="Change",
+                icon="change",
+                mainColor=Dependency.colorPalette["warning"],
+                hoverColor=Dependency.colorPalette["warning-dark"],
+                event=changeButtonEvent,
+                row=2,
+            )
+            self.buttonDataComponent(
+                dataContainerFrame,
+                text="Back",
+                icon="back",
+                mainColor=Dependency.colorPalette["danger"],
+                hoverColor=Dependency.colorPalette["danger-dark"],
+                event=backButtonEvent,
+                row=3,
+            )
 
     # def userFrame(self) -> None:
     #     if self.refreshSessionDataMiddleware():
