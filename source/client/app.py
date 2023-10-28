@@ -268,7 +268,11 @@ class Component:
         footerSidebarFrame.grid(row=1, column=0, sticky="sew")
 
         sidebarButtonComponent(
-            footerSidebarFrame, title="Logout", icon="logout", event=logoutButtonEvent, row=0
+            footerSidebarFrame,
+            title="Logout",
+            icon="logout",
+            event=logoutButtonEvent,
+            row=0,
         )
 
         self.lineComponent(footerSidebarFrame, 1)
@@ -440,6 +444,10 @@ class Middleware:
                 f"http://localhost:8000/api/user/{self.userObject['_id']}"
             ).json()
 
+        except requests.ConnectionError:
+            self.errorMessage("Make Sure You Are Connected To The Internet")
+            self.logoutCall()
+
         except:
             self.errorMessage("Server Error")
             self.logoutCall()
@@ -573,6 +581,9 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "http://localhost:8000/api/auth/login",
                         json={"username": username, "password": password},
                     ).json()
+
+                except requests.ConnectionError:
+                    self.errorMessage("Make Sure You Are Connected To The Internet")
 
                 except:
                     self.errorMessage("Server Error")
