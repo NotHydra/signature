@@ -336,8 +336,13 @@ class Component:
         ).grid(row=row, column=0, padx=10, pady=10, sticky="nsw")
 
     def entryDataComponent(self, master, title, placeholder, value, state, row, column):
+        entryFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
+        entryFrame.rowconfigure([0, 1], weight=1)
+        entryFrame.columnconfigure(0, weight=1)
+        entryFrame.grid(row=row, column=column, sticky="nsew")
+
         ctk.CTkLabel(
-            master,
+            entryFrame,
             text=title,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
@@ -346,8 +351,8 @@ class Component:
             ),
             text_color=Dependency.colorPalette["text"],
         ).grid(
-            row=row,
-            column=column,
+            row=0,
+            column=0,
             padx=(0, 5) if column == 0 else (5, 0),
             pady=(0, 5),
             sticky="nsw",
@@ -357,7 +362,7 @@ class Component:
         entryValue.set(value)
 
         entryObject = ctk.CTkEntry(
-            master,
+            entryFrame,
             height=40,
             placeholder_text=placeholder,
             textvariable=entryValue,
@@ -373,8 +378,8 @@ class Component:
             state="normal" if state else "disabled",
         )
         entryObject.grid(
-            row=row + 1,
-            column=column,
+            row=1,
+            column=0,
             padx=(0, 5) if column == 0 else (5, 0),
             pady=(0, 10),
             sticky="nsew",
@@ -793,7 +798,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 placeholder="email",
                 value=self.userObject["email"],
                 state=False,
-                row=2,
+                row=1,
                 column=0,
             )
             self.entryDataComponent(
@@ -802,7 +807,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 placeholder="role",
                 value=self.userObject["role"],
                 state=False,
-                row=2,
+                row=1,
                 column=1,
             )
 
@@ -813,7 +818,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 mainColor=Dependency.colorPalette["warning"],
                 hoverColor=Dependency.colorPalette["warning-dark"],
                 event=changeButtonEvent,
-                row=4,
+                row=2,
             )
             self.buttonDataComponent(
                 dataContainerFrame,
@@ -822,7 +827,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 mainColor=Dependency.colorPalette["danger"],
                 hoverColor=Dependency.colorPalette["danger-dark"],
                 event=changeButtonEvent,
-                row=5,
+                row=3,
             )
 
     # def homeChangeFrame(self) -> None:
