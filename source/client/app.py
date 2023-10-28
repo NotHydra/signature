@@ -327,7 +327,9 @@ class Component:
             text_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=0, pady=5, sticky="nsw")
 
-    def titleContainerComponent(self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int) -> None:
+    def titleContainerComponent(
+        self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
+    ) -> None:
         ctk.CTkLabel(
             master,
             text=title,
@@ -339,7 +341,16 @@ class Component:
             text_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=0, padx=10, pady=10, sticky="nsw")
 
-    def entryDataComponent(self, master, title, placeholder, value, state, row, column):
+    def entryDataComponent(
+        self,
+        master: ctk.CTk | ctk.CTkFrame,
+        title: str,
+        placeholder: str,
+        value: str,
+        state: bool,
+        row: int,
+        column: int,
+    ) -> ctk.CTkEntry:
         entryFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         entryFrame.rowconfigure([0, 1], weight=1)
         entryFrame.columnconfigure(0, weight=1)
