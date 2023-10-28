@@ -81,7 +81,9 @@ class Message:
 
 
 class Component:
-    def lineComponent(self, master, row, weight=2):
+    def lineComponent(
+        self, master: ctk.CTk | ctk.CTkFrame, row: int, weight: int = 2
+    ) -> None:
         ctk.CTkFrame(
             master,
             height=weight,
