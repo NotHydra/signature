@@ -44,7 +44,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = True
+    skip = False
 
 
 class Message:
@@ -566,140 +566,135 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         self.after(500, increaseLoadingValue)
 
     def loginFrame(self) -> None:
-        def aboutGroup() -> None:
-            aboutFrame = ctk.CTkFrame(
-                self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
-            )
-            aboutFrame.rowconfigure(0, weight=1)
-            aboutFrame.columnconfigure(0, weight=1)
-            aboutFrame.grid(row=0, column=0, sticky="nsew")
+        def submitButtonEvent() -> None:
+            username = usernameLoginEntry.get()
+            password = passwordLoginEntry.get()
 
-            descriptionAboutLabel = ctk.CTkLabel(
-                aboutFrame,
-                image=ctk.CTkImage(
-                    Image.open(Utility.getAsset("logo-opacity.png")),
-                    size=(
-                        Dependency.logoResolution["width"] / 2,
-                        Dependency.logoResolution["height"] / 2,
-                    ),
-                ),
-                text="SIGNATURE\nDesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"],
-                    size=20,
-                    weight="bold",
-                ),
-                text_color=Dependency.colorPalette["text"],
-            )
-            descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
+            if username != "" and password != "":
+                response = None
+                try:
+                    response = requests.post(
+                        "http://localhost:8000/api/auth/login",
+                        json={"username": username, "password": password},
+                    ).json()
 
-        def loginGroup() -> None:
-            def submitButtonEvent() -> None:
-                username = usernameLoginEntry.get()
-                password = passwordLoginEntry.get()
+                except:
+                    self.errorMessage("Server Error")
 
-                if username != "" and password != "":
-                    response = None
-                    try:
-                        response = requests.post(
-                            "http://localhost:8000/api/auth/login",
-                            json={"username": username, "password": password},
-                        ).json()
+                if response != None:
+                    if response["success"] == True:
+                        self.successMessage(response["message"])
 
-                    except:
-                        self.errorMessage("Server Error")
+                        self.userObject["_id"] = response["data"]["_id"]
 
-                    if response != None:
-                        if response["success"] == True:
-                            self.successMessage(response["message"])
+                        self.forgetCall()
+                        self.homeFrame()
 
-                            self.userObject["_id"] = response["data"]["_id"]
+                    else:
+                        self.errorMessage(response["message"])
 
-                            self.forgetCall()
-                            self.homeFrame()
+            else:
+                self.errorMessage("Please Insert Username and Password")
 
-                        else:
-                            self.errorMessage(response["message"])
-
-                else:
-                    self.errorMessage("Please Insert Username and Password")
-
-            def exitButtonEvent() -> None:
-                if self.confirmationMessage():
-                    self.quit()
-
-            loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-            loginFrame.columnconfigure(0, weight=1)
-            loginFrame.grid(row=0, column=1, sticky="nsew")
-
-            titleLoginLabel = ctk.CTkLabel(
-                loginFrame,
-                text="Login Details",
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"], size=40, weight="bold"
-                ),
-            )
-            titleLoginLabel.grid(row=0, column=0, pady=(180, 20))
-
-            usernameLoginEntry = ctk.CTkEntry(
-                loginFrame,
-                width=320,
-                height=60,
-                placeholder_text="username",
-                justify="center",
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"], size=20, weight="bold"
-                ),
-            )
-            usernameLoginEntry.grid(row=1, column=0, pady=(0, 10))
-
-            passwordLoginEntry = ctk.CTkEntry(
-                loginFrame,
-                width=320,
-                height=60,
-                show="*",
-                placeholder_text="password",
-                justify="center",
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"], size=20, weight="bold"
-                ),
-            )
-            passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
-
-            submitLoginButton = ctk.CTkButton(
-                loginFrame,
-                text="Login",
-                width=320,
-                height=60,
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"], size=24, weight="bold"
-                ),
-                fg_color=Dependency.colorPalette["main"],
-                hover_color=Dependency.colorPalette["main-dark"],
-                command=submitButtonEvent,
-            )
-            submitLoginButton.grid(row=3, column=0, pady=(0, 10))
-
-            exitLoginButton = ctk.CTkButton(
-                loginFrame,
-                text="Exit",
-                width=320,
-                height=60,
-                font=ctk.CTkFont(
-                    family=Dependency.fontFamily["main"], size=24, weight="bold"
-                ),
-                fg_color=Dependency.colorPalette["danger"],
-                hover_color=Dependency.colorPalette["danger-dark"],
-                command=exitButtonEvent,
-            )
-            exitLoginButton.grid(row=4, column=0)
+        def exitButtonEvent() -> None:
+            if self.confirmationMessage():
+                self.quit()
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=3)
 
-        aboutGroup()
-        loginGroup()
+        aboutFrame = ctk.CTkFrame(
+            self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+        )
+        aboutFrame.rowconfigure(0, weight=1)
+        aboutFrame.columnconfigure(0, weight=1)
+        aboutFrame.grid(row=0, column=0, sticky="nsew")
+
+        descriptionAboutLabel = ctk.CTkLabel(
+            aboutFrame,
+            image=ctk.CTkImage(
+                Image.open(Utility.getAsset("logo-opacity.png")),
+                size=(
+                    Dependency.logoResolution["width"] / 2,
+                    Dependency.logoResolution["height"] / 2,
+                ),
+            ),
+            text="SIGNATURE\nDesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=20,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        )
+        descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
+
+        loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        loginFrame.columnconfigure(0, weight=1)
+        loginFrame.grid(row=0, column=1, sticky="nsew")
+
+        titleLoginLabel = ctk.CTkLabel(
+            loginFrame,
+            text="Login Details",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=40, weight="bold"
+            ),
+        )
+        titleLoginLabel.grid(row=0, column=0, pady=(180, 20))
+
+        usernameLoginEntry = ctk.CTkEntry(
+            loginFrame,
+            width=320,
+            height=60,
+            placeholder_text="username",
+            justify="center",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        usernameLoginEntry.grid(row=1, column=0, pady=(0, 10))
+
+        passwordLoginEntry = ctk.CTkEntry(
+            loginFrame,
+            width=320,
+            height=60,
+            show="*",
+            placeholder_text="password",
+            justify="center",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
+
+        submitLoginButton = ctk.CTkButton(
+            loginFrame,
+            text="Login",
+            width=320,
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+            command=submitButtonEvent,
+        )
+        submitLoginButton.grid(row=3, column=0, pady=(0, 10))
+
+        exitLoginButton = ctk.CTkButton(
+            loginFrame,
+            text="Exit",
+            width=320,
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["danger"],
+            hover_color=Dependency.colorPalette["danger-dark"],
+            command=exitButtonEvent,
+        )
+        exitLoginButton.grid(row=4, column=0)
 
         if Dependency.skip:
             self.userObject["_id"] = 1
