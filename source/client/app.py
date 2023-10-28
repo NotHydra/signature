@@ -44,7 +44,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = False
+    skip = True
 
 
 class Message:
@@ -292,16 +292,21 @@ class Component:
     def titleContentComponent(
         self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
     ) -> None:
+        titleFrame = ctk.CTkFrame(
+            master, corner_radius=8, fg_color=Dependency.colorPalette["main"]
+        )
+        titleFrame.grid(row=row, column=0, pady=20, sticky="ew")
+
         ctk.CTkLabel(
-            master,
+            titleFrame,
             text=title,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
-                size=36,
+                size=30,
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
-        ).grid(row=row, column=0, pady=5, sticky="nsw")
+        ).grid(row=row, column=0, padx=5, sticky="nsw")
 
     def titleContainerComponent(
         self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
