@@ -312,7 +312,7 @@ class Component:
         footerGroup()
 
     def titleContentComponent(self, master, title: str, row: int) -> None:
-        titleContentLabel = ctk.CTkLabel(
+        ctk.CTkLabel(
             master,
             text=title,
             font=ctk.CTkFont(
@@ -321,8 +321,7 @@ class Component:
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
-        )
-        titleContentLabel.grid(row=row, column=0, pady=5, sticky="nsw")
+        ).grid(row=row, column=0, pady=5, sticky="nsw")
 
     def titleContainerComponent(self, master, title, row):
         titleContainerLabel = ctk.CTkLabel(
