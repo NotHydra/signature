@@ -13,7 +13,6 @@ from model.user import (
 )
 from model.login import LoginModel
 
-
 app = FastAPI()
 database = Database()
 
