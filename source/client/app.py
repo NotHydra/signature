@@ -489,7 +489,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         self.loadingFrame()
 
     def loadingFrame(self) -> None:
-        def increaseLoadingValue() -> None:
+        def loadingEvent() -> None:
             if not Dependency.skip:
                 loadingValue = 0
                 while loadingValue < 1:
@@ -563,7 +563,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         progressTextProgressBar.grid(row=2, column=0, pady=10, sticky="ew")
         progressTextProgressBar.set(0)
 
-        self.after(500, increaseLoadingValue)
+        self.after(500, loadingEvent)
 
     def loginFrame(self) -> None:
         def submitButtonEvent() -> None:
