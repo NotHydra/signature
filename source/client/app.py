@@ -308,6 +308,42 @@ class Component:
             text_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=0, padx=10, sticky="nsw")
 
+    def boxContentComponent(
+        self, master: ctk.CTk | ctk.CTkFrame, boxArray: list[dict[str, any]], row: int
+    ) -> None:
+        boxFrame = ctk.CTkFrame(
+            master,
+            height=80,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        boxFrame.rowconfigure(0, weight=1)
+        boxFrame.columnconfigure([0, 1, 2], weight=1)
+        boxFrame.grid(row=row, column=0, sticky="nsew")
+
+        for boxButtonIndex, boxButtonObject in enumerate(boxArray):
+            ctk.CTkButton(
+                boxFrame,
+                height=72,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon(f"{boxButtonObject['icon']}.png")),
+                    size=(40, 40),
+                ),
+                text=f"{boxButtonObject['display']}\n{boxButtonObject['value']}",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"], size=20, weight="bold"
+                ),
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["main"],
+                hover_color=Dependency.colorPalette["main"],
+            ).grid(
+                row=0,
+                column=boxButtonIndex,
+                padx=(0, 20) if boxButtonIndex != (len(boxArray) - 1) else 0,
+                sticky="nsew",
+            )
+
     def titleContainerComponent(
         self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
     ) -> None:
@@ -888,7 +924,6 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-            contentFrame.rowconfigure(2, weight=1)
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -965,93 +1000,54 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=3,
             )
 
-    # def userFrame(self) -> None:
-    #     if self.refreshSessionDataMiddleware():
-    #         self.sidebarId = 2
+    def userFrame(self) -> None:
+        if self.refreshSessionDataMiddleware():
+            self.sidebarId = 2
 
-    #         self.rowconfigure(0, weight=1)
-    #         self.columnconfigure(0, weight=1)
-    #         self.columnconfigure(1, weight=31)
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
 
-    #         self.sidebarComponent()
+            self.sidebarComponent()
 
-    #         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-    #         contentFrame.columnconfigure(0, weight=1)
-    #         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.columnconfigure(0, weight=1)
+            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-    #         titleContentLabel = ctk.CTkLabel(
-    #             contentFrame,
-    #             text="USER",
-    #             font=ctk.CTkFont(
-    #                 family=Dependency.fontFamily["main"],
-    #                 size=36,
-    #                 weight="bold",
-    #             ),
-    #             text_color=Dependency.colorPalette["text"],
-    #         )
-    #         titleContentLabel.grid(row=0, column=0, pady=10, sticky="nsw")
+            self.titleContentComponent(contentFrame, title="USER", row=0)
 
-    #         boxContentFrame = ctk.CTkFrame(
-    #             contentFrame,
-    #             height=80,
-    #             corner_radius=8,
-    #             fg_color="transparent",
-    #         )
-    #         boxContentFrame.rowconfigure(0, weight=1)
-    #         boxContentFrame.columnconfigure([0, 1, 2], weight=1)
-    #         boxContentFrame.grid(row=1, column=0, sticky="nsew")
+            try:
+                response = requests.get(
+                    "http://localhost:8000/api/user/count",
+                ).json()
 
-    #         try:
-    #             response = requests.get(
-    #                 "http://localhost:8000/api/user/count",
-    #             ).json()
+            except:
+                pass
 
-    #         except:
-    #             pass
-
-    #         boxButtonArray = [
-    #             {
-    #                 "id": 1,
-    #                 "icon": "user-total",
-    #                 "display": "Total",
-    #                 "value": response["data"]["total"] | 0,
-    #             },
-    #             {
-    #                 "id": 2,
-    #                 "icon": "user",
-    #                 "display": "User",
-    #                 "value": response["data"]["user"] | 0,
-    #             },
-    #             {
-    #                 "id": 3,
-    #                 "icon": "admin",
-    #                 "display": "Admin",
-    #                 "value": response["data"]["admin"] | 0,
-    #             },
-    #         ]
-
-    #         for boxButtonIndex, boxButtonObject in enumerate(boxButtonArray):
-    #             ctk.CTkButton(
-    #                 boxContentFrame,
-    #                 height=72,
-    #                 image=ctk.CTkImage(
-    #                     Image.open(Utility.getIcon(f"{boxButtonObject['icon']}.png")),
-    #                     size=(40, 40),
-    #                 ),
-    #                 text=f"{boxButtonObject['display']}\n{boxButtonObject['value']}",
-    #                 font=ctk.CTkFont(
-    #                     family=Dependency.fontFamily["main"], size=20, weight="bold"
-    #                 ),
-    #                 corner_radius=8,
-    #                 text_color=Dependency.colorPalette["text"],
-    #                 fg_color=Dependency.colorPalette["main"],
-    #                 hover_color=Dependency.colorPalette["main"],
-    #             ).grid(
-    #                 row=0,
-    #                 column=boxButtonIndex,
-    #                 padx=(0, 20) if boxButtonIndex != (len(boxButtonArray) - 1) else 0,
-    #                 sticky="nsew",
-    #             )
+            self.boxContentComponent(
+                contentFrame,
+                boxArray=[
+                    {
+                        "id": 1,
+                        "display": "Total",
+                        "icon": "user-total",
+                        "value": response["data"]["total"],
+                    },
+                    {
+                        "id": 2,
+                        "display": "User",
+                        "icon": "user",
+                        "value": response["data"]["user"],
+                    },
+                    {
+                        "id": 3,
+                        "display": "Admin",
+                        "icon": "admin",
+                        "value": response["data"]["admin"],
+                    },
+                ],
+                row=1,
+            )
 
 
 if __name__ == "__main__":
