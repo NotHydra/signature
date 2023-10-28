@@ -81,13 +81,13 @@ class Message:
 
 
 class Component:
-    def lineComponent(self, master, row, column, weight=2):
+    def lineComponent(self, master, row, weight=2):
         ctk.CTkFrame(
             master,
             height=weight,
             corner_radius=0,
             fg_color=Dependency.colorPalette["text"],
-        ).grid(row=row, column=column, sticky="nsew")
+        ).grid(row=row, column=0, sticky="nsew")
 
     def sidebarComponent(self) -> None:
         def sidebarButton(master, item, start=0, index=0, highlight=False):
@@ -249,11 +249,11 @@ class Component:
 
             brandGroup()
 
-            self.lineComponent(contentSidebarFrame, 1, 0)
+            self.lineComponent(contentSidebarFrame, 1)
 
             profileGroup()
 
-            self.lineComponent(contentSidebarFrame, 3, 0)
+            self.lineComponent(contentSidebarFrame, 3)
 
             itemGroup()
 
@@ -296,7 +296,7 @@ class Component:
 
             logoutGroup()
 
-            self.lineComponent(footerSidebarFrame, 1, 0)
+            self.lineComponent(footerSidebarFrame, 1)
 
             copyrightGroup()
 
@@ -753,7 +753,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
             self.titleContainerComponent(containerContentFrame, title="Profile", row=0)
-            self.lineComponent(containerContentFrame, row=1, column=0)
+            self.lineComponent(containerContentFrame, row=1)
 
             dataContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
