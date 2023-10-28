@@ -403,8 +403,8 @@ class Component:
         return entryObject
 
     def buttonDataComponent(
-        self, master, text, icon, mainColor, hoverColor, event, row
-    ):
+        self, master: ctk.CTk | ctk.CTkFrame, text: str, icon: str, mainColor: str, hoverColor: str, event: function, row: int
+    ) -> None:
         ctk.CTkButton(
             master,
             height=40,
