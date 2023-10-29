@@ -1101,21 +1101,26 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             tableArray = [
                 {
                     "id": 1,
+                    "header": "No.",
+                    "data": [count for count in range(1, len(response["data"]) + 1)],
+                },
+                {
+                    "id": 2,
                     "header": "Name",
                     "data": [userObject["name"] for userObject in response["data"]],
                 },
                 {
-                    "id": 2,
+                    "id": 3,
                     "header": "Username",
                     "data": [userObject["username"] for userObject in response["data"]],
                 },
                 {
-                    "id": 3,
+                    "id": 4,
                     "header": "Email",
                     "data": [userObject["email"] for userObject in response["data"]],
                 },
                 {
-                    "id": 4,
+                    "id": 5,
                     "header": "Role",
                     "data": [userObject["role"] for userObject in response["data"]],
                 },
