@@ -1016,6 +1016,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
             self.titleContentComponent(contentFrame, title="USER", row=0)
 
+            response = None
             try:
                 response = requests.get(
                     "http://localhost:8000/api/user/count",
@@ -1031,19 +1032,19 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "id": 1,
                         "display": "Total",
                         "icon": "user-total",
-                        "value": response["data"]["total"],
+                        "value": response["data"]["total"] if response != None else "?",
                     },
                     {
                         "id": 2,
                         "display": "User",
                         "icon": "user",
-                        "value": response["data"]["user"],
+                        "value": response["data"]["user"] if response != None else "?",
                     },
                     {
                         "id": 3,
                         "display": "Admin",
                         "icon": "admin",
-                        "value": response["data"]["admin"],
+                        "value": response["data"]["admin"] if response != None else "?",
                     },
                 ],
                 row=1,
