@@ -81,7 +81,7 @@ class Message:
 
 
 class Component:
-    def lineComponent(
+    def lineHorizontalComponent(
         self, master: ctk.CTk | ctk.CTkFrame, row: int, weight: int = 2
     ) -> None:
         ctk.CTkFrame(
@@ -90,6 +90,20 @@ class Component:
             corner_radius=0,
             fg_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=0, sticky="nsew")
+
+    def lineVerticalComponent(
+        self,
+        master: ctk.CTk | ctk.CTkFrame,
+        row: int = 0,
+        column: int = 0,
+        weight: int = 2,
+    ) -> None:
+        ctk.CTkFrame(
+            master,
+            width=weight,
+            corner_radius=0,
+            fg_color=Dependency.colorPalette["text"],
+        ).grid(row=row, column=column, sticky="nsew")
 
     def sidebarComponent(self) -> None:
         def homeButtonEvent() -> None:
@@ -168,7 +182,7 @@ class Component:
         )
         brandSidebarButton.grid(row=0, column=0, sticky="ew")
 
-        self.lineComponent(contentSidebarFrame, 1)
+        self.lineHorizontalComponent(contentSidebarFrame, 1)
 
         profileSidebarFrame = ctk.CTkFrame(
             contentSidebarFrame, corner_radius=0, fg_color="transparent"
@@ -207,7 +221,7 @@ class Component:
         )
         roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
 
-        self.lineComponent(contentSidebarFrame, 3)
+        self.lineHorizontalComponent(contentSidebarFrame, 3)
 
         sidebarButtonComponent(
             contentSidebarFrame,
@@ -275,7 +289,7 @@ class Component:
             row=0,
         )
 
-        self.lineComponent(footerSidebarFrame, 1)
+        self.lineHorizontalComponent(footerSidebarFrame, 1)
 
         copyrightSidebarLabel = ctk.CTkLabel(
             footerSidebarFrame,
@@ -319,7 +333,7 @@ class Component:
         )
         boxFrame.rowconfigure(0, weight=1)
         boxFrame.columnconfigure([0, 1, 2], weight=1)
-        boxFrame.grid(row=row, column=0, sticky="nsew")
+        boxFrame.grid(row=row, column=0, pady=(0, 20), sticky="nsew")
 
         for boxButtonIndex, boxButtonObject in enumerate(boxArray):
             ctk.CTkButton(
@@ -455,6 +469,9 @@ class Component:
             pady=(0, 10),
             sticky="nsew",
         )
+
+    def customTable(self, master, header, data):
+        pass
 
 
 class Call:
@@ -799,7 +816,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
             self.titleContainerComponent(containerContentFrame, title="Profile", row=0)
-            self.lineComponent(containerContentFrame, row=1)
+            self.lineHorizontalComponent(containerContentFrame, row=1)
 
             dataContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
@@ -940,7 +957,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.titleContainerComponent(
                 containerContentFrame, title="Change Profile", row=0
             )
-            self.lineComponent(containerContentFrame, row=1)
+            self.lineHorizontalComponent(containerContentFrame, row=1)
 
             dataContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
@@ -1011,6 +1028,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.rowconfigure(2, weight=1)
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -1032,23 +1050,146 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "id": 1,
                         "display": "Total",
                         "icon": "user-total",
-                        "value": response["data"]["total"] if response != None else "?",
+                        "value": response["data"]["total"]
+                        if response != None and response["success"]
+                        else "?",
                     },
                     {
                         "id": 2,
                         "display": "User",
                         "icon": "user",
-                        "value": response["data"]["user"] if response != None else "?",
+                        "value": response["data"]["user"]
+                        if response != None and response["success"]
+                        else "?",
                     },
                     {
                         "id": 3,
                         "display": "Admin",
                         "icon": "admin",
-                        "value": response["data"]["admin"] if response != None else "?",
+                        "value": response["data"]["admin"]
+                        if response != None and response["success"]
+                        else "?",
                     },
                 ],
                 row=1,
             )
+
+            containerContentFrame = ctk.CTkFrame(
+                contentFrame,
+                corner_radius=8,
+                fg_color=Dependency.colorPalette["main"],
+            )
+            containerContentFrame.rowconfigure(2, weight=1)
+            containerContentFrame.columnconfigure(0, weight=1)
+            containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
+
+            self.titleContainerComponent(
+                containerContentFrame, title="User Table", row=0
+            )
+
+            self.lineHorizontalComponent(containerContentFrame, row=1)
+
+            response = None
+            try:
+                response = requests.get(
+                    "http://localhost:8000/api/user", json={"count": 0, "page": 0}
+                ).json()
+
+            except:
+                pass
+
+            tableArray = [
+                {
+                    "id": 1,
+                    "header": "Name",
+                    "data": [userObject["name"] for userObject in response["data"]],
+                },
+                {
+                    "id": 2,
+                    "header": "Username",
+                    "data": [userObject["username"] for userObject in response["data"]],
+                },
+                {
+                    "id": 3,
+                    "header": "Email",
+                    "data": [userObject["email"] for userObject in response["data"]],
+                },
+                {
+                    "id": 4,
+                    "header": "Role",
+                    "data": [userObject["role"] for userObject in response["data"]],
+                },
+            ]
+
+            tableContainerFrame = ctk.CTkFrame(
+                containerContentFrame,
+                corner_radius=0,
+                fg_color="transparent",
+            )
+            tableContainerFrame.rowconfigure(1, weight=1)
+            tableContainerFrame.columnconfigure(0, weight=1)
+            tableContainerFrame.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
+
+            self.lineHorizontalComponent(tableContainerFrame, row=0)
+
+            containerTableFrame = ctk.CTkFrame(
+                tableContainerFrame, corner_radius=0, fg_color="transparent"
+            )
+            containerTableFrame.rowconfigure(0, weight=1)
+            containerTableFrame.columnconfigure(
+                [((i * 2) + 1) for i, _ in enumerate(tableArray)], weight=1
+            )
+            containerTableFrame.grid(row=1, column=0, sticky="nsew")
+
+            self.lineVerticalComponent(containerTableFrame, column=0)
+
+            for tableIndex, tableObject in enumerate(tableArray):
+                dataContainerFrame = ctk.CTkFrame(
+                    containerTableFrame, corner_radius=0, fg_color="transparent"
+                )
+                dataContainerFrame.columnconfigure(0, weight=1)
+                dataContainerFrame.grid(
+                    row=0, column=(tableIndex * 2) + 1, sticky="nsew"
+                )
+
+                ctk.CTkLabel(
+                    dataContainerFrame,
+                    text=tableObject["header"],
+                    text_color=Dependency.colorPalette["text"],
+                    font=ctk.CTkFont(
+                        family=Dependency.fontFamily["main"],
+                        size=20,
+                        weight="bold",
+                    ),
+                    fg_color="transparent",
+                    bg_color="transparent",
+                ).grid(row=0, column=0, sticky="nsew")
+
+                self.lineHorizontalComponent(dataContainerFrame, row=1)
+
+                for dataIndex, dataObject in enumerate(tableObject["data"]):
+                    ctk.CTkLabel(
+                        dataContainerFrame,
+                        text=dataObject,
+                        text_color=Dependency.colorPalette["text"],
+                        font=ctk.CTkFont(
+                            family=Dependency.fontFamily["main"],
+                            size=16,
+                            weight="bold",
+                        ),
+                        fg_color="transparent",
+                        bg_color="transparent",
+                    ).grid(row=2 + (dataIndex * 2), column=0, sticky="nsew")
+
+                    self.lineHorizontalComponent(
+                        dataContainerFrame, row=2 + (dataIndex * 2) + 1
+                    )
+
+                self.lineVerticalComponent(
+                    containerTableFrame, column=(tableIndex * 2) + 2
+                )
+
+            self.lineHorizontalComponent(tableContainerFrame, row=2)
 
 
 if __name__ == "__main__":
