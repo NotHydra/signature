@@ -546,7 +546,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         self.geometry(
             f"{Dependency.resolution['width']}x{Dependency.resolution['height']}"
         )
-        self.resizable(False, False)
+        self.minsize(Dependency.resolution["width"], Dependency.resolution["height"])
 
         self.loadingFrame()
 
