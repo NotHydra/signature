@@ -477,6 +477,7 @@ class Component:
         master: ctk.CTk | ctk.CTkFrame,
         row: int,
         contentArray: list[dict[str, any]],
+        idArray: list[int] = None,
         actionArray: list[dict[str, any]] = None,
         numbering: bool = True,
     ) -> None:
@@ -579,14 +580,15 @@ class Component:
             ).grid(row=0, column=0, padx=5, sticky="nsew")
 
             self.lineHorizontalComponent(actionHeaderFrame, row=1)
-
-            for contentIndex in range(len(contentArray[0]["data"])):
+            
+            print(idArray)
+            for idIndex, idObject in enumerate(idArray):
                 buttonActionFrame = ctk.CTkFrame(
                     actionHeaderFrame, width=0, corner_radius=0, fg_color="transparent"
                 )
                 buttonActionFrame.columnconfigure(0, weight=1)
                 buttonActionFrame.grid(
-                    row=(contentIndex * 2) + 2, column=0, sticky="nsew"
+                    row=(idIndex * 2) + 2, column=0, sticky="nsew"
                 )
 
                 for actionIndex, actionObject in enumerate(actionArray):
@@ -598,7 +600,7 @@ class Component:
                             Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
                             size=(14, 14),
                         ),
-                        text=actionObject["text"],
+                        text=f'{actionObject["text"]} {idObject}',
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"],
                             size=14,
@@ -609,7 +611,7 @@ class Component:
                         text_color=Dependency.colorPalette["text"],
                         fg_color=actionObject["mainColor"],
                         hover_color=actionObject["hoverColor"],
-                        command=actionObject["event"],
+                        command=lambda id = idObject:actionObject["event"](id),
                     ).grid(
                         row=0,
                         column=actionIndex,
@@ -619,7 +621,7 @@ class Component:
                     )
 
                 self.lineHorizontalComponent(
-                    actionHeaderFrame, row=(contentIndex * 2) + 3
+                    actionHeaderFrame, row=(idIndex * 2) + 3
                 )
 
             self.lineVerticalComponent(
@@ -1187,6 +1189,22 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
     def userFrame(self) -> None:
         if self.refreshSessionDataMiddleware():
+            def AddButtonEvent() ->None:
+                self.forgetCall()
+                self.userAddFrame()
+
+            def changeButtonEvent(id: int) -> None:
+                self.forgetCall()
+                self.userChangeFrame(id)
+
+            def changePasswordButtonEvent(id: int) -> None:
+                self.forgetCall()
+                self.userChangePasswordFrame(id)
+
+            def removeButtonEvent(id: int) -> None:
+                self.forgetCall()
+                self.userRemoveFrame(id)
+
             self.sidebarId = 2
 
             self.rowconfigure(0, weight=1)
@@ -1268,6 +1286,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
             self.tableComponent(
                 containerContentFrame,
+                idArray = [userObject["_id"] for userObject in response["data"]],
                 contentArray=[
                     {
                         "id": 1,
@@ -1316,7 +1335,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "icon": "change",
                         "mainColor": Dependency.colorPalette["warning"],
                         "hoverColor": Dependency.colorPalette["warning-dark"],
-                        "event": lambda: None,
+                        "event": changeButtonEvent,
                     },
                     {
                         "id": 2,
@@ -1324,7 +1343,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "icon": "password",
                         "mainColor": Dependency.colorPalette["danger"],
                         "hoverColor": Dependency.colorPalette["danger-dark"],
-                        "event": lambda: None,
+                        "event": changePasswordButtonEvent,
                     },
                     {
                         "id": 3,
@@ -1332,7 +1351,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "icon": "remove",
                         "mainColor": Dependency.colorPalette["danger"],
                         "hoverColor": Dependency.colorPalette["danger-dark"],
-                        "event": lambda: None,
+                        "event": removeButtonEvent,
                     },
                 ],
                 row=2,
@@ -1354,9 +1373,21 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 icon="add",
                 mainColor=Dependency.colorPalette["success"],
                 hoverColor=Dependency.colorPalette["success-dark"],
-                event=lambda: None,
+                event=AddButtonEvent,
                 row=0,
             )
+
+    def userAddFrame(self) -> None:
+        pass
+
+    def userChangeFrame(self, id: int) -> None:
+        print(id)
+
+    def userChangePasswordFrame(self, id: int) -> None:
+        print(id)
+
+    def userRemoveFrame(self, id: int) -> None:
+        print(id)
 
 
 if __name__ == "__main__":
