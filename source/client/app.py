@@ -1334,6 +1334,26 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=2,
             )
 
+            dataContainerFrame = ctk.CTkFrame(
+                containerContentFrame,
+                corner_radius=0,
+                fg_color="transparent",
+            )
+            dataContainerFrame.columnconfigure([0, 1], weight=1)
+            dataContainerFrame.grid(
+                row=3, column=0, padx=20, pady=(0, 10), sticky="nsew"
+            )
+
+            self.buttonDataComponent(
+                dataContainerFrame,
+                text="Add",
+                icon="add",
+                mainColor=Dependency.colorPalette["success"],
+                hoverColor=Dependency.colorPalette["success-dark"],
+                event=lambda: None,
+                row=0,
+            )
+
 
 if __name__ == "__main__":
     app = App()
