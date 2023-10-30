@@ -939,7 +939,8 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 self.homeChangeFrame()
 
             def changePasswordButtonEvent() -> None:
-                pass
+                self.forgetCall()
+                self.homeChangePasswordFrame()
 
             self.sidebarId = 1
 
@@ -1180,6 +1181,9 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 event=backButtonEvent,
                 row=3,
             )
+
+    def homeChangePasswordFrame(self) -> None:
+        pass
 
     def userFrame(self) -> None:
         if self.refreshSessionDataMiddleware():
