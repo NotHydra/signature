@@ -1127,7 +1127,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 {
                     "id": 5,
                     "header": "Role",
-                    "data": [userObject["role"] for userObject in response["data"]],
+                    "data": [userObject["role"].capitalize() for userObject in response["data"]],
                     "align": "center"
                 },
             ]
