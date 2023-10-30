@@ -35,6 +35,7 @@ class Dependency:
     colorPalette = {
         "main": "#54A4F5",
         "main-dark": "#3498DB",
+        "background": "#242424",
         "text": "#FFFFFF",
         "success": "#2ECC71",
         "success-dark": "#28B463",
@@ -544,10 +545,13 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
         self.iconbitmap(Dependency.appIconPath)
         self.title(f"{Dependency.title} - {Dependency.subtitle}")
+        
         self.geometry(
             f"{Dependency.resolution['width']}x{Dependency.resolution['height']}+{(self.winfo_screenwidth() // 2) - (Dependency.resolution["width"] // 2)}+{(self.winfo_screenheight() // 2) - (Dependency.resolution["height"] // 2)}"
         )
         self.minsize(Dependency.resolution["width"], Dependency.resolution["height"])
+
+        self.configure(fg_color=Dependency.colorPalette["background"])
 
         self.loadingFrame()
 
