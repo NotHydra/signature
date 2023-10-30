@@ -1,11 +1,11 @@
 import os
-import time
 import random
-import requests
-import customtkinter as ctk
+import time
 
-from PIL import Image
+import customtkinter as ctk
+import requests
 from CTkMessagebox import CTkMessagebox
+from PIL import Image
 
 
 class Utility:
@@ -472,7 +472,14 @@ class Component:
             sticky="nsew",
         )
 
-    def tableComponent(self, master: ctk.CTk | ctk.CTkFrame, contentArray: list[dict[str, any]], actionArray: list[dict[str,any]], row: int, numbering: bool = True) -> None:
+    def tableComponent(
+        self,
+        master: ctk.CTk | ctk.CTkFrame,
+        row: int,
+        contentArray: list[dict[str, any]],
+        actionArray: list[dict[str, any]] = None,
+        numbering: bool = True,
+    ) -> None:
         tableFrame = ctk.CTkFrame(
             master,
             corner_radius=0,
@@ -489,7 +496,10 @@ class Component:
         )
         headerTableFrame.rowconfigure(0, weight=1)
         headerTableFrame.columnconfigure(
-            [((i * 2) + 3) for i, _ in enumerate(contentArray[1:])] if numbering else [((i * 2) + 1) for i, _ in enumerate(contentArray)], weight=4
+            [((i * 2) + 3) for i, _ in enumerate(contentArray[1:])]
+            if numbering
+            else [((i * 2) + 1) for i, _ in enumerate(contentArray)],
+            weight=4,
         )
         headerTableFrame.grid(row=1, column=0, sticky="nsew")
 
@@ -500,9 +510,7 @@ class Component:
                 headerTableFrame, width=0, corner_radius=0, fg_color="transparent"
             )
             dataHeaderFrame.columnconfigure(0, weight=1)
-            dataHeaderFrame.grid(
-                row=0, column=(contentIndex * 2) + 1, sticky="nsew"
-            )
+            dataHeaderFrame.grid(row=0, column=(contentIndex * 2) + 1, sticky="nsew")
 
             ctk.CTkLabel(
                 dataHeaderFrame,
@@ -514,7 +522,7 @@ class Component:
                     weight="bold",
                 ),
                 fg_color="transparent",
-                bg_color="transparent"
+                bg_color="transparent",
             ).grid(row=0, column=0, padx=5, sticky="nsew")
 
             self.lineHorizontalComponent(dataHeaderFrame, row=1)
@@ -531,83 +539,92 @@ class Component:
                     ),
                     fg_color="transparent",
                     bg_color="transparent",
-                ).grid(row=2 + (dataIndex * 2), column=0, padx=5, sticky="nsew" if contentObject["align"] == "center" else "nsw" if contentObject["align"] == "left" else "nse")
+                ).grid(
+                    row=2 + (dataIndex * 2),
+                    column=0,
+                    padx=5,
+                    sticky="nsew"
+                    if contentObject["align"] == "center"
+                    else "nsw"
+                    if contentObject["align"] == "left"
+                    else "nse",
+                )
 
                 self.lineHorizontalComponent(
                     dataHeaderFrame, row=2 + (dataIndex * 2) + 1
                 )
 
-            self.lineVerticalComponent(
-                headerTableFrame, column=(contentIndex * 2) + 2
+            self.lineVerticalComponent(headerTableFrame, column=(contentIndex * 2) + 2)
+
+        if actionArray != None:
+            actionHeaderFrame = ctk.CTkFrame(
+                headerTableFrame, width=0, corner_radius=0, fg_color="transparent"
+            )
+            actionHeaderFrame.columnconfigure(0, weight=1)
+            actionHeaderFrame.grid(
+                row=0, column=(len(contentArray) * 2) + 1, sticky="nsew"
             )
 
-        actionHeaderFrame = ctk.CTkFrame(
-            headerTableFrame, width=0, corner_radius=0, fg_color="transparent"
-        )
-        actionHeaderFrame.columnconfigure(0, weight=1)
-        actionHeaderFrame.grid(
-            row=0, column=(len(contentArray) * 2) + 1, sticky="nsew"
-        )
+            ctk.CTkLabel(
+                actionHeaderFrame,
+                text="Action",
+                text_color=Dependency.colorPalette["text"],
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=16,
+                    weight="bold",
+                ),
+                fg_color="transparent",
+                bg_color="transparent",
+            ).grid(row=0, column=0, padx=5, sticky="nsew")
 
-        ctk.CTkLabel(
-            actionHeaderFrame,
-            text="Action",
-            text_color=Dependency.colorPalette["text"],
-            font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"],
-                size=16,
-                weight="bold",
-            ),
-            fg_color="transparent",
-            bg_color="transparent"
-        ).grid(row=0, column=0, padx=5, sticky="nsew")
+            self.lineHorizontalComponent(actionHeaderFrame, row=1)
 
-        self.lineHorizontalComponent(actionHeaderFrame, row=1)
-
-        for contentIndex in range(len(contentArray[0]["data"])):
-            buttonActionFrame = ctk.CTkFrame(actionHeaderFrame, width=0, corner_radius=0, fg_color="transparent")
-            buttonActionFrame.columnconfigure(0, weight=1)
-            buttonActionFrame.grid(
-                row=(contentIndex * 2) + 2, column=0, sticky="nsew"
-            )
-
-            for actionIndex, actionObject in enumerate(actionArray):
-                ctk.CTkButton(
-                    buttonActionFrame,
-                    width=0,
-                    height=14,
-                    image=ctk.CTkImage(
-                        Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
-                        size=(14, 14),
-                    ),
-                    text=actionObject['text'],
-                    font=ctk.CTkFont(
-                        family=Dependency.fontFamily["main"],
-                        size=14,
-                        weight="bold",
-                    ),
-                    cursor="hand2",
-                    corner_radius=8,
-                    text_color=Dependency.colorPalette["text"],
-                    fg_color=actionObject['mainColor'],
-                    hover_color=actionObject['hoverColor'],
-                    command=actionObject['event'],
-                ).grid(
-                    row=0,
-                    column=actionIndex,
-                    padx=1,
-                    pady=1,
-                    sticky="nsew",
+            for contentIndex in range(len(contentArray[0]["data"])):
+                buttonActionFrame = ctk.CTkFrame(
+                    actionHeaderFrame, width=0, corner_radius=0, fg_color="transparent"
                 )
-            
-            self.lineHorizontalComponent(
-                actionHeaderFrame, row=(contentIndex * 2) + 3
+                buttonActionFrame.columnconfigure(0, weight=1)
+                buttonActionFrame.grid(
+                    row=(contentIndex * 2) + 2, column=0, sticky="nsew"
+                )
+
+                for actionIndex, actionObject in enumerate(actionArray):
+                    ctk.CTkButton(
+                        buttonActionFrame,
+                        width=0,
+                        height=14,
+                        image=ctk.CTkImage(
+                            Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
+                            size=(14, 14),
+                        ),
+                        text=actionObject["text"],
+                        font=ctk.CTkFont(
+                            family=Dependency.fontFamily["main"],
+                            size=14,
+                            weight="bold",
+                        ),
+                        cursor="hand2",
+                        corner_radius=8,
+                        text_color=Dependency.colorPalette["text"],
+                        fg_color=actionObject["mainColor"],
+                        hover_color=actionObject["hoverColor"],
+                        command=actionObject["event"],
+                    ).grid(
+                        row=0,
+                        column=actionIndex,
+                        padx=1,
+                        pady=1,
+                        sticky="nsew",
+                    )
+
+                self.lineHorizontalComponent(
+                    actionHeaderFrame, row=(contentIndex * 2) + 3
+                )
+
+            self.lineVerticalComponent(
+                headerTableFrame, column=(len(contentArray) * 2) + 2
             )
-
-
-        self.lineVerticalComponent(
-            headerTableFrame, column=(len(contentArray) * 2) + 2
-        )
 
         self.lineHorizontalComponent(tableFrame, row=2)
 
@@ -681,9 +698,15 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
         self.iconbitmap(Dependency.appIconPath)
         self.title(f"{Dependency.title} - {Dependency.subtitle}")
-        
+
+        xOffset = (self.winfo_screenwidth() // 2) - (
+            Dependency.resolution["width"] // 2
+        )
+        yOffset = (self.winfo_screenheight() // 2) - (
+            Dependency.resolution["height"] // 2
+        )
         self.geometry(
-            f"{Dependency.resolution['width']}x{Dependency.resolution['height']}+{(self.winfo_screenwidth() // 2) - (Dependency.resolution["width"] // 2)}+{(self.winfo_screenheight() // 2) - (Dependency.resolution["height"] // 2)}"
+            f"{Dependency.resolution['width']}x{Dependency.resolution['height']}+{xOffset}+{yOffset}"
         )
         self.minsize(Dependency.resolution["width"], Dependency.resolution["height"])
 
@@ -1239,43 +1262,76 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             except:
                 pass
 
-            self.tableComponent(containerContentFrame, contentArray=[
-                {
-                    "id": 1,
-                    "header": "No.",
-                    "data": [f"{count}." for count in range(1, len(response["data"]) + 1)],
-                    "align": "center"
-                },
-                {
-                    "id": 2,
-                    "header": "Name",
-                    "data": [userObject["name"] for userObject in response["data"]],
-                    "align": "left"
-                },
-                {
-                    "id": 3,
-                    "header": "Username",
-                    "data": [userObject["username"] for userObject in response["data"]],
-                    "align": "left"
-                },
-                {
-                    "id": 4,
-                    "header": "Email",
-                    "data": [userObject["email"] for userObject in response["data"]],
-                    "align": "left"
-                },
-                {
-                    "id": 5,
-                    "header": "Role",
-                    "data": [userObject["role"].capitalize() for userObject in response["data"]],
-                    "align": "center"
-                },
-            ],actionArray=[
-                {"id": 1, "text": "Change", "icon": "change", "mainColor": Dependency.colorPalette["warning"], "hoverColor": Dependency.colorPalette["warning-dark"], "event": lambda: None},
-                {"id": 2, "text": "Change Password", "icon": "password", "mainColor": Dependency.colorPalette["danger"], "hoverColor": Dependency.colorPalette["danger-dark"], "event": lambda: None},
-                {"id": 3, "text": "Remove", "icon": "remove", "mainColor": Dependency.colorPalette["danger"], "hoverColor": Dependency.colorPalette["danger-dark"], "event": lambda: None},
-            ], row=2
-
+            self.tableComponent(
+                containerContentFrame,
+                contentArray=[
+                    {
+                        "id": 1,
+                        "header": "No.",
+                        "data": [
+                            f"{count}." for count in range(1, len(response["data"]) + 1)
+                        ],
+                        "align": "center",
+                    },
+                    {
+                        "id": 2,
+                        "header": "Name",
+                        "data": [userObject["name"] for userObject in response["data"]],
+                        "align": "left",
+                    },
+                    {
+                        "id": 3,
+                        "header": "Username",
+                        "data": [
+                            userObject["username"] for userObject in response["data"]
+                        ],
+                        "align": "left",
+                    },
+                    {
+                        "id": 4,
+                        "header": "Email",
+                        "data": [
+                            userObject["email"] for userObject in response["data"]
+                        ],
+                        "align": "left",
+                    },
+                    {
+                        "id": 5,
+                        "header": "Role",
+                        "data": [
+                            userObject["role"].capitalize()
+                            for userObject in response["data"]
+                        ],
+                        "align": "center",
+                    },
+                ],
+                actionArray=[
+                    {
+                        "id": 1,
+                        "text": "Change",
+                        "icon": "change",
+                        "mainColor": Dependency.colorPalette["warning"],
+                        "hoverColor": Dependency.colorPalette["warning-dark"],
+                        "event": lambda: None,
+                    },
+                    {
+                        "id": 2,
+                        "text": "Change Password",
+                        "icon": "password",
+                        "mainColor": Dependency.colorPalette["danger"],
+                        "hoverColor": Dependency.colorPalette["danger-dark"],
+                        "event": lambda: None,
+                    },
+                    {
+                        "id": 3,
+                        "text": "Remove",
+                        "icon": "remove",
+                        "mainColor": Dependency.colorPalette["danger"],
+                        "hoverColor": Dependency.colorPalette["danger-dark"],
+                        "event": lambda: None,
+                    },
+                ],
+                row=2,
             )
 
 
