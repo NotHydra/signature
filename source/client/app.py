@@ -86,6 +86,7 @@ class Component:
     ) -> None:
         ctk.CTkFrame(
             master,
+            width=0,
             height=weight,
             corner_radius=0,
             fg_color=Dependency.colorPalette["text"],
@@ -1103,26 +1104,31 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                     "id": 1,
                     "header": "No.",
                     "data": [count for count in range(1, len(response["data"]) + 1)],
+                    "align": "center"
                 },
                 {
                     "id": 2,
                     "header": "Name",
                     "data": [userObject["name"] for userObject in response["data"]],
+                    "align": "left"
                 },
                 {
                     "id": 3,
                     "header": "Username",
                     "data": [userObject["username"] for userObject in response["data"]],
+                    "align": "left"
                 },
                 {
                     "id": 4,
                     "header": "Email",
                     "data": [userObject["email"] for userObject in response["data"]],
+                    "align": "left"
                 },
                 {
                     "id": 5,
                     "header": "Role",
                     "data": [userObject["role"] for userObject in response["data"]],
+                    "align": "center"
                 },
             ]
 
@@ -1142,7 +1148,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             )
             containerTableFrame.rowconfigure(0, weight=1)
             containerTableFrame.columnconfigure(
-                [((i * 2) + 1) for i, _ in enumerate(tableArray)], weight=1
+                [((i * 2) + 3) for i, _ in enumerate(tableArray[1:])], weight=4
             )
             containerTableFrame.grid(row=1, column=0, sticky="nsew")
 
@@ -1150,7 +1156,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
             for tableIndex, tableObject in enumerate(tableArray):
                 dataContainerFrame = ctk.CTkFrame(
-                    containerTableFrame, corner_radius=0, fg_color="transparent"
+                    containerTableFrame, width=0, corner_radius=0, fg_color="transparent"
                 )
                 dataContainerFrame.columnconfigure(0, weight=1)
                 dataContainerFrame.grid(
@@ -1163,12 +1169,12 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                     text_color=Dependency.colorPalette["text"],
                     font=ctk.CTkFont(
                         family=Dependency.fontFamily["main"],
-                        size=20,
+                        size=16,
                         weight="bold",
                     ),
                     fg_color="transparent",
-                    bg_color="transparent",
-                ).grid(row=0, column=0, sticky="nsew")
+                    bg_color="transparent"
+                ).grid(row=0, column=0, padx=5, sticky="nsew")
 
                 self.lineHorizontalComponent(dataContainerFrame, row=1)
 
@@ -1184,7 +1190,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         ),
                         fg_color="transparent",
                         bg_color="transparent",
-                    ).grid(row=2 + (dataIndex * 2), column=0, sticky="nsew")
+                    ).grid(row=2 + (dataIndex * 2), column=0, padx=5, sticky="nsew" if tableObject["align"] == "center" else "nsw" if tableObject["align"] == "left" else "nse")
 
                     self.lineHorizontalComponent(
                         dataContainerFrame, row=2 + (dataIndex * 2) + 1
