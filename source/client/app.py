@@ -1132,6 +1132,12 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 },
             ]
 
+            actionArray = [
+                {"id": 1, "text": "Change", "icon": "change", "mainColor": Dependency.colorPalette["warning"], "hoverColor": Dependency.colorPalette["warning-dark"], "event": lambda: None},
+                {"id": 2, "text": "Change Password", "icon": "password", "mainColor": Dependency.colorPalette["danger"], "hoverColor": Dependency.colorPalette["danger-dark"], "event": lambda: None},
+                {"id": 3, "text": "Remove", "icon": "remove", "mainColor": Dependency.colorPalette["danger"], "hoverColor": Dependency.colorPalette["danger-dark"], "event": lambda: None},
+            ]
+
             tableContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
                 corner_radius=0,
@@ -1199,6 +1205,74 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 self.lineVerticalComponent(
                     containerTableFrame, column=(tableIndex * 2) + 2
                 )
+
+            actionContainerFrame = ctk.CTkFrame(
+                containerTableFrame, width=0, corner_radius=0, fg_color="transparent"
+            )
+            actionContainerFrame.columnconfigure(0, weight=1)
+            actionContainerFrame.grid(
+                row=0, column=(len(tableArray) * 2) + 1, sticky="nsew"
+            )
+
+            ctk.CTkLabel(
+                actionContainerFrame,
+                text="Action",
+                text_color=Dependency.colorPalette["text"],
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=16,
+                    weight="bold",
+                ),
+                fg_color="transparent",
+                bg_color="transparent"
+            ).grid(row=0, column=0, padx=5, sticky="nsew")
+
+            self.lineHorizontalComponent(actionContainerFrame, row=1)
+
+            for responseIndex, responseObject in enumerate(response["data"]):
+                buttonActionFrame = ctk.CTkFrame(actionContainerFrame, width=0, corner_radius=0, fg_color="transparent")
+                buttonActionFrame.columnconfigure(0, weight=1)
+                buttonActionFrame.grid(
+                    row=(responseIndex * 2) + 2, column=0, sticky="nsew"
+                )
+
+                for actionIndex, actionObject in enumerate(actionArray):
+                    ctk.CTkButton(
+                        buttonActionFrame,
+                        width=0,
+                        height=14,
+                        image=ctk.CTkImage(
+                            Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
+                            size=(14, 14),
+                        ),
+                        text=actionObject['text'],
+                        font=ctk.CTkFont(
+                            family=Dependency.fontFamily["main"],
+                            size=14,
+                            weight="bold",
+                        ),
+                        cursor="hand2",
+                        corner_radius=8,
+                        text_color=Dependency.colorPalette["text"],
+                        fg_color=actionObject['mainColor'],
+                        hover_color=actionObject['hoverColor'],
+                        command=actionObject['event'],
+                    ).grid(
+                        row=0,
+                        column=actionIndex,
+                        padx=1,
+                        pady=1,
+                        sticky="nsew",
+                    )
+                
+                self.lineHorizontalComponent(
+                    actionContainerFrame, row=(responseIndex * 2) + 3
+                )
+
+
+            self.lineVerticalComponent(
+                containerTableFrame, column=(len(tableArray) * 2) + 2
+            )
 
             self.lineHorizontalComponent(tableContainerFrame, row=2)
 
