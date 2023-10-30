@@ -1103,7 +1103,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 {
                     "id": 1,
                     "header": "No.",
-                    "data": [count for count in range(1, len(response["data"]) + 1)],
+                    "data": [f"{count}." for count in range(1, len(response["data"]) + 1)],
                     "align": "center"
                 },
                 {
