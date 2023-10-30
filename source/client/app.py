@@ -861,7 +861,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 dataContainerFrame,
                 title="Role",
                 placeholder="role",
-                value=self.userObject["role"],
+                value=self.userObject["role"].capitalize(),
                 state=False,
                 row=1,
                 column=1,
