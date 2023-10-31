@@ -45,7 +45,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = True
+    skip = False
 
 
 class Message:
