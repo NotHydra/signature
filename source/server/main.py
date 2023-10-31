@@ -1,17 +1,15 @@
 import datetime
 
-from fastapi import FastAPI, Response, status
-
 from database import Database
-from utility import Utility
-
+from fastapi import FastAPI, Response, status
+from model.login import LoginModel
 from model.user import (
     UserModel,
     UserPageModel,
     UserUpdateModel,
     UserUpdatePasswordModel,
 )
-from model.login import LoginModel
+from utility import Utility
 
 app = FastAPI()
 database = Database()
@@ -65,7 +63,7 @@ def user(response: Response, body: UserPageModel):
             .find()
             .skip(body.count * (body.page - 1))
             .limit(body.count)
-            if body.count == 0 and body.page == 0
+            if body.count != 0 and body.page != 0
             else database.getCollection("user").find()
         )
 
