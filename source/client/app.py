@@ -581,7 +581,6 @@ class Component:
 
             self.lineHorizontalComponent(actionHeaderFrame, row=1)
             
-            print(idArray)
             for idIndex, idObject in enumerate(idArray):
                 buttonActionFrame = ctk.CTkFrame(
                     actionHeaderFrame, width=0, corner_radius=0, fg_color="transparent"
@@ -600,7 +599,7 @@ class Component:
                             Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
                             size=(14, 14),
                         ),
-                        text=f'{actionObject["text"]} {idObject}',
+                        text=f'{actionObject["text"]}',
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"],
                             size=14,
