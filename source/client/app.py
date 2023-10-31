@@ -518,7 +518,7 @@ class Component:
                 text_color=Dependency.colorPalette["text"],
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"],
-                    size=16,
+                    size=12,
                     weight="bold",
                 ),
                 fg_color="transparent",
@@ -534,7 +534,7 @@ class Component:
                     text_color=Dependency.colorPalette["text"],
                     font=ctk.CTkFont(
                         family=Dependency.fontFamily["main"],
-                        size=16,
+                        size=12,
                         weight="bold",
                     ),
                     fg_color="transparent",
@@ -571,7 +571,7 @@ class Component:
                 text_color=Dependency.colorPalette["text"],
                 font=ctk.CTkFont(
                     family=Dependency.fontFamily["main"],
-                    size=16,
+                    size=12,
                     weight="bold",
                 ),
                 fg_color="transparent",
