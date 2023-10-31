@@ -486,7 +486,6 @@ class Component:
             corner_radius=0,
             fg_color="transparent",
         )
-        tableFrame.rowconfigure(1, weight=1)
         tableFrame.columnconfigure(0, weight=1)
         tableFrame.grid(row=row, column=0, padx=20, pady=20, sticky="nsew")
 
@@ -580,15 +579,13 @@ class Component:
             ).grid(row=0, column=0, padx=5, sticky="nsew")
 
             self.lineHorizontalComponent(actionHeaderFrame, row=1)
-            
+
             for idIndex, idObject in enumerate(idArray):
                 buttonActionFrame = ctk.CTkFrame(
                     actionHeaderFrame, width=0, corner_radius=0, fg_color="transparent"
                 )
                 buttonActionFrame.columnconfigure(0, weight=1)
-                buttonActionFrame.grid(
-                    row=(idIndex * 2) + 2, column=0, sticky="nsew"
-                )
+                buttonActionFrame.grid(row=(idIndex * 2) + 2, column=0, sticky="nsew")
 
                 for actionIndex, actionObject in enumerate(actionArray):
                     ctk.CTkButton(
@@ -610,7 +607,7 @@ class Component:
                         text_color=Dependency.colorPalette["text"],
                         fg_color=actionObject["mainColor"],
                         hover_color=actionObject["hoverColor"],
-                        command=lambda id = idObject:actionObject["event"](id),
+                        command=lambda id=idObject: actionObject["event"](id),
                     ).grid(
                         row=0,
                         column=actionIndex,
@@ -619,15 +616,11 @@ class Component:
                         sticky="nsew",
                     )
 
-                self.lineHorizontalComponent(
-                    actionHeaderFrame, row=(idIndex * 2) + 3
-                )
+                self.lineHorizontalComponent(actionHeaderFrame, row=(idIndex * 2) + 3)
 
             self.lineVerticalComponent(
                 headerTableFrame, column=(len(contentArray) * 2) + 2
             )
-
-        self.lineHorizontalComponent(tableFrame, row=2)
 
 
 class Call:
@@ -1188,7 +1181,8 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
     def userFrame(self) -> None:
         if self.refreshSessionDataMiddleware():
-            def AddButtonEvent() ->None:
+
+            def AddButtonEvent() -> None:
                 self.forgetCall()
                 self.userAddFrame()
 
@@ -1264,7 +1258,6 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 corner_radius=8,
                 fg_color=Dependency.colorPalette["main"],
             )
-            containerContentFrame.rowconfigure(2, weight=1)
             containerContentFrame.columnconfigure(0, weight=1)
             containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
@@ -1277,7 +1270,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             response = None
             try:
                 response = requests.get(
-                    "http://localhost:8000/api/user", json={"count": 0, "page": 0}
+                    "http://localhost:8000/api/user", json={"count": 10, "page": 1}
                 ).json()
 
             except:
@@ -1285,7 +1278,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
             self.tableComponent(
                 containerContentFrame,
-                idArray = [userObject["_id"] for userObject in response["data"]],
+                idArray=[userObject["_id"] for userObject in response["data"]],
                 contentArray=[
                     {
                         "id": 1,
