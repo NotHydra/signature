@@ -395,7 +395,7 @@ class Component:
             text=title,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
-                size=20,
+                size=18,
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
@@ -412,13 +412,13 @@ class Component:
 
         entryObject = ctk.CTkEntry(
             entryFrame,
-            height=40,
+            height=36,
             placeholder_text=placeholder,
             textvariable=entryValue,
             show=show,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
-                size=20,
+                size=18,
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
@@ -449,15 +449,15 @@ class Component:
     ) -> None:
         ctk.CTkButton(
             master,
-            height=40,
+            height=36,
             image=ctk.CTkImage(
                 Image.open(Utility.getIcon(f"{icon}.png")),
-                size=(24, 24),
+                size=(22, 22),
             ),
             text=text,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
-                size=20,
+                size=18,
                 weight="bold",
             ),
             cursor="hand2",
