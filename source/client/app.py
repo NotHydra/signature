@@ -383,6 +383,7 @@ class Component:
         state: bool,
         row: int,
         column: int,
+        show: str = "",
     ) -> ctk.CTkEntry:
         entryFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         entryFrame.rowconfigure([0, 1], weight=1)
@@ -407,13 +408,14 @@ class Component:
         )
 
         entryValue = ctk.StringVar()
-        entryValue.set(value)
+        entryValue.set(value if value != None else "")
 
         entryObject = ctk.CTkEntry(
             entryFrame,
             height=40,
             placeholder_text=placeholder,
             textvariable=entryValue,
+            show=show,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=20,
@@ -790,7 +792,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             username = usernameLoginEntry.get()
             password = passwordLoginEntry.get()
 
-            if username != "" and password != "":
+            if "" not in [username, password]:
                 response = None
                 try:
                     response = requests.post(
@@ -817,7 +819,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         self.errorMessage(response["message"])
 
             else:
-                self.errorMessage("Please Insert Username and Password")
+                self.errorMessage("Please Fill Out The Form")
 
         def exitButtonEvent() -> None:
             if self.confirmationMessage():
@@ -1085,7 +1087,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                                 self.errorMessage(response["message"])
 
                     else:
-                        self.errorMessage("Please Insert Name, Username and Email")
+                        self.errorMessage("Please Fill Out The Form")
 
             def backButtonEvent():
                 self.forgetCall()
@@ -1178,6 +1180,49 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
     def homeChangePasswordFrame(self) -> None:
         if self.refreshSessionDataMiddleware():
+
+            def changePasswordButtonEvent():
+                if self.confirmationMessage():
+                    newPassword = newPasswordDataEntry.get()
+                    confirmPassword = confirmPasswordDataEntry.get()
+
+                    if "" not in [newPassword, confirmPassword]:
+                        if newPassword == confirmPassword:
+                            response = None
+                            try:
+                                response = requests.put(
+                                    f"http://localhost:8000/api/user/update-password/{self.userObject['_id']}",
+                                    json={
+                                        "password": newPassword,
+                                    },
+                                ).json()
+
+                            except requests.ConnectionError:
+                                self.errorMessage(
+                                    "Make Sure You Are Connected To The Internet"
+                                )
+
+                            except:
+                                self.errorMessage("Server Error")
+
+                            if response != None:
+                                if response["success"] == True:
+                                    self.successMessage(response["message"])
+
+                                    self.forgetCall()
+                                    self.homeChangePasswordFrame()
+
+                                else:
+                                    self.errorMessage(response["message"])
+
+                        else:
+                            self.errorMessage(
+                                "Confirmation Password Doesn't Match New Password"
+                            )
+
+                    else:
+                        self.errorMessage("Please Fill Out The Form")
+
             def backButtonEvent():
                 self.forgetCall()
                 self.homeFrame()
@@ -1224,6 +1269,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 title="New Password",
                 placeholder="new password",
                 value=None,
+                show="*",
                 state=True,
                 row=0,
                 column=0,
@@ -1233,6 +1279,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 title="Confirm Password",
                 placeholder="confirm password",
                 value=None,
+                show="*",
                 state=True,
                 row=0,
                 column=1,
@@ -1244,7 +1291,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 icon="password",
                 mainColor=Dependency.colorPalette["danger"],
                 hoverColor=Dependency.colorPalette["danger-dark"],
-                event=changeButtonEvent,
+                event=changePasswordButtonEvent,
                 row=1,
             )
             self.buttonDataComponent(
