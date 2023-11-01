@@ -651,7 +651,7 @@ class Component:
 
 class Middleware:
     def refreshSessionDataMiddleware(frameFunction: Callable[[], None]) -> None:
-        def fetchSessionData():
+        def fetchSessionData() -> None:
             response = None
             try:
                 response = requests.get(
