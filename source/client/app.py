@@ -49,7 +49,7 @@ class Dependency:
 
 
 class Message:
-    def errorMessage(self, message: str) -> None:
+    def errorMessage(message: str) -> None:
         CTkMessagebox(
             corner_radius=8,
             icon="cancel",
@@ -57,7 +57,7 @@ class Message:
             message=message,
         )
 
-    def successMessage(self, message: str) -> None:
+    def successMessage(message: str) -> None:
         CTkMessagebox(
             corner_radius=8,
             icon="check",
@@ -65,7 +65,7 @@ class Message:
             message=message,
         )
 
-    def confirmationMessage(self, message: str = "Are You Sure?") -> bool:
+    def confirmationMessage(message: str = "Are You Sure?") -> bool:
         return (
             True
             if CTkMessagebox(
@@ -81,9 +81,32 @@ class Message:
         )
 
 
+class Call:
+    def resetFrameCall() -> None:
+        app.rowconfigure([0, 1, 2, 3, 4], weight=0)
+        app.columnconfigure([0, 1, 2, 3, 4], weight=0)
+
+        for widget in app.winfo_children():
+            if "frame" in str(widget):
+                widget.grid_forget()
+
+    def logoutCall() -> None:
+        app.userObject = {
+            "_id": 0,
+            "name": None,
+            "username": None,
+            "email": None,
+            "role": None,
+            "isActive": None,
+        }
+
+        Call.resetFrameCall()
+        app.loginFrame()
+
+
 class Component:
     def lineHorizontalComponent(
-        self, master: ctk.CTk | ctk.CTkFrame, row: int, weight: int = 2
+        master: ctk.CTk | ctk.CTkFrame, row: int, weight: int = 2
     ) -> None:
         ctk.CTkFrame(
             master,
@@ -94,7 +117,6 @@ class Component:
         ).grid(row=row, column=0, sticky="nsew")
 
     def lineVerticalComponent(
-        self,
         master: ctk.CTk | ctk.CTkFrame,
         row: int = 0,
         column: int = 0,
@@ -107,14 +129,14 @@ class Component:
             fg_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=column, sticky="nsew")
 
-    def sidebarComponent(self) -> None:
+    def sidebarComponent() -> None:
         def homeButtonEvent() -> None:
-            self.forgetCall()
-            self.homeFrame()
+            Call.resetFrameCall()
+            app.homeFrame()
 
         def logoutButtonEvent() -> None:
-            if self.confirmationMessage():
-                self.logoutCall()
+            if Message.confirmationMessage():
+                Call.logoutCall()
 
         def sidebarButtonComponent(
             master,
@@ -146,7 +168,7 @@ class Component:
             ).grid(row=row, column=0, sticky="ew")
 
         sidebarFrame = ctk.CTkFrame(
-            self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+            app, corner_radius=0, fg_color=Dependency.colorPalette["main"]
         )
         sidebarFrame.rowconfigure(0, weight=15)
         sidebarFrame.rowconfigure(1, weight=1)
@@ -184,7 +206,7 @@ class Component:
         )
         brandSidebarButton.grid(row=0, column=0, sticky="ew")
 
-        self.lineHorizontalComponent(contentSidebarFrame, 1)
+        Component.lineHorizontalComponent(contentSidebarFrame, 1)
 
         profileSidebarFrame = ctk.CTkFrame(
             contentSidebarFrame, corner_radius=0, fg_color="transparent"
@@ -196,7 +218,7 @@ class Component:
         roleProfileImage = ctk.CTkLabel(
             profileSidebarFrame,
             image=ctk.CTkImage(
-                Image.open(Utility.getIcon(f"{self.userObject['role']}.png")),
+                Image.open(Utility.getIcon(f"{app.userObject['role']}.png")),
                 size=(32, 32),
             ),
             text="",
@@ -205,7 +227,7 @@ class Component:
 
         usernameProfileLabel = ctk.CTkLabel(
             profileSidebarFrame,
-            text=self.userObject["username"],
+            text=app.userObject["username"],
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
@@ -215,7 +237,7 @@ class Component:
 
         roleProfileLabel = ctk.CTkLabel(
             profileSidebarFrame,
-            text=str(self.userObject["role"]).upper(),
+            text=str(app.userObject["role"]).upper(),
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=12, weight="bold"
             ),
@@ -223,7 +245,7 @@ class Component:
         )
         roleProfileLabel.grid(row=1, column=1, padx=10, sticky="w")
 
-        self.lineHorizontalComponent(contentSidebarFrame, 3)
+        Component.lineHorizontalComponent(contentSidebarFrame, 3)
 
         sidebarButtonComponent(
             contentSidebarFrame,
@@ -231,17 +253,17 @@ class Component:
             icon="house",
             event=homeButtonEvent,
             row=4,
-            highlight=True if self.sidebarId == 1 else False,
+            highlight=True if app.sidebarId == 1 else False,
         )
 
-        if self.userObject["role"] == "user":
+        if app.userObject["role"] == "user":
             sidebarButtonComponent(
                 contentSidebarFrame,
                 title="Upload",
                 icon="upload",
                 event=lambda: None,
                 row=5,
-                highlight=True if self.sidebarId == 2 else False,
+                highlight=True if app.sidebarId == 2 else False,
             )
             sidebarButtonComponent(
                 contentSidebarFrame,
@@ -249,7 +271,7 @@ class Component:
                 icon="download",
                 event=lambda: None,
                 row=6,
-                highlight=True if self.sidebarId == 3 else False,
+                highlight=True if app.sidebarId == 3 else False,
             )
             sidebarButtonComponent(
                 contentSidebarFrame,
@@ -257,14 +279,14 @@ class Component:
                 icon="sign",
                 event=lambda: None,
                 row=7,
-                highlight=True if self.sidebarId == 4 else False,
+                highlight=True if app.sidebarId == 4 else False,
             )
 
-        elif self.userObject["role"] == "admin":
+        elif app.userObject["role"] == "admin":
 
             def userButtonEvent() -> None:
-                self.forgetCall()
-                self.userFrame()
+                Call.resetFrameCall()
+                app.userFrame()
 
             sidebarButtonComponent(
                 contentSidebarFrame,
@@ -272,7 +294,7 @@ class Component:
                 icon="user",
                 event=userButtonEvent,
                 row=5,
-                highlight=True if self.sidebarId == 2 else False,
+                highlight=True if app.sidebarId == 2 else False,
             )
 
         footerSidebarFrame = ctk.CTkFrame(
@@ -291,7 +313,7 @@ class Component:
             row=0,
         )
 
-        self.lineHorizontalComponent(footerSidebarFrame, 1)
+        Component.lineHorizontalComponent(footerSidebarFrame, 1)
 
         copyrightSidebarLabel = ctk.CTkLabel(
             footerSidebarFrame,
@@ -306,7 +328,7 @@ class Component:
         copyrightSidebarLabel.grid(row=2, column=0, sticky="ew")
 
     def titleContentComponent(
-        self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
+        master: ctk.CTk | ctk.CTkFrame, title: str, row: int
     ) -> None:
         titleFrame = ctk.CTkFrame(
             master, corner_radius=8, fg_color=Dependency.colorPalette["main"]
@@ -325,7 +347,7 @@ class Component:
         ).grid(row=row, column=0, padx=10, sticky="nsw")
 
     def boxContentComponent(
-        self, master: ctk.CTk | ctk.CTkFrame, boxArray: list[dict[str, any]], row: int
+        master: ctk.CTk | ctk.CTkFrame, boxArray: list[dict[str, any]], row: int
     ) -> None:
         boxFrame = ctk.CTkFrame(
             master,
@@ -361,7 +383,7 @@ class Component:
             )
 
     def titleContainerComponent(
-        self, master: ctk.CTk | ctk.CTkFrame, title: str, row: int
+        master: ctk.CTk | ctk.CTkFrame, title: str, row: int
     ) -> None:
         ctk.CTkLabel(
             master,
@@ -375,7 +397,6 @@ class Component:
         ).grid(row=row, column=0, padx=10, pady=10, sticky="nsw")
 
     def entryDataComponent(
-        self,
         master: ctk.CTk | ctk.CTkFrame,
         title: str,
         placeholder: str,
@@ -438,7 +459,6 @@ class Component:
         return entryObject
 
     def buttonDataComponent(
-        self,
         master: ctk.CTk | ctk.CTkFrame,
         text: str,
         icon: str,
@@ -475,7 +495,6 @@ class Component:
         )
 
     def tableComponent(
-        self,
         master: ctk.CTk | ctk.CTkFrame,
         row: int,
         contentArray: list[dict[str, any]],
@@ -491,7 +510,7 @@ class Component:
         tableFrame.columnconfigure(0, weight=1)
         tableFrame.grid(row=row, column=0, padx=20, pady=20, sticky="nsew")
 
-        self.lineHorizontalComponent(tableFrame, row=0)
+        Component.lineHorizontalComponent(tableFrame, row=0)
 
         headerTableFrame = ctk.CTkFrame(
             tableFrame, corner_radius=0, fg_color="transparent"
@@ -505,7 +524,7 @@ class Component:
         )
         headerTableFrame.grid(row=1, column=0, sticky="nsew")
 
-        self.lineVerticalComponent(headerTableFrame, column=0)
+        Component.lineVerticalComponent(headerTableFrame, column=0)
 
         for contentIndex, contentObject in enumerate(contentArray):
             dataHeaderFrame = ctk.CTkFrame(
@@ -527,7 +546,7 @@ class Component:
                 bg_color="transparent",
             ).grid(row=0, column=0, padx=5, sticky="nsew")
 
-            self.lineHorizontalComponent(dataHeaderFrame, row=1)
+            Component.lineHorizontalComponent(dataHeaderFrame, row=1)
 
             for dataIndex, dataObject in enumerate(contentObject["data"]):
                 ctk.CTkLabel(
@@ -552,11 +571,13 @@ class Component:
                     else "nse",
                 )
 
-                self.lineHorizontalComponent(
+                Component.lineHorizontalComponent(
                     dataHeaderFrame, row=2 + (dataIndex * 2) + 1
                 )
 
-            self.lineVerticalComponent(headerTableFrame, column=(contentIndex * 2) + 2)
+            Component.lineVerticalComponent(
+                headerTableFrame, column=(contentIndex * 2) + 2
+            )
 
         if actionArray != None:
             actionHeaderFrame = ctk.CTkFrame(
@@ -580,7 +601,7 @@ class Component:
                 bg_color="transparent",
             ).grid(row=0, column=0, padx=5, sticky="nsew")
 
-            self.lineHorizontalComponent(actionHeaderFrame, row=1)
+            Component.lineHorizontalComponent(actionHeaderFrame, row=1)
 
             for idIndex, idObject in enumerate(idArray):
                 buttonActionFrame = ctk.CTkFrame(
@@ -618,70 +639,49 @@ class Component:
                         sticky="nsew",
                     )
 
-                self.lineHorizontalComponent(actionHeaderFrame, row=(idIndex * 2) + 3)
+                Component.lineHorizontalComponent(
+                    actionHeaderFrame, row=(idIndex * 2) + 3
+                )
 
-            self.lineVerticalComponent(
+            Component.lineVerticalComponent(
                 headerTableFrame, column=(len(contentArray) * 2) + 2
             )
 
 
-class Call:
-    def resetFrameCall(self: ctk.CTk) -> None:
-        self.rowconfigure([0, 1, 2, 3, 4], weight=0)
-        self.columnconfigure([0, 1, 2, 3, 4], weight=0)
-
-        for widget in self.winfo_children():
-            if "frame" in str(widget):
-                widget.grid_forget()
-
-    def logoutCall(self) -> None:
-        self.userObject = {
-            "_id": 0,
-            "name": None,
-            "username": None,
-            "email": None,
-            "role": None,
-            "isActive": None,
-        }
-
-        self.resetFrameCall()
-        self.loginFrame()
-
-
 class Middleware:
-    def refreshSessionDataMiddleware(self) -> bool:
+    def refreshSessionDataMiddleware() -> bool:
         response = None
         try:
             response = requests.get(
-                f"http://localhost:8000/api/user/{self.userObject['_id']}"
+                f"http://localhost:8000/api/user/{app.userObject['_id']}"
             ).json()
 
         except requests.ConnectionError:
-            self.errorMessage("Make Sure You Are Connected To The Internet")
-            self.logoutCall()
+            Message.errorMessage("Make Sure You Are Connected To The Internet")
+            Call.logoutCall()
 
         except:
-            self.errorMessage("Server Error")
-            self.logoutCall()
+            Message.errorMessage("Server Error")
+            Call.logoutCall()
 
         if response != None:
             if response["success"] == True:
-                self.userObject["name"] = response["data"]["name"]
-                self.userObject["username"] = response["data"]["username"]
-                self.userObject["email"] = response["data"]["email"]
-                self.userObject["role"] = response["data"]["role"]
-                self.userObject["isActive"] = response["data"]["isActive"]
+                app.userObject["name"] = response["data"]["name"]
+                app.userObject["username"] = response["data"]["username"]
+                app.userObject["email"] = response["data"]["email"]
+                app.userObject["role"] = response["data"]["role"]
+                app.userObject["isActive"] = response["data"]["isActive"]
 
                 return True
 
             else:
-                self.errorMessage(response["message"])
-                self.logoutCall()
+                Message.errorMessage(response["message"])
+                Call.logoutCall()
 
         return False
 
 
-class App(ctk.CTk, Message, Component, Call, Middleware):
+class App(ctk.CTk):
     userObject = {
         "_id": 0,
         "name": None,
@@ -724,7 +724,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                     self.update()
                     time.sleep(0.00001)
 
-            self.resetFrameCall()
+            Call.resetFrameCall()
             self.loginFrame()
 
         self.rowconfigure(0, weight=1)
@@ -804,28 +804,28 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                     ).json()
 
                 except requests.ConnectionError:
-                    self.errorMessage("Make Sure You Are Connected To The Internet")
+                    Message.errorMessage("Make Sure You Are Connected To The Internet")
 
                 except:
-                    self.errorMessage("Server Error")
+                    Message.errorMessage("Server Error")
 
                 if response != None:
                     if response["success"] == True:
-                        self.successMessage(response["message"])
+                        Message.successMessage(response["message"])
 
                         self.userObject["_id"] = response["data"]["_id"]
 
-                        self.resetFrameCall()
+                        Call.resetFrameCall()
                         self.homeFrame()
 
                     else:
-                        self.errorMessage(response["message"])
+                        Message.errorMessage(response["message"])
 
             else:
-                self.errorMessage("Please Fill Out The Form")
+                Message.errorMessage("Please Fill Out The Form")
 
         def exitButtonEvent() -> None:
-            if self.confirmationMessage():
+            if Message.confirmationMessage():
                 self.quit()
 
         self.rowconfigure(0, weight=1)
@@ -927,18 +927,18 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         if Dependency.skip:
             self.userObject["_id"] = 1
 
-            self.resetFrameCall()
+            Call.resetFrameCall()
             self.homeFrame()
 
     def homeFrame(self) -> None:
-        if self.refreshSessionDataMiddleware():
+        if Middleware.refreshSessionDataMiddleware():
 
             def changeButtonEvent() -> None:
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.homeChangeFrame()
 
             def changePasswordButtonEvent() -> None:
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.homeChangePasswordFrame()
 
             self.sidebarId = 1
@@ -947,14 +947,14 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
 
-            self.sidebarComponent()
+            Component.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
             contentFrame.rowconfigure(2, weight=1)
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-            self.titleContentComponent(contentFrame, title="HOME", row=0)
+            Component.titleContentComponent(contentFrame, title="HOME", row=0)
 
             welcomeContentLabel = ctk.CTkLabel(
                 contentFrame,
@@ -979,8 +979,10 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             containerContentFrame.columnconfigure(0, weight=1)
             containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
-            self.titleContainerComponent(containerContentFrame, title="Profile", row=0)
-            self.lineHorizontalComponent(containerContentFrame, row=1)
+            Component.titleContainerComponent(
+                containerContentFrame, title="Profile", row=0
+            )
+            Component.lineHorizontalComponent(containerContentFrame, row=1)
 
             dataContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
@@ -992,7 +994,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
             )
 
-            self.entryDataComponent(
+            Component.entryDataComponent(
                 dataContainerFrame,
                 title="Name",
                 placeholder="name",
@@ -1001,7 +1003,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=0,
                 column=0,
             )
-            self.entryDataComponent(
+            Component.entryDataComponent(
                 dataContainerFrame,
                 title="Username",
                 placeholder="username",
@@ -1011,7 +1013,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 column=1,
             )
 
-            self.entryDataComponent(
+            Component.entryDataComponent(
                 dataContainerFrame,
                 title="Email",
                 placeholder="email",
@@ -1020,7 +1022,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=1,
                 column=0,
             )
-            self.entryDataComponent(
+            Component.entryDataComponent(
                 dataContainerFrame,
                 title="Role",
                 placeholder="role",
@@ -1030,7 +1032,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 column=1,
             )
 
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Change",
                 icon="change",
@@ -1039,7 +1041,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 event=changeButtonEvent,
                 row=2,
             )
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Change Password",
                 icon="password",
@@ -1050,10 +1052,10 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             )
 
     def homeChangeFrame(self) -> None:
-        if self.refreshSessionDataMiddleware():
+        if Middleware.refreshSessionDataMiddleware():
 
             def changeButtonEvent():
-                if self.confirmationMessage():
+                if Message.confirmationMessage():
                     name = nameDataEntry.get()
                     username = usernameDataEntry.get()
                     email = emailDataEntry.get()
@@ -1072,28 +1074,28 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                             ).json()
 
                         except requests.ConnectionError:
-                            self.errorMessage(
+                            Message.errorMessage(
                                 "Make Sure You Are Connected To The Internet"
                             )
 
                         except:
-                            self.errorMessage("Server Error")
+                            Message.errorMessage("Server Error")
 
                         if response != None:
                             if response["success"] == True:
-                                self.successMessage(response["message"])
+                                Message.successMessage(response["message"])
 
-                                self.resetFrameCall()
+                                Call.resetFrameCall()
                                 self.homeChangeFrame()
 
                             else:
-                                self.errorMessage(response["message"])
+                                Message.errorMessage(response["message"])
 
                     else:
-                        self.errorMessage("Please Fill Out The Form")
+                        Message.errorMessage("Please Fill Out The Form")
 
             def backButtonEvent():
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.homeFrame()
 
             self.sidebarId = 1
@@ -1102,13 +1104,13 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
 
-            self.sidebarComponent()
+            Component.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-            self.titleContentComponent(contentFrame, title="HOME", row=0)
+            Component.titleContentComponent(contentFrame, title="HOME", row=0)
 
             containerContentFrame = ctk.CTkFrame(
                 contentFrame,
@@ -1118,10 +1120,10 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             containerContentFrame.columnconfigure(0, weight=1)
             containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
 
-            self.titleContainerComponent(
+            Component.titleContainerComponent(
                 containerContentFrame, title="Change Profile", row=0
             )
-            self.lineHorizontalComponent(containerContentFrame, row=1)
+            Component.lineHorizontalComponent(containerContentFrame, row=1)
 
             dataContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
@@ -1133,7 +1135,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
             )
 
-            nameDataEntry = self.entryDataComponent(
+            nameDataEntry = Component.entryDataComponent(
                 dataContainerFrame,
                 title="Name",
                 placeholder="name",
@@ -1142,7 +1144,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=0,
                 column=0,
             )
-            usernameDataEntry = self.entryDataComponent(
+            usernameDataEntry = Component.entryDataComponent(
                 dataContainerFrame,
                 title="Username",
                 placeholder="username",
@@ -1152,7 +1154,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 column=1,
             )
 
-            emailDataEntry = self.entryDataComponent(
+            emailDataEntry = Component.entryDataComponent(
                 dataContainerFrame,
                 title="Email",
                 placeholder="email",
@@ -1162,7 +1164,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 column=0,
             )
 
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Change",
                 icon="change",
@@ -1171,7 +1173,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 event=changeButtonEvent,
                 row=2,
             )
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Back",
                 icon="back",
@@ -1182,10 +1184,10 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             )
 
     def homeChangePasswordFrame(self) -> None:
-        if self.refreshSessionDataMiddleware():
+        if Middleware.refreshSessionDataMiddleware():
 
             def changePasswordButtonEvent():
-                if self.confirmationMessage():
+                if Message.confirmationMessage():
                     newPassword = newPasswordDataEntry.get()
                     confirmPassword = confirmPasswordDataEntry.get()
 
@@ -1201,33 +1203,33 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                                 ).json()
 
                             except requests.ConnectionError:
-                                self.errorMessage(
+                                Message.errorMessage(
                                     "Make Sure You Are Connected To The Internet"
                                 )
 
                             except:
-                                self.errorMessage("Server Error")
+                                Message.errorMessage("Server Error")
 
                             if response != None:
                                 if response["success"] == True:
-                                    self.successMessage(response["message"])
+                                    Message.successMessage(response["message"])
 
-                                    self.resetFrameCall()
+                                    Call.resetFrameCall()
                                     self.homeChangePasswordFrame()
 
                                 else:
-                                    self.errorMessage(response["message"])
+                                    Message.errorMessage(response["message"])
 
                         else:
-                            self.errorMessage(
+                            Message.errorMessage(
                                 "Confirmation Password Doesn't Match New Password"
                             )
 
                     else:
-                        self.errorMessage("Please Fill Out The Form")
+                        Message.errorMessage("Please Fill Out The Form")
 
             def backButtonEvent():
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.homeFrame()
 
             self.sidebarId = 1
@@ -1236,13 +1238,13 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
 
-            self.sidebarComponent()
+            Component.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-            self.titleContentComponent(contentFrame, title="HOME", row=0)
+            Component.titleContentComponent(contentFrame, title="HOME", row=0)
 
             containerContentFrame = ctk.CTkFrame(
                 contentFrame,
@@ -1252,10 +1254,10 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             containerContentFrame.columnconfigure(0, weight=1)
             containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
 
-            self.titleContainerComponent(
+            Component.titleContainerComponent(
                 containerContentFrame, title="Change Password Profile", row=0
             )
-            self.lineHorizontalComponent(containerContentFrame, row=1)
+            Component.lineHorizontalComponent(containerContentFrame, row=1)
 
             dataContainerFrame = ctk.CTkFrame(
                 containerContentFrame,
@@ -1267,7 +1269,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
             )
 
-            newPasswordDataEntry = self.entryDataComponent(
+            newPasswordDataEntry = Component.entryDataComponent(
                 dataContainerFrame,
                 title="New Password",
                 placeholder="new password",
@@ -1277,7 +1279,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=0,
                 column=0,
             )
-            confirmPasswordDataEntry = self.entryDataComponent(
+            confirmPasswordDataEntry = Component.entryDataComponent(
                 dataContainerFrame,
                 title="Confirm Password",
                 placeholder="confirm password",
@@ -1288,7 +1290,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 column=1,
             )
 
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Change Password",
                 icon="password",
@@ -1297,7 +1299,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 event=changePasswordButtonEvent,
                 row=1,
             )
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Back",
                 icon="back",
@@ -1308,22 +1310,22 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             )
 
     def userFrame(self) -> None:
-        if self.refreshSessionDataMiddleware():
+        if Middleware.refreshSessionDataMiddleware():
 
             def AddButtonEvent() -> None:
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.userAddFrame()
 
             def changeButtonEvent(id: int) -> None:
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.userChangeFrame(id)
 
             def changePasswordButtonEvent(id: int) -> None:
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.userChangePasswordFrame(id)
 
             def removeButtonEvent(id: int) -> None:
-                self.resetFrameCall()
+                Call.resetFrameCall()
                 self.userRemoveFrame(id)
 
             self.sidebarId = 2
@@ -1332,14 +1334,14 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=31)
 
-            self.sidebarComponent()
+            Component.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
             contentFrame.rowconfigure(2, weight=1)
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
-            self.titleContentComponent(contentFrame, title="USER", row=0)
+            Component.titleContentComponent(contentFrame, title="USER", row=0)
 
             response = None
             try:
@@ -1350,7 +1352,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             except:
                 pass
 
-            self.boxContentComponent(
+            Component.boxContentComponent(
                 contentFrame,
                 boxArray=[
                     {
@@ -1389,11 +1391,11 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             containerContentFrame.columnconfigure(0, weight=1)
             containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
-            self.titleContainerComponent(
+            Component.titleContainerComponent(
                 containerContentFrame, title="User Table", row=0
             )
 
-            self.lineHorizontalComponent(containerContentFrame, row=1)
+            Component.lineHorizontalComponent(containerContentFrame, row=1)
 
             response = None
             try:
@@ -1404,7 +1406,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
             except:
                 pass
 
-            self.tableComponent(
+            Component.tableComponent(
                 containerContentFrame,
                 idArray=[userObject["_id"] for userObject in response["data"]],
                 contentArray=[
@@ -1442,7 +1444,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         "id": 5,
                         "header": "Role",
                         "data": [
-                            userObject["role"].capitalize()
+                            str(userObject["role"]).capitalize()
                             for userObject in response["data"]
                         ],
                         "align": "center",
@@ -1487,7 +1489,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                 row=3, column=0, padx=20, pady=(0, 10), sticky="nsew"
             )
 
-            self.buttonDataComponent(
+            Component.buttonDataComponent(
                 dataContainerFrame,
                 text="Add",
                 icon="add",
