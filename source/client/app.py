@@ -626,7 +626,10 @@ class Component:
 
 
 class Call:
-    def forgetCall(self: ctk.CTk) -> None:
+    def resetFrameCall(self: ctk.CTk) -> None:
+        self.rowconfigure([0, 1, 2, 3, 4], weight=0)
+        self.columnconfigure([0, 1, 2, 3, 4], weight=0)
+
         for widget in self.winfo_children():
             if "frame" in str(widget):
                 widget.grid_forget()
@@ -641,7 +644,7 @@ class Call:
             "isActive": None,
         }
 
-        self.forgetCall()
+        self.resetFrameCall()
         self.loginFrame()
 
 
@@ -721,7 +724,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                     self.update()
                     time.sleep(0.00001)
 
-            self.forgetCall()
+            self.resetFrameCall()
             self.loginFrame()
 
         self.rowconfigure(0, weight=1)
@@ -812,7 +815,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
 
                         self.userObject["_id"] = response["data"]["_id"]
 
-                        self.forgetCall()
+                        self.resetFrameCall()
                         self.homeFrame()
 
                     else:
@@ -924,18 +927,18 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         if Dependency.skip:
             self.userObject["_id"] = 1
 
-            self.forgetCall()
+            self.resetFrameCall()
             self.homeFrame()
 
     def homeFrame(self) -> None:
         if self.refreshSessionDataMiddleware():
 
             def changeButtonEvent() -> None:
-                self.forgetCall()
+                self.resetFrameCall()
                 self.homeChangeFrame()
 
             def changePasswordButtonEvent() -> None:
-                self.forgetCall()
+                self.resetFrameCall()
                 self.homeChangePasswordFrame()
 
             self.sidebarId = 1
@@ -1080,7 +1083,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                             if response["success"] == True:
                                 self.successMessage(response["message"])
 
-                                self.forgetCall()
+                                self.resetFrameCall()
                                 self.homeChangeFrame()
 
                             else:
@@ -1090,7 +1093,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         self.errorMessage("Please Fill Out The Form")
 
             def backButtonEvent():
-                self.forgetCall()
+                self.resetFrameCall()
                 self.homeFrame()
 
             self.sidebarId = 1
@@ -1209,7 +1212,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                                 if response["success"] == True:
                                     self.successMessage(response["message"])
 
-                                    self.forgetCall()
+                                    self.resetFrameCall()
                                     self.homeChangePasswordFrame()
 
                                 else:
@@ -1224,7 +1227,7 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
                         self.errorMessage("Please Fill Out The Form")
 
             def backButtonEvent():
-                self.forgetCall()
+                self.resetFrameCall()
                 self.homeFrame()
 
             self.sidebarId = 1
@@ -1308,19 +1311,19 @@ class App(ctk.CTk, Message, Component, Call, Middleware):
         if self.refreshSessionDataMiddleware():
 
             def AddButtonEvent() -> None:
-                self.forgetCall()
+                self.resetFrameCall()
                 self.userAddFrame()
 
             def changeButtonEvent(id: int) -> None:
-                self.forgetCall()
+                self.resetFrameCall()
                 self.userChangeFrame(id)
 
             def changePasswordButtonEvent(id: int) -> None:
-                self.forgetCall()
+                self.resetFrameCall()
                 self.userChangePasswordFrame(id)
 
             def removeButtonEvent(id: int) -> None:
-                self.forgetCall()
+                self.resetFrameCall()
                 self.userRemoveFrame(id)
 
             self.sidebarId = 2
