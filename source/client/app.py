@@ -1220,6 +1220,7 @@ class App(ctk.CTk):
             row=3,
         )
 
+    # Rifky
     def homeChangePasswordFrame(self) -> None:
         def changePasswordButtonEvent():
             if Message.confirmationMessage():
@@ -1529,6 +1530,7 @@ class App(ctk.CTk):
             row=0,
         )
 
+    # Rafly
     def userAddFrame(self) -> None:
         self.sidebarId = 2
 
@@ -1603,7 +1605,7 @@ class App(ctk.CTk):
             column=1,
             show="*",
         )
-        
+
         confirmationPasswordDataEntry = Component.entryDataComponent(
             dataContainerFrame,
             title="Confirmation Password",
@@ -1634,6 +1636,7 @@ class App(ctk.CTk):
             row=4,
         )
 
+    # Kanaya
     def userChangeFrame(self, id: int) -> None:
         self.sidebarId = 2
 
@@ -1718,9 +1721,11 @@ class App(ctk.CTk):
             row=3,
         )
 
+    # Salma
     def userChangePasswordFrame(self, id: int) -> None:
         print(id)
 
+    # Chelsy
     def userRemoveFrame(self, id: int) -> None:
         print(id)
 
