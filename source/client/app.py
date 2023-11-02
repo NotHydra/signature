@@ -1532,6 +1532,62 @@ class App(ctk.CTk):
 
     # Rafly
     def userAddFrame(self) -> None:
+        def addButtonEvent():
+            if Message.confirmationMessage():
+                name = nameDataEntry.get()
+                username = usernameDataEntry.get()
+                email = emailDataEntry.get()
+                newPassword = newPasswordDataEntry.get()
+                confirmPassword = confirmPasswordDataEntry.get()
+
+                if "" not in [name, username, email, newPassword, confirmPassword]:
+                    if newPassword == confirmPassword:
+                        response = None
+                        try:
+                            response = requests.post(
+                                f"http://localhost:8000/api/user/create",
+                                json={
+                                    "name": name,
+                                    "username": username,
+                                    "email": email,
+                                    "password": newPassword,
+                                    "role": "user",
+                                    "isActive": True,
+                                },
+                            ).json()
+
+                        except requests.ConnectionError:
+                            Message.errorMessage(
+                                "Make Sure You Are Connected To The Internet"
+                            )
+
+                        except:
+                            Message.errorMessage("Server Error")
+
+                        if response != None:
+                            if response["success"] == True:
+                                Message.successMessage(response["message"])
+
+                                Call.resetFrameCall()
+                                Middleware.refreshSessionDataMiddleware(
+                                    self.userAddFrame
+                                )
+
+                            else:
+                                Message.errorMessage(response["message"])
+
+                    else:
+                        Message.errorMessage(
+                            "Confirmation Password Doesn't Match New Password"
+                        )
+
+                else:
+                    Message.errorMessage("Please Fill Out The Form")
+
+        def backButtonEvent():
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.userFrame)
+
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -1606,10 +1662,10 @@ class App(ctk.CTk):
             show="*",
         )
 
-        confirmationPasswordDataEntry = Component.entryDataComponent(
+        confirmPasswordDataEntry = Component.entryDataComponent(
             dataContainerFrame,
-            title="Confirmation Password",
-            placeholder="confirmation password",
+            title="Confirm Password",
+            placeholder="confirm password",
             value=None,
             state=True,
             row=2,
@@ -1623,7 +1679,7 @@ class App(ctk.CTk):
             icon="add",
             mainColor=Dependency.colorPalette["success"],
             hoverColor=Dependency.colorPalette["success-dark"],
-            event=lambda: None,
+            event=addButtonEvent,
             row=3,
         )
         Component.buttonDataComponent(
@@ -1632,7 +1688,7 @@ class App(ctk.CTk):
             icon="back",
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
-            event=lambda: None,
+            event=backButtonEvent,
             row=4,
         )
 
