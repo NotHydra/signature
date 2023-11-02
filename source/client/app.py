@@ -1603,6 +1603,7 @@ class App(ctk.CTk):
             column=1,
             show="*",
         )
+        
         confirmationPasswordDataEntry = Component.entryDataComponent(
             dataContainerFrame,
             title="Confirmation Password",
@@ -1657,7 +1658,7 @@ class App(ctk.CTk):
         containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
 
         Component.titleContainerComponent(
-            containerContentFrame, title="Change Profile", row=0
+            containerContentFrame, title="Change User", row=0
         )
         Component.lineHorizontalComponent(containerContentFrame, row=1)
 
