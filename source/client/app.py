@@ -1530,7 +1530,108 @@ class App(ctk.CTk):
         )
 
     def userAddFrame(self) -> None:
-        pass
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="USER", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Add User", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        nameDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Name",
+            placeholder="name",
+            value=None,
+            state=True,
+            row=0,
+            column=0,
+        )
+        usernameDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Username",
+            placeholder="username",
+            value=None,
+            state=True,
+            row=0,
+            column=1,
+        )
+
+        emailDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Email",
+            placeholder="email",
+            value=None,
+            state=True,
+            row=1,
+            column=0,
+        )
+        newPasswordDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="New Password",
+            placeholder="new password",
+            value=None,
+            state=True,
+            row=1,
+            column=1,
+            show="*",
+        )
+        confirmationPasswordDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Confirmation Password",
+            placeholder="confirmation password",
+            value=None,
+            state=True,
+            row=2,
+            column=0,
+            show="*",
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Add",
+            icon="add",
+            mainColor=Dependency.colorPalette["success"],
+            hoverColor=Dependency.colorPalette["success-dark"],
+            event=lambda: None,
+            row=3,
+        )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=lambda: None,
+            row=4,
+        )
 
     def userChangeFrame(self, id: int) -> None:
         self.sidebarId = 2
