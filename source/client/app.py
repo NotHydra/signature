@@ -46,7 +46,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = False
+    skip = True
 
 
 class Message:
@@ -631,7 +631,9 @@ class Component:
                         text_color=Dependency.colorPalette["text"],
                         fg_color=actionObject["mainColor"],
                         hover_color=actionObject["hoverColor"],
-                        command=lambda id=idObject: actionObject["event"](id),
+                        command=lambda event=actionObject["event"], id=idObject: event(
+                            id
+                        ),
                     ).grid(
                         row=0,
                         column=actionIndex,
@@ -650,7 +652,9 @@ class Component:
 
 
 class Middleware:
-    def refreshSessionDataMiddleware(frameFunction: Callable[[], None]) -> None:
+    def refreshSessionDataMiddleware(
+        frameFunction: Callable[[], None], tag=None
+    ) -> None:
         def fetchSessionData() -> None:
             response = None
             try:
@@ -675,7 +679,12 @@ class Middleware:
                     app.userObject["isActive"] = response["data"]["isActive"]
 
                     Call.resetFrameCall()
-                    frameFunction()
+
+                    if tag == None:
+                        frameFunction()
+
+                    elif tag != None:
+                        frameFunction(tag)
 
                 else:
                     Message.errorMessage(response["message"])
@@ -1114,7 +1123,9 @@ class App(ctk.CTk):
                             Message.successMessage(response["message"])
 
                             Call.resetFrameCall()
-                            Middleware.refreshSessionDataMiddleware(self.homeChangeFrame)
+                            Middleware.refreshSessionDataMiddleware(
+                                self.homeChangeFrame
+                            )
 
                         else:
                             Message.errorMessage(response["message"])
@@ -1239,7 +1250,9 @@ class App(ctk.CTk):
                                 Message.successMessage(response["message"])
 
                                 Call.resetFrameCall()
-                                Middleware.refreshSessionDataMiddleware(self.homeChangePasswordFrame)
+                                Middleware.refreshSessionDataMiddleware(
+                                    self.homeChangePasswordFrame
+                                )
 
                             else:
                                 Message.errorMessage(response["message"])
@@ -1336,16 +1349,18 @@ class App(ctk.CTk):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userAddFrame)
 
-
         def changeButtonEvent(id: int) -> None:
+            print("Test 2")
             Call.resetFrameCall()
-            self.userChangeFrame(id)
+            Middleware.refreshSessionDataMiddleware(self.userChangeFrame, id)
 
         def changePasswordButtonEvent(id: int) -> None:
+            print("Test 3")
             Call.resetFrameCall()
             self.userChangePasswordFrame(id)
 
         def removeButtonEvent(id: int) -> None:
+            print("Test 4")
             Call.resetFrameCall()
             self.userRemoveFrame(id)
 
@@ -1448,17 +1463,13 @@ class App(ctk.CTk):
                 {
                     "id": 3,
                     "header": "Username",
-                    "data": [
-                        userObject["username"] for userObject in response["data"]
-                    ],
+                    "data": [userObject["username"] for userObject in response["data"]],
                     "align": "left",
                 },
                 {
                     "id": 4,
                     "header": "Email",
-                    "data": [
-                        userObject["email"] for userObject in response["data"]
-                    ],
+                    "data": [userObject["email"] for userObject in response["data"]],
                     "align": "left",
                 },
                 {
@@ -1506,9 +1517,7 @@ class App(ctk.CTk):
             fg_color="transparent",
         )
         dataContainerFrame.columnconfigure([0, 1], weight=1)
-        dataContainerFrame.grid(
-            row=3, column=0, padx=20, pady=(0, 10), sticky="nsew"
-        )
+        dataContainerFrame.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
 
         Component.buttonDataComponent(
             dataContainerFrame,
@@ -1524,7 +1533,88 @@ class App(ctk.CTk):
         pass
 
     def userChangeFrame(self, id: int) -> None:
-        print(id)
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="USER", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Change Profile", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        nameDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Name",
+            placeholder="name",
+            value=self.userObject["name"],
+            state=True,
+            row=0,
+            column=0,
+        )
+        usernameDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Username",
+            placeholder="username",
+            value=self.userObject["username"],
+            state=True,
+            row=0,
+            column=1,
+        )
+
+        emailDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Email",
+            placeholder="email",
+            value=self.userObject["email"],
+            state=True,
+            row=1,
+            column=0,
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Change",
+            icon="change",
+            mainColor=Dependency.colorPalette["warning"],
+            hoverColor=Dependency.colorPalette["warning-dark"],
+            event=lambda: None,
+            row=2,
+        )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=lambda: None,
+            row=3,
+        )
 
     def userChangePasswordFrame(self, id: int) -> None:
         print(id)
