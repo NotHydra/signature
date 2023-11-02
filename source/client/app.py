@@ -1351,7 +1351,6 @@ class App(ctk.CTk):
             Middleware.refreshSessionDataMiddleware(self.userAddFrame)
 
         def changeButtonEvent(id: int) -> None:
-            print("Test 2")
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userChangeFrame, id)
 
@@ -1694,6 +1693,52 @@ class App(ctk.CTk):
 
     # Kanaya
     def userChangeFrame(self, id: int) -> None:
+        def changeButtonEvent():
+            if Message.confirmationMessage():
+                name = nameDataEntry.get()
+                username = usernameDataEntry.get()
+                email = emailDataEntry.get()
+
+                if "" not in [name, username, email]:
+                    response = None
+                    try:
+                        response = requests.put(
+                            f"http://localhost:8000/api/user/update/{id}",
+                            json={
+                                "name": name,
+                                "username": username,
+                                "email": email,
+                                "role": "user",
+                            },
+                        ).json()
+
+                    except requests.ConnectionError:
+                        Message.errorMessage(
+                            "Make Sure You Are Connected To The Internet"
+                        )
+
+                    except:
+                        Message.errorMessage("Server Error")
+
+                    if response != None:
+                        if response["success"] == True:
+                            Message.successMessage(response["message"])
+
+                            Call.resetFrameCall()
+                            Middleware.refreshSessionDataMiddleware(
+                                self.userChangeFrame, id
+                            )
+
+                        else:
+                            Message.errorMessage(response["message"])
+
+                else:
+                    Message.errorMessage("Please Fill Out The Form")
+
+        def backButtonEvent():
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.userFrame)
+
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -1729,11 +1774,17 @@ class App(ctk.CTk):
         dataContainerFrame.columnconfigure([0, 1], weight=1)
         dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
 
+        try:
+            response = requests.get(f"http://localhost:8000/api/user/{id}").json()
+
+        except:
+            pass
+
         nameDataEntry = Component.entryDataComponent(
             dataContainerFrame,
             title="Name",
             placeholder="name",
-            value=self.userObject["name"],
+            value=response["data"]["name"],
             state=True,
             row=0,
             column=0,
@@ -1742,7 +1793,7 @@ class App(ctk.CTk):
             dataContainerFrame,
             title="Username",
             placeholder="username",
-            value=self.userObject["username"],
+            value=response["data"]["username"],
             state=True,
             row=0,
             column=1,
@@ -1752,7 +1803,7 @@ class App(ctk.CTk):
             dataContainerFrame,
             title="Email",
             placeholder="email",
-            value=self.userObject["email"],
+            value=response["data"]["email"],
             state=True,
             row=1,
             column=0,
@@ -1764,7 +1815,7 @@ class App(ctk.CTk):
             icon="change",
             mainColor=Dependency.colorPalette["warning"],
             hoverColor=Dependency.colorPalette["warning-dark"],
-            event=lambda: None,
+            event=changeButtonEvent,
             row=2,
         )
         Component.buttonDataComponent(
@@ -1773,7 +1824,7 @@ class App(ctk.CTk):
             icon="back",
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
-            event=lambda: None,
+            event=backButtonEvent,
             row=3,
         )
 
