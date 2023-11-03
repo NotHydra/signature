@@ -496,7 +496,7 @@ class Component:
             sticky="nsew",
         )
 
-    def tableComponent(
+    def tableDataComponent(
         master: ctk.CTk | ctk.CTkFrame,
         row: int,
         contentArray: list[dict[str, any]],
@@ -528,7 +528,11 @@ class Component:
 
         for contentIndex, contentObject in enumerate(contentArray):
             dataHeaderFrame = ctk.CTkFrame(
-                headerTableFrame, width=0, height=0, corner_radius=0, fg_color="transparent"
+                headerTableFrame,
+                width=0,
+                height=0,
+                corner_radius=0,
+                fg_color="transparent",
             )
             dataHeaderFrame.columnconfigure(0, weight=1)
             dataHeaderFrame.grid(row=0, column=(contentIndex * 2) + 1, sticky="nsew")
@@ -581,7 +585,11 @@ class Component:
 
         if actionArray != None:
             actionHeaderFrame = ctk.CTkFrame(
-                headerTableFrame, width=0, height=0, corner_radius=0, fg_color="transparent"
+                headerTableFrame,
+                width=0,
+                height=0,
+                corner_radius=0,
+                fg_color="transparent",
             )
             actionHeaderFrame.columnconfigure(0, weight=1)
             actionHeaderFrame.grid(
@@ -648,6 +656,25 @@ class Component:
             Component.lineVerticalComponent(
                 headerTableFrame, column=(len(contentArray) * 2) + 2
             )
+
+    def labelDataComponent(
+        master: ctk.CTk | ctk.CTkFrame,
+        text: str,
+        size: int = 16,
+        row: int = 0,
+        padx: int = 10,
+        pady: int = 10,
+    ) -> None:
+        ctk.CTkLabel(
+            master,
+            text=text,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=size,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        ).grid(row=row, column=0, padx=padx, pady=pady, sticky="nsew")
 
 
 class Middleware:
@@ -1441,74 +1468,93 @@ class App(ctk.CTk):
         except:
             pass
 
-        Component.tableComponent(
-            containerContentFrame,
-            idArray=[userObject["_id"] for userObject in response["data"]],
-            contentArray=[
-                {
-                    "id": 1,
-                    "header": "No.",
-                    "data": [
-                        f"{count}." for count in range(1, len(response["data"]) + 1)
-                    ],
-                    "align": "center",
-                },
-                {
-                    "id": 2,
-                    "header": "Name",
-                    "data": [userObject["name"] for userObject in response["data"]],
-                    "align": "left",
-                },
-                {
-                    "id": 3,
-                    "header": "Username",
-                    "data": [userObject["username"] for userObject in response["data"]],
-                    "align": "left",
-                },
-                {
-                    "id": 4,
-                    "header": "Email",
-                    "data": [userObject["email"] for userObject in response["data"]],
-                    "align": "left",
-                },
-                {
-                    "id": 5,
-                    "header": "Role",
-                    "data": [
-                        str(userObject["role"]).capitalize()
-                        for userObject in response["data"]
-                    ],
-                    "align": "center",
-                },
-            ],
-            actionArray=[
-                {
-                    "id": 1,
-                    "text": "Change",
-                    "icon": "change",
-                    "mainColor": Dependency.colorPalette["warning"],
-                    "hoverColor": Dependency.colorPalette["warning-dark"],
-                    "event": changeButtonEvent,
-                },
-                {
-                    "id": 2,
-                    "text": "Change Password",
-                    "icon": "password",
-                    "mainColor": Dependency.colorPalette["danger"],
-                    "hoverColor": Dependency.colorPalette["danger-dark"],
-                    "event": changePasswordButtonEvent,
-                },
-                {
-                    "id": 3,
-                    "text": "Remove",
-                    "icon": "remove",
-                    "mainColor": Dependency.colorPalette["danger"],
-                    "hoverColor": Dependency.colorPalette["danger-dark"],
-                    "event": removeButtonEvent,
-                },
-            ],
-            row=2,
-        )
+        if (
+            response != None
+            and response["success"] == True
+            and len(response["data"]) > 0
+        ):
+            Component.tableDataComponent(
+                containerContentFrame,
+                idArray=[userObject["_id"] for userObject in response["data"]],
+                contentArray=[
+                    {
+                        "id": 1,
+                        "header": "No.",
+                        "data": [
+                            f"{count}." for count in range(1, len(response["data"]) + 1)
+                        ],
+                        "align": "center",
+                    },
+                    {
+                        "id": 2,
+                        "header": "Name",
+                        "data": [userObject["name"] for userObject in response["data"]],
+                        "align": "left",
+                    },
+                    {
+                        "id": 3,
+                        "header": "Username",
+                        "data": [
+                            userObject["username"] for userObject in response["data"]
+                        ],
+                        "align": "left",
+                    },
+                    {
+                        "id": 4,
+                        "header": "Email",
+                        "data": [
+                            userObject["email"] for userObject in response["data"]
+                        ],
+                        "align": "left",
+                    },
+                    {
+                        "id": 5,
+                        "header": "Role",
+                        "data": [
+                            str(userObject["role"]).capitalize()
+                            for userObject in response["data"]
+                        ],
+                        "align": "center",
+                    },
+                ],
+                actionArray=[
+                    {
+                        "id": 1,
+                        "text": "Change",
+                        "icon": "change",
+                        "mainColor": Dependency.colorPalette["warning"],
+                        "hoverColor": Dependency.colorPalette["warning-dark"],
+                        "event": changeButtonEvent,
+                    },
+                    {
+                        "id": 2,
+                        "text": "Change Password",
+                        "icon": "password",
+                        "mainColor": Dependency.colorPalette["danger"],
+                        "hoverColor": Dependency.colorPalette["danger-dark"],
+                        "event": changePasswordButtonEvent,
+                    },
+                    {
+                        "id": 3,
+                        "text": "Remove",
+                        "icon": "remove",
+                        "mainColor": Dependency.colorPalette["danger"],
+                        "hoverColor": Dependency.colorPalette["danger-dark"],
+                        "event": removeButtonEvent,
+                    },
+                ],
+                row=2,
+            )
+
+        else:
+            Component.labelDataComponent(
+                containerContentFrame,
+                text="No Data Found",
+                size=24,
+                row=2,
+                padx=80,
+                pady=80,
+            )
 
         dataContainerFrame = ctk.CTkFrame(
             containerContentFrame,
