@@ -1413,7 +1413,8 @@ class App(ctk.CTk):
 
         except:
             pass
-
+        
+        responseIsValid = response != None and response["success"]
         Component.boxContentComponent(
             contentFrame,
             boxArray=[
@@ -1422,7 +1423,7 @@ class App(ctk.CTk):
                     "display": "Total",
                     "icon": "user-total",
                     "value": response["data"]["total"]
-                    if response != None and response["success"]
+                    if responseIsValid
                     else "?",
                 },
                 {
@@ -1430,7 +1431,7 @@ class App(ctk.CTk):
                     "display": "User",
                     "icon": "user",
                     "value": response["data"]["user"]
-                    if response != None and response["success"]
+                    if responseIsValid
                     else "?",
                 },
                 {
@@ -1438,7 +1439,7 @@ class App(ctk.CTk):
                     "display": "Admin",
                     "icon": "admin",
                     "value": response["data"]["admin"]
-                    if response != None and response["success"]
+                    if responseIsValid
                     else "?",
                 },
             ],
