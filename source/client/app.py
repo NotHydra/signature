@@ -1381,12 +1381,10 @@ class App(ctk.CTk):
             Middleware.refreshSessionDataMiddleware(self.userChangeFrame, id)
 
         def changePasswordButtonEvent(id: int) -> None:
-            print("Test 3")
             Call.resetFrameCall()
             self.userChangePasswordFrame(id)
 
         def removeButtonEvent(id: int) -> None:
-            print("Test 4")
             Call.resetFrameCall()
             self.userRemoveFrame(id)
 
@@ -1474,47 +1472,53 @@ class App(ctk.CTk):
             and response["success"] == True
             and len(response["data"]) > 0
         ):
+            countArray = []
+            idArray = []
+            nameArray = []
+            usernameArray = []
+            emailArray = []
+            roleArray = []
+            for userIndex, userObject in enumerate(response["data"]):
+                countArray.append(userIndex + 1)
+                idArray.append(userObject["_id"])
+                nameArray.append(userObject["name"])
+                usernameArray.append(userObject["username"])
+                emailArray.append(userObject["email"])
+                roleArray.append(str(userObject["role"]).capitalize())
+                
+
             Component.tableDataComponent(
                 containerContentFrame,
-                idArray=[userObject["_id"] for userObject in response["data"]],
+                idArray=idArray,
                 contentArray=[
                     {
                         "id": 1,
                         "header": "No.",
-                        "data": [
-                            f"{count}." for count in range(1, len(response["data"]) + 1)
-                        ],
+                        "data": countArray,
                         "align": "center",
                     },
                     {
                         "id": 2,
                         "header": "Name",
-                        "data": [userObject["name"] for userObject in response["data"]],
+                        "data": nameArray,
                         "align": "left",
                     },
                     {
                         "id": 3,
                         "header": "Username",
-                        "data": [
-                            userObject["username"] for userObject in response["data"]
-                        ],
+                        "data": usernameArray,
                         "align": "left",
                     },
                     {
                         "id": 4,
                         "header": "Email",
-                        "data": [
-                            userObject["email"] for userObject in response["data"]
-                        ],
+                        "data": emailArray,
                         "align": "left",
                     },
                     {
                         "id": 5,
                         "header": "Role",
-                        "data": [
-                            str(userObject["role"]).capitalize()
-                            for userObject in response["data"]
-                        ],
+                        "data": roleArray,
                         "align": "center",
                     },
                 ],
