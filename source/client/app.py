@@ -126,6 +126,7 @@ class Component:
         ctk.CTkFrame(
             master,
             width=weight,
+            height=0,
             corner_radius=0,
             fg_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=column, sticky="nsew")
@@ -504,9 +505,7 @@ class Component:
         numbering: bool = True,
     ) -> None:
         tableFrame = ctk.CTkFrame(
-            master,
-            corner_radius=0,
-            fg_color="transparent",
+            master, height=0, corner_radius=0, fg_color="transparent"
         )
         tableFrame.columnconfigure(0, weight=1)
         tableFrame.grid(row=row, column=0, padx=20, pady=20, sticky="nsew")
@@ -514,7 +513,7 @@ class Component:
         Component.lineHorizontalComponent(tableFrame, row=0)
 
         headerTableFrame = ctk.CTkFrame(
-            tableFrame, corner_radius=0, fg_color="transparent"
+            tableFrame, height=0, corner_radius=0, fg_color="transparent"
         )
         headerTableFrame.rowconfigure(0, weight=1)
         headerTableFrame.columnconfigure(
@@ -529,7 +528,7 @@ class Component:
 
         for contentIndex, contentObject in enumerate(contentArray):
             dataHeaderFrame = ctk.CTkFrame(
-                headerTableFrame, width=0, corner_radius=0, fg_color="transparent"
+                headerTableFrame, width=0, height=0, corner_radius=0, fg_color="transparent"
             )
             dataHeaderFrame.columnconfigure(0, weight=1)
             dataHeaderFrame.grid(row=0, column=(contentIndex * 2) + 1, sticky="nsew")
@@ -582,7 +581,7 @@ class Component:
 
         if actionArray != None:
             actionHeaderFrame = ctk.CTkFrame(
-                headerTableFrame, width=0, corner_radius=0, fg_color="transparent"
+                headerTableFrame, width=0, height=0, corner_radius=0, fg_color="transparent"
             )
             actionHeaderFrame.columnconfigure(0, weight=1)
             actionHeaderFrame.grid(
