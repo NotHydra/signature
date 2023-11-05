@@ -1389,7 +1389,7 @@ class App(ctk.CTk):
             row=2,
         )
 
-    def userFrame(self) -> None:
+    def userFrame(self, page: int = 1) -> None:
         def AddButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userAddFrame)
@@ -1473,7 +1473,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                "http://localhost:8000/api/user", json={"count": 10, "page": 1}
+                "http://localhost:8000/api/user", json={"count": 10, "page": page}
             ).json()
 
         except:
