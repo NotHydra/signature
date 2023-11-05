@@ -38,6 +38,7 @@ class Dependency:
         "main-dark": "#3498DB",
         "background": "#242424",
         "text": "#FFFFFF",
+        "text-dark": "#F2F3F4",
         "success": "#2ECC71",
         "success-dark": "#28B463",
         "warning": "#F1C40F",
@@ -408,6 +409,20 @@ class Component:
         column: int,
         show: str = "",
     ) -> ctk.CTkEntry:
+        def focusIn(event):
+            if entryObject.get() == placeholder:
+                entryObject.delete(0, ctk.END)
+                entryObject.configure(
+                    show=show, text_color=Dependency.colorPalette["text"]
+                )
+
+        def focusOut(event):
+            if entryObject.get() == "":
+                entryObject.insert(0, placeholder)
+                entryObject.configure(
+                    show="", text_color=Dependency.colorPalette["text-dark"]
+                )
+
         entryFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         entryFrame.rowconfigure([0, 1], weight=1)
         entryFrame.columnconfigure(0, weight=1)
@@ -431,21 +446,21 @@ class Component:
         )
 
         entryValue = ctk.StringVar()
-        entryValue.set(value if value != None else "")
+        entryValue.set(value if value != None else placeholder)
 
         entryObject = ctk.CTkEntry(
             entryFrame,
             height=36,
-            placeholder_text=placeholder,
             textvariable=entryValue,
-            show=show,
+            show=show if value != None else "",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=18,
                 weight="bold",
             ),
-            text_color=Dependency.colorPalette["text"],
-            placeholder_text_color=Dependency.colorPalette["text"],
+            text_color=Dependency.colorPalette["text"]
+            if value != None
+            else Dependency.colorPalette["text-dark"],
             fg_color="transparent",
             border_color=Dependency.colorPalette["text"],
             state="normal" if state else "disabled",
@@ -457,6 +472,9 @@ class Component:
             pady=(0, 10),
             sticky="nsew",
         )
+
+        entryObject.bind("<FocusIn>", focusIn)
+        entryObject.bind("<FocusOut>", focusOut)
 
         return entryObject
 
@@ -1411,7 +1429,7 @@ class App(ctk.CTk):
 
         except:
             pass
-        
+
         responseIsValid = response != None and response["success"]
         Component.boxContentComponent(
             contentFrame,
@@ -1420,25 +1438,19 @@ class App(ctk.CTk):
                     "id": 1,
                     "display": "Total",
                     "icon": "user-total",
-                    "value": response["data"]["total"]
-                    if responseIsValid
-                    else "?",
+                    "value": response["data"]["total"] if responseIsValid else "?",
                 },
                 {
                     "id": 2,
                     "display": "User",
                     "icon": "user",
-                    "value": response["data"]["user"]
-                    if responseIsValid
-                    else "?",
+                    "value": response["data"]["user"] if responseIsValid else "?",
                 },
                 {
                     "id": 3,
                     "display": "Admin",
                     "icon": "admin",
-                    "value": response["data"]["admin"]
-                    if responseIsValid
-                    else "?",
+                    "value": response["data"]["admin"] if responseIsValid else "?",
                 },
             ],
             row=1,
@@ -1485,7 +1497,6 @@ class App(ctk.CTk):
                 usernameArray.append(userObject["username"])
                 emailArray.append(userObject["email"])
                 roleArray.append(str(userObject["role"]).capitalize())
-                
 
             Component.tableDataComponent(
                 containerContentFrame,
