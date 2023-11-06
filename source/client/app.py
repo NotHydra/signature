@@ -516,12 +516,18 @@ class Component:
 
     def tableDataComponent(
         master: ctk.CTk | ctk.CTkFrame,
+        currentPage: int,
+        totalPage: int,
         row: int,
         contentArray: list[dict[str, any]],
         idArray: list[int] = None,
         actionArray: list[dict[str, any]] = None,
         numbering: bool = True,
     ) -> None:
+        def changePageEvent(page):
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(app.userFrame, page)
+
         tableFrame = ctk.CTkFrame(
             master, height=0, corner_radius=0, fg_color="transparent"
         )
@@ -683,7 +689,7 @@ class Component:
 
         ctk.CTkLabel(
             paginationFrame,
-            text="Page 1 of 1",
+            text=f"Page {currentPage} of {totalPage}",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=16,
@@ -710,7 +716,7 @@ class Component:
             text_color=Dependency.colorPalette["text"],
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
-            command=lambda: None,
+            command=lambda: changePageEvent(currentPage - 1),
         ).grid(
             row=0,
             column=0,
@@ -730,7 +736,7 @@ class Component:
             text_color=Dependency.colorPalette["text"],
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
-            command=lambda: None,
+            command=lambda: changePageEvent(currentPage + 1)
         ).grid(
             row=0,
             column=1,
@@ -829,7 +835,7 @@ class Middleware:
         )
         titleLoadingLabel.grid(row=0, column=1, padx=20)
 
-        app.after(50, fetchSessionData)
+        app.after(100, fetchSessionData)
 
 
 class App(ctk.CTk):
@@ -1499,6 +1505,7 @@ class App(ctk.CTk):
             pass
 
         responseIsValid = response != None and response["success"]
+        userTotal = response["data"]["total"]
         Component.boxContentComponent(
             contentFrame,
             boxArray=[
@@ -1506,7 +1513,7 @@ class App(ctk.CTk):
                     "id": 1,
                     "display": "Total",
                     "icon": "user-total",
-                    "value": response["data"]["total"] if responseIsValid else "?",
+                    "value": userTotal if responseIsValid else "?",
                 },
                 {
                     "id": 2,
@@ -1568,6 +1575,8 @@ class App(ctk.CTk):
 
             Component.tableDataComponent(
                 containerContentFrame,
+                currentPage=page,
+                totalPage=(userTotal // 10) + 1,
                 idArray=idArray,
                 contentArray=[
                     {
