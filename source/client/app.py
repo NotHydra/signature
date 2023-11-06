@@ -1891,6 +1891,55 @@ class App(ctk.CTk):
 
     # Salma
     def userChangePasswordFrame(self, id: int) -> None:
+        def changePasswordButtonEvent():
+            if Message.confirmationMessage():
+                newPassword = newPasswordDataEntry.get()
+                confirmPassword = confirmPasswordDataEntry.get()
+
+                if "" not in [newPassword, confirmPassword]:
+                    if newPassword == confirmPassword:
+                        response = None
+                        try:
+                            response = requests.put(
+                                f"http://localhost:8000/api/user/update-password/{id}",
+                                json={
+                                    "password": newPassword,
+                                },
+                            ).json()
+
+                        except requests.ConnectionError:
+                            Message.errorMessage(
+                                "Make Sure You Are Connected To The Internet"
+                            )
+
+                        except:
+                            Message.errorMessage("Server Error")
+
+                        if response != None:
+                            if response["success"] == True:
+                                Message.successMessage(response["message"])
+
+                                Call.resetFrameCall()
+                                Middleware.refreshSessionDataMiddleware(
+                                    self.userChangePasswordFrame, id
+                                )
+
+                            else:
+                                Message.errorMessage(response["message"])
+
+                    else:
+                        Message.errorMessage(
+                            "Confirmation Password Doesn't Match New Password"
+                        )
+
+                else:
+                    Message.errorMessage("Please Fill Out The Form")
+
+        def backButtonEvent():
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.userFrame)
+
+
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -1953,7 +2002,7 @@ class App(ctk.CTk):
             icon="password",
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
-            event=lambda: None,
+            event=changePasswordButtonEvent,
             row=1,
         )
         Component.buttonDataComponent(
@@ -1962,7 +2011,7 @@ class App(ctk.CTk):
             icon="back",
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
-            event=lambda: None,
+            event=backButtonEvent,
             row=2,
         )
 
