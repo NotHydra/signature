@@ -1135,7 +1135,7 @@ class App(ctk.CTk):
         )
 
     def homeChangeFrame(self) -> None:
-        def changeButtonEvent():
+        def changeButtonEvent() -> None:
             if Message.confirmationMessage():
                 name = nameDataEntry.get()
                 username = usernameDataEntry.get()
@@ -1177,7 +1177,7 @@ class App(ctk.CTk):
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
-        def backButtonEvent():
+        def backButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.homeFrame)
 
@@ -1266,7 +1266,7 @@ class App(ctk.CTk):
 
     # Rifky
     def homeChangePasswordFrame(self) -> None:
-        def changePasswordButtonEvent():
+        def changePasswordButtonEvent() -> None:
             if Message.confirmationMessage():
                 newPassword = newPasswordDataEntry.get()
                 confirmPassword = confirmPasswordDataEntry.get()
@@ -1310,7 +1310,7 @@ class App(ctk.CTk):
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
-        def backButtonEvent():
+        def backButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.homeFrame)
 
@@ -1592,7 +1592,7 @@ class App(ctk.CTk):
 
     # Rafly
     def userAddFrame(self) -> None:
-        def addButtonEvent():
+        def addButtonEvent() -> None:
             if Message.confirmationMessage():
                 name = nameDataEntry.get()
                 username = usernameDataEntry.get()
@@ -1644,7 +1644,7 @@ class App(ctk.CTk):
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
-        def backButtonEvent():
+        def backButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userFrame)
 
@@ -1754,7 +1754,7 @@ class App(ctk.CTk):
 
     # Kanaya
     def userChangeFrame(self, id: int) -> None:
-        def changeButtonEvent():
+        def changeButtonEvent() -> None:
             if Message.confirmationMessage():
                 name = nameDataEntry.get()
                 username = usernameDataEntry.get()
@@ -1796,7 +1796,7 @@ class App(ctk.CTk):
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
-        def backButtonEvent():
+        def backButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userFrame)
 
@@ -1891,7 +1891,7 @@ class App(ctk.CTk):
 
     # Salma
     def userChangePasswordFrame(self, id: int) -> None:
-        def changePasswordButtonEvent():
+        def changePasswordButtonEvent() -> None:
             if Message.confirmationMessage():
                 newPassword = newPasswordDataEntry.get()
                 confirmPassword = confirmPasswordDataEntry.get()
@@ -1935,7 +1935,7 @@ class App(ctk.CTk):
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
-        def backButtonEvent():
+        def backButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userFrame)
 
