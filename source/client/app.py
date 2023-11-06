@@ -2017,7 +2017,96 @@ class App(ctk.CTk):
 
     # Chelsy
     def userRemoveFrame(self, id: int) -> None:
-        print(id)
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="USER", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(containerContentFrame, title="Remove User", row=0)
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        Component.entryDataComponent(
+            dataContainerFrame,
+            title="Name",
+            placeholder="name",
+            value=self.userObject["name"],
+            state=False,
+            row=0,
+            column=0,
+        )
+        Component.entryDataComponent(
+            dataContainerFrame,
+            title="Username",
+            placeholder="username",
+            value=self.userObject["username"],
+            state=False,
+            row=0,
+            column=1,
+        )
+
+        Component.entryDataComponent(
+            dataContainerFrame,
+            title="Email",
+            placeholder="email",
+            value=self.userObject["email"],
+            state=False,
+            row=1,
+            column=0,
+        )
+        Component.entryDataComponent(
+            dataContainerFrame,
+            title="Role",
+            placeholder="role",
+            value=self.userObject["role"].capitalize(),
+            state=False,
+            row=1,
+            column=1,
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Remove",
+            icon="remove",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=lambda : None ,
+            row=2,
+        )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=lambda : None,
+            row=3,
+        )
 
 
 if __name__ == "__main__":
