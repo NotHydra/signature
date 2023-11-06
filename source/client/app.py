@@ -703,45 +703,48 @@ class Component:
         )
         buttonPaginationFrame.grid(row=0, column=1, sticky="nse")
 
-        ctk.CTkButton(
-            buttonPaginationFrame,
-            width=0,
-            image=ctk.CTkImage(
-                Image.open(Utility.getIcon("previous.png")),
-                size=(16, 16),
-            ),
-            text="",
-            cursor="hand2",
-            corner_radius=8,
-            text_color=Dependency.colorPalette["text"],
-            fg_color=Dependency.colorPalette["main"],
-            hover_color=Dependency.colorPalette["main-dark"],
-            command=lambda: changePageEvent(currentPage - 1),
-        ).grid(
-            row=0,
-            column=0,
-            sticky="nsew",
-        )
 
-        ctk.CTkButton(
-            buttonPaginationFrame,
-            width=0,
-            image=ctk.CTkImage(
-                Image.open(Utility.getIcon("next.png")),
-                size=(16, 16),
-            ),
-            text="",
-            cursor="hand2",
-            corner_radius=16,
-            text_color=Dependency.colorPalette["text"],
-            fg_color=Dependency.colorPalette["main"],
-            hover_color=Dependency.colorPalette["main-dark"],
-            command=lambda: changePageEvent(currentPage + 1)
-        ).grid(
-            row=0,
-            column=1,
-            sticky="nsew",
-        )
+        if currentPage > 1:
+            ctk.CTkButton(
+                buttonPaginationFrame,
+                width=0,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("previous.png")),
+                    size=(16, 16),
+                ),
+                text="",
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["main"],
+                hover_color=Dependency.colorPalette["main-dark"],
+                command=lambda: changePageEvent(currentPage - 1),
+            ).grid(
+                row=0,
+                column=0,
+                sticky="nsew",
+            )
+
+        if currentPage < totalPage:
+            ctk.CTkButton(
+                buttonPaginationFrame,
+                width=0,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("next.png")),
+                    size=(16, 16),
+                ),
+                text="",
+                cursor="hand2",
+                corner_radius=16,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["main"],
+                hover_color=Dependency.colorPalette["main-dark"],
+                command=lambda: changePageEvent(currentPage + 1)
+            ).grid(
+                row=0,
+                column=1,
+                sticky="nsew",
+            )
 
     def labelDataComponent(
         master: ctk.CTk | ctk.CTkFrame,
