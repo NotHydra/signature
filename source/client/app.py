@@ -1305,6 +1305,9 @@ class App(ctk.CTk):
                             else:
                                 Message.errorMessage(response["message"])
 
+                                if response["status"] == 404:
+                                    Call.logoutCall()
+
                     else:
                         Message.errorMessage(
                             "Confirmation Password Doesn't Match New Password"
