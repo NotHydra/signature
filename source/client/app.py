@@ -1939,7 +1939,6 @@ class App(ctk.CTk):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userFrame)
 
-
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -2017,6 +2016,35 @@ class App(ctk.CTk):
 
     # Chelsy
     def userRemoveFrame(self, id: int) -> None:
+        def removeButtonEvent() -> None:
+            if Message.confirmationMessage():
+                response = None
+
+                try:
+                    response = requests.delete(
+                        f"http://localhost:8000/api/user/delete/{id}",
+                    ).json()
+
+                except requests.ConnectionError:
+                    Message.errorMessage("Make Sure You Are Connected To The Internet")
+
+                except:
+                    Message.errorMessage("Server Error")
+
+                if response != None:
+                    if response["success"] == True:
+                        Message.successMessage(response["message"])
+
+                        Call.resetFrameCall()
+                        Middleware.refreshSessionDataMiddleware(self.userFrame)
+
+                    else:
+                        Message.errorMessage(response["message"])
+
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.userFrame)
+
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -2040,7 +2068,9 @@ class App(ctk.CTk):
         containerContentFrame.columnconfigure(0, weight=1)
         containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
 
-        Component.titleContainerComponent(containerContentFrame, title="Remove User", row=0)
+        Component.titleContainerComponent(
+            containerContentFrame, title="Remove User", row=0
+        )
         Component.lineHorizontalComponent(containerContentFrame, row=1)
 
         dataContainerFrame = ctk.CTkFrame(
@@ -2051,11 +2081,17 @@ class App(ctk.CTk):
         dataContainerFrame.columnconfigure([0, 1], weight=1)
         dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
 
+        try:
+            response = requests.get(f"http://localhost:8000/api/user/{id}").json()
+
+        except:
+            pass
+
         Component.entryDataComponent(
             dataContainerFrame,
             title="Name",
             placeholder="name",
-            value=self.userObject["name"],
+            value=response["data"]["name"],
             state=False,
             row=0,
             column=0,
@@ -2064,7 +2100,7 @@ class App(ctk.CTk):
             dataContainerFrame,
             title="Username",
             placeholder="username",
-            value=self.userObject["username"],
+            value=response["data"]["username"],
             state=False,
             row=0,
             column=1,
@@ -2074,7 +2110,7 @@ class App(ctk.CTk):
             dataContainerFrame,
             title="Email",
             placeholder="email",
-            value=self.userObject["email"],
+            value=response["data"]["email"],
             state=False,
             row=1,
             column=0,
@@ -2083,7 +2119,7 @@ class App(ctk.CTk):
             dataContainerFrame,
             title="Role",
             placeholder="role",
-            value=self.userObject["role"].capitalize(),
+            value=response["data"]["role"].capitalize(),
             state=False,
             row=1,
             column=1,
@@ -2095,7 +2131,7 @@ class App(ctk.CTk):
             icon="remove",
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
-            event=lambda : None ,
+            event=removeButtonEvent,
             row=2,
         )
         Component.buttonDataComponent(
@@ -2104,7 +2140,7 @@ class App(ctk.CTk):
             icon="back",
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
-            event=lambda : None,
+            event=backButtonEvent,
             row=3,
         )
 
