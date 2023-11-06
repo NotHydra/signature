@@ -1174,6 +1174,9 @@ class App(ctk.CTk):
                         else:
                             Message.errorMessage(response["message"])
 
+                            if response["status"] == 404:
+                                Call.logoutCall()
+
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
