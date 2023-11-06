@@ -1569,7 +1569,7 @@ class App(ctk.CTk):
             emailArray = []
             roleArray = []
             for userIndex, userObject in enumerate(response["data"]):
-                countArray.append(userIndex + 1)
+                countArray.append((10 * (page - 1)) + userIndex + 1)
                 idArray.append(userObject["_id"])
                 nameArray.append(userObject["name"])
                 usernameArray.append(userObject["username"])
