@@ -526,7 +526,7 @@ class Component:
             master, height=0, corner_radius=0, fg_color="transparent"
         )
         tableFrame.columnconfigure(0, weight=1)
-        tableFrame.grid(row=row, column=0, padx=20, pady=20, sticky="nsew")
+        tableFrame.grid(row=row, column=0, padx=20, pady=(20, 10), sticky="nsew")
 
         Component.lineHorizontalComponent(tableFrame, row=0)
 
@@ -540,7 +540,7 @@ class Component:
             else [((i * 2) + 1) for i, _ in enumerate(contentArray)],
             weight=4,
         )
-        headerTableFrame.grid(row=1, column=0, sticky="nsew")
+        headerTableFrame.grid(row=1, column=0, pady=(0, 10), sticky="nsew")
 
         Component.lineVerticalComponent(headerTableFrame, column=0)
 
@@ -674,6 +674,68 @@ class Component:
             Component.lineVerticalComponent(
                 headerTableFrame, column=(len(contentArray) * 2) + 2
             )
+
+        paginationFrame = ctk.CTkFrame(
+            tableFrame, height=0, corner_radius=0, fg_color="transparent"
+        )
+        paginationFrame.columnconfigure([0, 1], weight=1)
+        paginationFrame.grid(row=2, column=0, sticky="nsew")
+
+        ctk.CTkLabel(
+            paginationFrame,
+            text="Page 1 of 1",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=16,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        ).grid(row=0, column=0, sticky="nsw")
+
+        buttonPaginationFrame = ctk.CTkFrame(
+            paginationFrame, height=0, corner_radius=0, fg_color="transparent"
+        )
+        buttonPaginationFrame.grid(row=0, column=1, sticky="nse")
+
+        ctk.CTkButton(
+            buttonPaginationFrame,
+            width=0,
+            image=ctk.CTkImage(
+                Image.open(Utility.getIcon("previous.png")),
+                size=(16, 16),
+            ),
+            text="",
+            cursor="hand2",
+            corner_radius=8,
+            text_color=Dependency.colorPalette["text"],
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+            command=lambda: None,
+        ).grid(
+            row=0,
+            column=0,
+            sticky="nsew",
+        )
+
+        ctk.CTkButton(
+            buttonPaginationFrame,
+            width=0,
+            image=ctk.CTkImage(
+                Image.open(Utility.getIcon("next.png")),
+                size=(16, 16),
+            ),
+            text="",
+            cursor="hand2",
+            corner_radius=16,
+            text_color=Dependency.colorPalette["text"],
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+            command=lambda: None,
+        ).grid(
+            row=0,
+            column=1,
+            sticky="nsew",
+        )
 
     def labelDataComponent(
         master: ctk.CTk | ctk.CTkFrame,
