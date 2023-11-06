@@ -1400,11 +1400,11 @@ class App(ctk.CTk):
 
         def changePasswordButtonEvent(id: int) -> None:
             Call.resetFrameCall()
-            self.userChangePasswordFrame(id)
+            Middleware.refreshSessionDataMiddleware(self.userChangePasswordFrame, id)
 
         def removeButtonEvent(id: int) -> None:
             Call.resetFrameCall()
-            self.userRemoveFrame(id)
+            Middleware.refreshSessionDataMiddleware(self.userRemoveFrame, id)
 
         self.sidebarId = 2
 
@@ -1793,6 +1793,9 @@ class App(ctk.CTk):
                         else:
                             Message.errorMessage(response["message"])
 
+                            if response["status"] == 404:
+                                backButtonEvent()
+
                 else:
                     Message.errorMessage("Please Fill Out The Form")
 
@@ -1800,94 +1803,105 @@ class App(ctk.CTk):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.userFrame)
 
-        self.sidebarId = 2
-
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=31)
-
-        Component.sidebarComponent()
-
-        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        contentFrame.columnconfigure(0, weight=1)
-        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
-
-        Component.titleContentComponent(contentFrame, title="USER", row=0)
-
-        containerContentFrame = ctk.CTkFrame(
-            contentFrame,
-            corner_radius=8,
-            fg_color=Dependency.colorPalette["main"],
-        )
-        containerContentFrame.columnconfigure(0, weight=1)
-        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
-
-        Component.titleContainerComponent(
-            containerContentFrame, title="Change User", row=0
-        )
-        Component.lineHorizontalComponent(containerContentFrame, row=1)
-
-        dataContainerFrame = ctk.CTkFrame(
-            containerContentFrame,
-            corner_radius=0,
-            fg_color="transparent",
-        )
-        dataContainerFrame.columnconfigure([0, 1], weight=1)
-        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
-
+        response = None
         try:
             response = requests.get(f"http://localhost:8000/api/user/{id}").json()
 
         except:
-            pass
+            Message.errorMessage("Server Error")
 
-        nameDataEntry = Component.entryDataComponent(
-            dataContainerFrame,
-            title="Name",
-            placeholder="name",
-            value=response["data"]["name"],
-            state=True,
-            row=0,
-            column=0,
-        )
-        usernameDataEntry = Component.entryDataComponent(
-            dataContainerFrame,
-            title="Username",
-            placeholder="username",
-            value=response["data"]["username"],
-            state=True,
-            row=0,
-            column=1,
-        )
+            backButtonEvent()
 
-        emailDataEntry = Component.entryDataComponent(
-            dataContainerFrame,
-            title="Email",
-            placeholder="email",
-            value=response["data"]["email"],
-            state=True,
-            row=1,
-            column=0,
-        )
+        if response != None and response["success"] == False:
+            Message.errorMessage(response["message"])
 
-        Component.buttonDataComponent(
-            dataContainerFrame,
-            text="Change",
-            icon="change",
-            mainColor=Dependency.colorPalette["warning"],
-            hoverColor=Dependency.colorPalette["warning-dark"],
-            event=changeButtonEvent,
-            row=2,
-        )
-        Component.buttonDataComponent(
-            dataContainerFrame,
-            text="Back",
-            icon="back",
-            mainColor=Dependency.colorPalette["danger"],
-            hoverColor=Dependency.colorPalette["danger-dark"],
-            event=backButtonEvent,
-            row=3,
-        )
+            backButtonEvent()
+
+        else:
+            self.sidebarId = 2
+
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
+
+            Component.sidebarComponent()
+
+            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.columnconfigure(0, weight=1)
+            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+            Component.titleContentComponent(contentFrame, title="USER", row=0)
+
+            containerContentFrame = ctk.CTkFrame(
+                contentFrame,
+                corner_radius=8,
+                fg_color=Dependency.colorPalette["main"],
+            )
+            containerContentFrame.columnconfigure(0, weight=1)
+            containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+            Component.titleContainerComponent(
+                containerContentFrame, title="Change User", row=0
+            )
+            Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+            dataContainerFrame = ctk.CTkFrame(
+                containerContentFrame,
+                corner_radius=0,
+                fg_color="transparent",
+            )
+            dataContainerFrame.columnconfigure([0, 1], weight=1)
+            dataContainerFrame.grid(
+                row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
+            )
+
+            nameDataEntry = Component.entryDataComponent(
+                dataContainerFrame,
+                title="Name",
+                placeholder="name",
+                value=response["data"]["name"],
+                state=True,
+                row=0,
+                column=0,
+            )
+            usernameDataEntry = Component.entryDataComponent(
+                dataContainerFrame,
+                title="Username",
+                placeholder="username",
+                value=response["data"]["username"],
+                state=True,
+                row=0,
+                column=1,
+            )
+
+            emailDataEntry = Component.entryDataComponent(
+                dataContainerFrame,
+                title="Email",
+                placeholder="email",
+                value=response["data"]["email"],
+                state=True,
+                row=1,
+                column=0,
+            )
+
+            Component.buttonDataComponent(
+                dataContainerFrame,
+                text="Change",
+                icon="change",
+                mainColor=Dependency.colorPalette["warning"],
+                hoverColor=Dependency.colorPalette["warning-dark"],
+                event=changeButtonEvent,
+                row=2,
+            )
+            Component.buttonDataComponent(
+                dataContainerFrame,
+                text="Back",
+                icon="back",
+                mainColor=Dependency.colorPalette["danger"],
+                hoverColor=Dependency.colorPalette["danger-dark"],
+                event=backButtonEvent,
+                row=3,
+            )
 
     # Salma
     def userChangePasswordFrame(self, id: int) -> None:
