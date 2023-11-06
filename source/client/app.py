@@ -1891,7 +1891,80 @@ class App(ctk.CTk):
 
     # Salma
     def userChangePasswordFrame(self, id: int) -> None:
-        print(id)
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="USER", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Change Password User", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        newPasswordDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="New Password",
+            placeholder="new password",
+            value=None,
+            show="*",
+            state=True,
+            row=0,
+            column=0,
+        )
+        confirmPasswordDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Confirm Password",
+            placeholder="confirm password",
+            value=None,
+            show="*",
+            state=True,
+            row=0,
+            column=1,
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Change Password",
+            icon="password",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=lambda: None,
+            row=1,
+        )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=lambda: None,
+            row=2,
+        )
 
     # Chelsy
     def userRemoveFrame(self, id: int) -> None:
