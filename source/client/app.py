@@ -260,29 +260,18 @@ class Component:
         )
 
         if app.userObject["role"] == "user":
+
+            def documentButtonEvent() -> None:
+                Call.resetFrameCall()
+                Middleware.refreshSessionDataMiddleware(app.documentFrame)
+
             sidebarButtonComponent(
                 contentSidebarFrame,
-                title="Upload",
-                icon="upload",
-                event=lambda: None,
+                title="Document",
+                icon="document",
+                event=documentButtonEvent,
                 row=5,
                 highlight=True if app.sidebarId == 2 else False,
-            )
-            sidebarButtonComponent(
-                contentSidebarFrame,
-                title="Download",
-                icon="download",
-                event=lambda: None,
-                row=6,
-                highlight=True if app.sidebarId == 3 else False,
-            )
-            sidebarButtonComponent(
-                contentSidebarFrame,
-                title="Sign",
-                icon="sign",
-                event=lambda: None,
-                row=7,
-                highlight=True if app.sidebarId == 4 else False,
             )
 
         elif app.userObject["role"] == "admin":
@@ -704,7 +693,6 @@ class Component:
         )
         buttonPaginationFrame.grid(row=0, column=1, sticky="nse")
 
-
         if currentPage > 1:
             ctk.CTkButton(
                 buttonPaginationFrame,
@@ -740,7 +728,7 @@ class Component:
                 text_color=Dependency.colorPalette["text"],
                 fg_color=Dependency.colorPalette["main"],
                 hover_color=Dependency.colorPalette["main-dark"],
-                command=lambda: changePageEvent(currentPage + 1)
+                command=lambda: changePageEvent(currentPage + 1),
             ).grid(
                 row=0,
                 column=1,
@@ -2279,6 +2267,195 @@ class App(ctk.CTk):
                 event=backButtonEvent,
                 row=3,
             )
+
+    def documentFrame(self, page: int = 1) -> None:
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(2, weight=1)
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+        # response = None
+        # try:
+        #     response = requests.get(
+        #         "http://localhost:8000/api/document/count",
+        #     ).json()
+
+        # except:
+        #     pass
+
+        # responseIsValid = response != None and response["success"]
+        # userTotal = response["data"]["total"]
+        # Component.boxContentComponent(
+        #     contentFrame,
+        #     boxArray=[
+        #         {
+        #             "id": 1,
+        #             "display": "Total",
+        #             "icon": "user-total",
+        #             "value": userTotal if responseIsValid else "?",
+        #         },
+        #         {
+        #             "id": 2,
+        #             "display": "User",
+        #             "icon": "user",
+        #             "value": response["data"]["user"] if responseIsValid else "?",
+        #         },
+        #         {
+        #             "id": 3,
+        #             "display": "Admin",
+        #             "icon": "admin",
+        #             "value": response["data"]["admin"] if responseIsValid else "?",
+        #         },
+        #     ],
+        #     row=1,
+        # )
+
+        # containerContentFrame = ctk.CTkFrame(
+        #     contentFrame,
+        #     corner_radius=8,
+        #     fg_color=Dependency.colorPalette["main"],
+        # )
+        # containerContentFrame.columnconfigure(0, weight=1)
+        # containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
+
+        # Component.titleContainerComponent(
+        #     containerContentFrame, title="User Table", row=0
+        # )
+
+        # Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        # response = None
+        # try:
+        #     response = requests.get(
+        #         "http://localhost:8000/api/user", json={"count": 10, "page": page}
+        #     ).json()
+
+        # except:
+        #     pass
+
+        # if (
+        #     response != None
+        #     and response["success"] == True
+        #     and len(response["data"]) > 0
+        # ):
+        #     countArray = []
+        #     idArray = []
+        #     nameArray = []
+        #     usernameArray = []
+        #     emailArray = []
+        #     roleArray = []
+        #     for userIndex, userObject in enumerate(response["data"]):
+        #         countArray.append((10 * (page - 1)) + userIndex + 1)
+        #         idArray.append(userObject["_id"])
+        #         nameArray.append(userObject["name"])
+        #         usernameArray.append(userObject["username"])
+        #         emailArray.append(userObject["email"])
+        #         roleArray.append(str(userObject["role"]).capitalize())
+
+        #     Component.tableDataComponent(
+        #         containerContentFrame,
+        #         currentPage=page,
+        #         totalPage=(userTotal // 10) + 1,
+        #         framePage=app.userFrame,
+        #         idArray=idArray,
+        #         contentArray=[
+        #             {
+        #                 "id": 1,
+        #                 "header": "No.",
+        #                 "data": countArray,
+        #                 "align": "center",
+        #             },
+        #             {
+        #                 "id": 2,
+        #                 "header": "Name",
+        #                 "data": nameArray,
+        #                 "align": "left",
+        #             },
+        #             {
+        #                 "id": 3,
+        #                 "header": "Username",
+        #                 "data": usernameArray,
+        #                 "align": "left",
+        #             },
+        #             {
+        #                 "id": 4,
+        #                 "header": "Email",
+        #                 "data": emailArray,
+        #                 "align": "left",
+        #             },
+        #             {
+        #                 "id": 5,
+        #                 "header": "Role",
+        #                 "data": roleArray,
+        #                 "align": "center",
+        #             },
+        #         ],
+        #         actionArray=[
+        #             {
+        #                 "id": 1,
+        #                 "text": "Change",
+        #                 "icon": "change",
+        #                 "mainColor": Dependency.colorPalette["warning"],
+        #                 "hoverColor": Dependency.colorPalette["warning-dark"],
+        #                 "event": changeButtonEvent,
+        #             },
+        #             {
+        #                 "id": 2,
+        #                 "text": "Change Password",
+        #                 "icon": "password",
+        #                 "mainColor": Dependency.colorPalette["danger"],
+        #                 "hoverColor": Dependency.colorPalette["danger-dark"],
+        #                 "event": changePasswordButtonEvent,
+        #             },
+        #             {
+        #                 "id": 3,
+        #                 "text": "Remove",
+        #                 "icon": "remove",
+        #                 "mainColor": Dependency.colorPalette["danger"],
+        #                 "hoverColor": Dependency.colorPalette["danger-dark"],
+        #                 "event": removeButtonEvent,
+        #             },
+        #         ],
+        #         row=2,
+        #     )
+
+        # else:
+        #     Component.labelDataComponent(
+        #         containerContentFrame,
+        #         text="No Data Found",
+        #         size=24,
+        #         row=2,
+        #         padx=80,
+        #         pady=80,
+        #     )
+
+        # dataContainerFrame = ctk.CTkFrame(
+        #     containerContentFrame,
+        #     corner_radius=0,
+        #     fg_color="transparent",
+        # )
+        # dataContainerFrame.columnconfigure([0, 1], weight=1)
+        # dataContainerFrame.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
+
+        # Component.buttonDataComponent(
+        #     dataContainerFrame,
+        #     text="Add",
+        #     icon="add",
+        #     mainColor=Dependency.colorPalette["success"],
+        #     hoverColor=Dependency.colorPalette["success-dark"],
+        #     event=AddButtonEvent,
+        #     row=0,
+        # )
 
 
 if __name__ == "__main__":
