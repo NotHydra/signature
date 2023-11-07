@@ -6,3 +6,20 @@
 
 python .\source\client\app.py
 python .\source\server\main.py
+
+User
+    Home
+        Change
+        Change Password
+
+    Document
+        Download Green
+        Sign Yellow
+        Access Yellow
+            Add Green
+            Remove Red
+
+        Remove Red
+
+        Upload Green
+

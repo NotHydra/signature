@@ -47,7 +47,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = True
+    skip = False
 
 
 class Message:
@@ -518,6 +518,7 @@ class Component:
         master: ctk.CTk | ctk.CTkFrame,
         currentPage: int,
         totalPage: int,
+        framePage: Callable[[], None],
         row: int,
         contentArray: list[dict[str, any]],
         idArray: list[int] = None,
@@ -526,7 +527,7 @@ class Component:
     ) -> None:
         def changePageEvent(page):
             Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(app.userFrame, page)
+            Middleware.refreshSessionDataMiddleware(framePage, page)
 
         tableFrame = ctk.CTkFrame(
             master, height=0, corner_radius=0, fg_color="transparent"
@@ -1580,6 +1581,7 @@ class App(ctk.CTk):
                 containerContentFrame,
                 currentPage=page,
                 totalPage=(userTotal // 10) + 1,
+                framePage=app.userFrame,
                 idArray=idArray,
                 contentArray=[
                     {
