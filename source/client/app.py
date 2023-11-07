@@ -36,6 +36,7 @@ class Dependency:
     colorPalette = {
         "main": "#54A4F5",
         "main-dark": "#3498DB",
+        "background-light": "#99A3A4",
         "background": "#242424",
         "text": "#FFFFFF",
         "text-dark": "#F2F3F4",
@@ -47,7 +48,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = False
+    skip = True
 
 
 class Message:
@@ -512,6 +513,7 @@ class Component:
         contentArray: list[dict[str, any]],
         idArray: list[int] = None,
         actionArray: list[dict[str, any]] = None,
+        disabledIdArray: list[int] = None,
         numbering: bool = True,
     ) -> None:
         def changePageEvent(page):
@@ -627,11 +629,16 @@ class Component:
 
             for idIndex, idObject in enumerate(idArray):
                 buttonActionFrame = ctk.CTkFrame(
-                    actionHeaderFrame, width=0, corner_radius=0, fg_color="transparent"
+                    actionHeaderFrame,
+                    width=0,
+                    height=28,
+                    corner_radius=0,
+                    fg_color="transparent",
                 )
                 buttonActionFrame.columnconfigure(0, weight=1)
                 buttonActionFrame.grid(row=(idIndex * 2) + 2, column=0, sticky="nsew")
 
+                buttonActive = idObject not in disabledIdArray
                 for actionIndex, actionObject in enumerate(actionArray):
                     ctk.CTkButton(
                         buttonActionFrame,
@@ -650,11 +657,17 @@ class Component:
                         cursor="hand2",
                         corner_radius=8,
                         text_color=Dependency.colorPalette["text"],
-                        fg_color=actionObject["mainColor"],
-                        hover_color=actionObject["hoverColor"],
-                        command=lambda event=actionObject["event"], id=idObject: event(
-                            id
-                        ),
+                        fg_color=actionObject["mainColor"]
+                        if buttonActive
+                        else Dependency.colorPalette["background-light"],
+                        hover_color=actionObject["hoverColor"]
+                        if buttonActive
+                        else Dependency.colorPalette["background-light"],
+                        command=(
+                            lambda event=actionObject["event"], id=idObject: event(id)
+                        )
+                        if buttonActive
+                        else lambda: None,
                     ).grid(
                         row=0,
                         column=actionIndex,
@@ -1557,6 +1570,7 @@ class App(ctk.CTk):
             usernameArray = []
             emailArray = []
             roleArray = []
+            disabledIdArray = []
             for userIndex, userObject in enumerate(response["data"]):
                 countArray.append((10 * (page - 1)) + userIndex + 1)
                 idArray.append(userObject["_id"])
@@ -1564,6 +1578,9 @@ class App(ctk.CTk):
                 usernameArray.append(userObject["username"])
                 emailArray.append(userObject["email"])
                 roleArray.append(str(userObject["role"]).capitalize())
+
+                if userObject["role"] == "admin":
+                    disabledIdArray.append(userObject["_id"])
 
             Component.tableDataComponent(
                 containerContentFrame,
@@ -1629,6 +1646,7 @@ class App(ctk.CTk):
                         "event": removeButtonEvent,
                     },
                 ],
+                disabledIdArray=disabledIdArray,
                 row=2,
             )
 
