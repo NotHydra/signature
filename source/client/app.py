@@ -48,9 +48,6 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
-    skip = True
-
-
 class Message:
     def errorMessage(message: str) -> None:
         CTkMessagebox(
@@ -877,7 +874,7 @@ class App(ctk.CTk):
 
     def loadingFrame(self) -> None:
         def loadingEvent() -> None:
-            if not Dependency.skip:
+            if not skipObject["status"]:
                 loadingValue = 0
                 while loadingValue < 1:
                     loadingValue += random.uniform(0.005, 0.01)
@@ -887,7 +884,21 @@ class App(ctk.CTk):
                     time.sleep(0.00001)
 
             Call.resetFrameCall()
-            self.loginFrame()
+
+            if skipObject["status"]:
+                self.userObject["_id"] = skipObject["id"]
+
+                Call.resetFrameCall()
+
+                if (skipObject["tag"] == None):
+                    Middleware.refreshSessionDataMiddleware(skipObject["frame"])
+
+                else:
+                    Middleware.refreshSessionDataMiddleware(skipObject["frame"], skipObject["tag"])
+
+            else:
+                self.loginFrame()
+
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -1085,12 +1096,6 @@ class App(ctk.CTk):
             command=exitButtonEvent,
         )
         exitLoginButton.grid(row=4, column=0)
-
-        if Dependency.skip:
-            self.userObject["_id"] = 1
-
-            Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(self.homeFrame)
 
     def homeFrame(self) -> None:
         def changeButtonEvent() -> None:
@@ -2478,4 +2483,7 @@ class App(ctk.CTk):
 
 if __name__ == "__main__":
     app = App()
+
+    skipObject = {"status": True, "id": 2, "frame": app.documentFrame, "tag": None}
+
     app.mainloop()
