@@ -2318,44 +2318,44 @@ class App(ctk.CTk):
 
         # responseIsValid = response != None and response["success"]
         # userTotal = response["data"]["total"]
-        # Component.boxContentComponent(
-        #     contentFrame,
-        #     boxArray=[
-        #         {
-        #             "id": 1,
-        #             "display": "Total",
-        #             "icon": "user-total",
-        #             "value": userTotal if responseIsValid else "?",
-        #         },
-        #         {
-        #             "id": 2,
-        #             "display": "User",
-        #             "icon": "user",
-        #             "value": response["data"]["user"] if responseIsValid else "?",
-        #         },
-        #         {
-        #             "id": 3,
-        #             "display": "Admin",
-        #             "icon": "admin",
-        #             "value": response["data"]["admin"] if responseIsValid else "?",
-        #         },
-        #     ],
-        #     row=1,
-        # )
+        Component.boxContentComponent(
+            contentFrame,
+            boxArray=[
+                {
+                    "id": 1,
+                    "display": "Total",
+                    "icon": "document-total",
+                    "value": 5 # userTotal if responseIsValid else "?",
+                },
+                {
+                    "id": 2,
+                    "display": "Owned",
+                    "icon": "owned",
+                    "value": 3 # response["data"]["user"] if responseIsValid else "?",
+                },
+                {
+                    "id": 3,
+                    "display": "Shared",
+                    "icon": "shared",
+                    "value": 2 # response["data"]["admin"] if responseIsValid else "?",
+                },
+            ],
+            row=1,
+        )
 
-        # containerContentFrame = ctk.CTkFrame(
-        #     contentFrame,
-        #     corner_radius=8,
-        #     fg_color=Dependency.colorPalette["main"],
-        # )
-        # containerContentFrame.columnconfigure(0, weight=1)
-        # containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
-        # Component.titleContainerComponent(
-        #     containerContentFrame, title="User Table", row=0
-        # )
+        Component.titleContainerComponent(
+            containerContentFrame, title="Document Table", row=0
+        )
 
-        # Component.lineHorizontalComponent(containerContentFrame, row=1)
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
 
         # response = None
         # try:
@@ -2366,119 +2366,135 @@ class App(ctk.CTk):
         # except:
         #     pass
 
-        # if (
-        #     response != None
-        #     and response["success"] == True
-        #     and len(response["data"]) > 0
-        # ):
-        #     countArray = []
-        #     idArray = []
-        #     nameArray = []
-        #     usernameArray = []
-        #     emailArray = []
-        #     roleArray = []
-        #     for userIndex, userObject in enumerate(response["data"]):
-        #         countArray.append((10 * (page - 1)) + userIndex + 1)
-        #         idArray.append(userObject["_id"])
-        #         nameArray.append(userObject["name"])
-        #         usernameArray.append(userObject["username"])
-        #         emailArray.append(userObject["email"])
-        #         roleArray.append(str(userObject["role"]).capitalize())
+        if (
+            # response != None
+            # and response["success"] == True
+            # and len(response["data"]) > 0
+            True
+        ):
+            # countArray = []
+            # idArray = []
+            # nameArray = []
+            # usernameArray = []
+            # emailArray = []
+            # roleArray = []
+            # for userIndex, userObject in enumerate(response["data"]):
+            #     countArray.append((10 * (page - 1)) + userIndex + 1)
+            #     idArray.append(userObject["_id"])
+            #     nameArray.append(userObject["name"])
+            #     usernameArray.append(userObject["username"])
+            #     emailArray.append(userObject["email"])
+            #     roleArray.append(str(userObject["role"]).capitalize())
 
-        #     Component.tableDataComponent(
-        #         containerContentFrame,
-        #         currentPage=page,
-        #         totalPage=(userTotal // 10) + 1,
-        #         framePage=app.userFrame,
-        #         idArray=idArray,
-        #         contentArray=[
-        #             {
-        #                 "id": 1,
-        #                 "header": "No.",
-        #                 "data": countArray,
-        #                 "align": "center",
-        #             },
-        #             {
-        #                 "id": 2,
-        #                 "header": "Name",
-        #                 "data": nameArray,
-        #                 "align": "left",
-        #             },
-        #             {
-        #                 "id": 3,
-        #                 "header": "Username",
-        #                 "data": usernameArray,
-        #                 "align": "left",
-        #             },
-        #             {
-        #                 "id": 4,
-        #                 "header": "Email",
-        #                 "data": emailArray,
-        #                 "align": "left",
-        #             },
-        #             {
-        #                 "id": 5,
-        #                 "header": "Role",
-        #                 "data": roleArray,
-        #                 "align": "center",
-        #             },
-        #         ],
-        #         actionArray=[
-        #             {
-        #                 "id": 1,
-        #                 "text": "Change",
-        #                 "icon": "change",
-        #                 "mainColor": Dependency.colorPalette["warning"],
-        #                 "hoverColor": Dependency.colorPalette["warning-dark"],
-        #                 "event": changeButtonEvent,
-        #             },
-        #             {
-        #                 "id": 2,
-        #                 "text": "Change Password",
-        #                 "icon": "password",
-        #                 "mainColor": Dependency.colorPalette["danger"],
-        #                 "hoverColor": Dependency.colorPalette["danger-dark"],
-        #                 "event": changePasswordButtonEvent,
-        #             },
-        #             {
-        #                 "id": 3,
-        #                 "text": "Remove",
-        #                 "icon": "remove",
-        #                 "mainColor": Dependency.colorPalette["danger"],
-        #                 "hoverColor": Dependency.colorPalette["danger-dark"],
-        #                 "event": removeButtonEvent,
-        #             },
-        #         ],
-        #         row=2,
-        #     )
+            Component.tableDataComponent(
+                containerContentFrame,
+                currentPage=page,
+                totalPage= 1, # (userTotal // 10) + 1,
+                framePage= None, #app.userFrame,
+                idArray= [1, 2, 3, 4, 5], #idArray,
+                contentArray=[
+                    {
+                        "id": 1,
+                        "header": "No.",
+                        "data": [1, 2, 3, 4, 5], # countArray,
+                        "align": "center",
+                    },
+                    {
+                        "id": 2,
+                        "header": "Author",
+                        "data": ["User 1", "User 1", "User 1", "Test 4", "Test 5"], # authorArray,
+                        "align": "left",
+                    },
+                    {
+                        "id": 3,
+                        "header": "Code",
+                        "data": ["U-1", "U-1", "U-1", "T-4", "T-5"], # codeArray,
+                        "align": "center",
+                    },
+                    {
+                        "id": 4,
+                        "header": "Title",
+                        "data": ["Document 1", "Document 2", "Document 3", "Document 4", "Document 5"], # documentArray,
+                        "align": "left",
+                    },
+                    {
+                        "id": 5,
+                        "header": "Category",
+                        "data": ["ABC", "DEF", "GHI", "JKL", "MNO"],
+                        "align": "center",
+                    },
+                    {
+                        "id": 6,
+                        "header": "Description",
+                        "data": ["Lorem 1", "Lorem 2", "Lorem 3", "Lorem 4", "Lorem 5"],
+                        "align": "left",
+                    },
+                ],
+                actionArray=[
+                    {
+                        "id": 1,
+                        "text": "Download",
+                        "icon": "download",
+                        "mainColor": Dependency.colorPalette["success"],
+                        "hoverColor": Dependency.colorPalette["success-dark"],
+                        "event": lambda: None,
+                    },
+                    {
+                        "id": 2,
+                        "text": "Sign",
+                        "icon": "sign",
+                        "mainColor": Dependency.colorPalette["warning"],
+                        "hoverColor": Dependency.colorPalette["warning-dark"],
+                        "event": lambda: None,
+                    },
+                    {
+                        "id": 3,
+                        "text": "Access",
+                        "icon": "access",
+                        "mainColor": Dependency.colorPalette["warning"],
+                        "hoverColor": Dependency.colorPalette["warning-dark"],
+                        "event": lambda: None,
+                    },
+                    {
+                        "id": 4,
+                        "text": "Remove",
+                        "icon": "remove",
+                        "mainColor": Dependency.colorPalette["danger"],
+                        "hoverColor": Dependency.colorPalette["danger-dark"],
+                        "event": lambda: None,
+                    },
+                ],
+                disabledIdArray = [], #idArray
+                row=2,
+            )
 
-        # else:
-        #     Component.labelDataComponent(
-        #         containerContentFrame,
-        #         text="No Data Found",
-        #         size=24,
-        #         row=2,
-        #         padx=80,
-        #         pady=80,
-        #     )
+        else:
+            Component.labelDataComponent(
+                containerContentFrame,
+                text="No Data Found",
+                size=24,
+                row=2,
+                padx=80,
+                pady=80,
+            )
 
-        # dataContainerFrame = ctk.CTkFrame(
-        #     containerContentFrame,
-        #     corner_radius=0,
-        #     fg_color="transparent",
-        # )
-        # dataContainerFrame.columnconfigure([0, 1], weight=1)
-        # dataContainerFrame.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
 
-        # Component.buttonDataComponent(
-        #     dataContainerFrame,
-        #     text="Add",
-        #     icon="add",
-        #     mainColor=Dependency.colorPalette["success"],
-        #     hoverColor=Dependency.colorPalette["success-dark"],
-        #     event=AddButtonEvent,
-        #     row=0,
-        # )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Upload",
+            icon="upload",
+            mainColor=Dependency.colorPalette["success"],
+            hoverColor=Dependency.colorPalette["success-dark"],
+            event=lambda : None,
+            row=0,
+        )
 
 
 if __name__ == "__main__":
