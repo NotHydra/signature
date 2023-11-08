@@ -2301,6 +2301,10 @@ class App(ctk.CTk):
             )
 
     def documentFrame(self, page: int = 1) -> None:
+        def uploadButtonEvent():
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentUploadFrame)
+
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -2517,14 +2521,240 @@ class App(ctk.CTk):
             icon="upload",
             mainColor=Dependency.colorPalette["success"],
             hoverColor=Dependency.colorPalette["success-dark"],
-            event=lambda: None,
+            event=uploadButtonEvent,
             row=0,
+        )
+
+    def documentUploadFrame(self) -> None:
+        # def addButtonEvent() -> None:
+        #     if Message.confirmationMessage():
+        #         name = nameDataEntry.get()
+        #         username = usernameDataEntry.get()
+        #         email = emailDataEntry.get()
+        #         newPassword = newPasswordDataEntry.get()
+        #         confirmPassword = confirmPasswordDataEntry.get()
+
+        #         if "" not in [name, username, email, newPassword, confirmPassword]:
+        #             if newPassword == confirmPassword:
+        #                 response = None
+        #                 try:
+        #                     response = requests.post(
+        #                         f"http://localhost:8000/api/user/create",
+        #                         json={
+        #                             "name": name,
+        #                             "username": username,
+        #                             "email": email,
+        #                             "password": newPassword,
+        #                             "role": "user",
+        #                             "isActive": True,
+        #                         },
+        #                     ).json()
+
+        #                 except requests.ConnectionError:
+        #                     Message.errorMessage(
+        #                         "Make Sure You Are Connected To The Internet"
+        #                     )
+
+        #                 except:
+        #                     Message.errorMessage("Server Error")
+
+        #                 if response != None:
+        #                     if response["success"] == True:
+        #                         Message.successMessage(response["message"])
+
+        #                         Call.resetFrameCall()
+        #                         Middleware.refreshSessionDataMiddleware(
+        #                             self.userAddFrame
+        #                         )
+
+        #                     else:
+        #                         Message.errorMessage(response["message"])
+
+        #             else:
+        #                 Message.errorMessage(
+        #                     "Confirmation Password Doesn't Match New Password"
+        #                 )
+
+        #         else:
+        #             Message.errorMessage("Please Fill Out The Form")
+
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentFrame)
+
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Upload Document", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        codeDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Code",
+            placeholder="code",
+            value=None,
+            state=True,
+            row=0,
+            column=0,
+        )
+        titleDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Title",
+            placeholder="title",
+            value=None,
+            state=True,
+            row=0,
+            column=1,
+        )
+
+        categoryDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Category",
+            placeholder="category",
+            value=None,
+            state=True,
+            row=1,
+            column=0,
+        )
+        descriptionDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Description",
+            placeholder="description",
+            value=None,
+            state=True,
+            row=1,
+            column=1,
+        )
+
+        fileDataFrame = ctk.CTkFrame(
+            dataContainerFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        fileDataFrame.columnconfigure(0, weight=3)
+        fileDataFrame.columnconfigure(1, weight=1)
+        fileDataFrame.grid(row=2, column=0, columnspan=2, pady=(0, 10), sticky="nsew")
+
+        ctk.CTkLabel(
+            fileDataFrame,
+            text="Document",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=18,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=2,
+            pady=(0, 5),
+            sticky="nsw",
+        )
+
+        nameFileValue = ctk.StringVar()
+        nameFileValue.set("choose a document to upload")
+
+        nameFileEntry = ctk.CTkEntry(
+            fileDataFrame,
+            height=36,
+            textvariable=nameFileValue,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=18,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+            fg_color="transparent",
+            border_color=Dependency.colorPalette["text"],
+            state="disabled",
+        )
+        nameFileEntry.grid(
+            row=1,
+            column=0,
+            padx=(0,5),
+            sticky="nsew",
+        )
+
+        ctk.CTkButton(
+            fileDataFrame,
+            height=36,
+            text="Browse",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=18,
+                weight="bold",
+            ),
+            cursor="hand2",
+            corner_radius=8,
+            text_color=Dependency.colorPalette["main"],
+            fg_color=Dependency.colorPalette["text"],
+            hover_color=Dependency.colorPalette["text-dark"],
+            command=lambda: None,
+        ).grid(
+            row=1,
+            column=1,
+            padx=(5, 0),
+            sticky="nsew",
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Upload",
+            icon="upload",
+            mainColor=Dependency.colorPalette["success"],
+            hoverColor=Dependency.colorPalette["success-dark"],
+            event=lambda: None,
+            row=3,
+        )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=backButtonEvent,
+            row=4,
         )
 
 
 if __name__ == "__main__":
     app = App()
 
-    skipObject = {"status": True, "id": 2, "frame": app.documentFrame, "tag": None}
+    skipObject = {
+        "status": True,
+        "id": 2,
+        "frame": app.documentUploadFrame,
+        "tag": None,
+    }
 
     app.mainloop()
