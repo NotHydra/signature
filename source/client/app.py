@@ -48,6 +48,7 @@ class Dependency:
         "danger-dark": "#CB4335",
     }
 
+
 class Message:
     def errorMessage(message: str) -> None:
         CTkMessagebox(
@@ -635,8 +636,12 @@ class Component:
                 buttonActionFrame.columnconfigure(0, weight=1)
                 buttonActionFrame.grid(row=(idIndex * 2) + 2, column=0, sticky="nsew")
 
-                buttonActive = idObject not in disabledIdArray
                 for actionIndex, actionObject in enumerate(actionArray):
+                    if actionObject["optional"]:
+                        buttonActive = idObject not in disabledIdArray
+                    else:
+                        buttonActive = True
+
                     ctk.CTkButton(
                         buttonActionFrame,
                         width=0,
@@ -890,15 +895,16 @@ class App(ctk.CTk):
 
                 Call.resetFrameCall()
 
-                if (skipObject["tag"] == None):
+                if skipObject["tag"] == None:
                     Middleware.refreshSessionDataMiddleware(skipObject["frame"])
 
                 else:
-                    Middleware.refreshSessionDataMiddleware(skipObject["frame"], skipObject["tag"])
+                    Middleware.refreshSessionDataMiddleware(
+                        skipObject["frame"], skipObject["tag"]
+                    )
 
             else:
                 self.loginFrame()
-
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -1633,6 +1639,7 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["warning"],
                         "hoverColor": Dependency.colorPalette["warning-dark"],
                         "event": changeButtonEvent,
+                        "optional": True,
                     },
                     {
                         "id": 2,
@@ -1641,6 +1648,7 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["danger"],
                         "hoverColor": Dependency.colorPalette["danger-dark"],
                         "event": changePasswordButtonEvent,
+                        "optional": True,
                     },
                     {
                         "id": 3,
@@ -1649,6 +1657,7 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["danger"],
                         "hoverColor": Dependency.colorPalette["danger-dark"],
                         "event": removeButtonEvent,
+                        "optional": True,
                     },
                 ],
                 disabledIdArray=disabledIdArray,
@@ -2325,19 +2334,19 @@ class App(ctk.CTk):
                     "id": 1,
                     "display": "Total",
                     "icon": "document-total",
-                    "value": 5 # userTotal if responseIsValid else "?",
+                    "value": 5,  # userTotal if responseIsValid else "?",
                 },
                 {
                     "id": 2,
                     "display": "Owned",
                     "icon": "owned",
-                    "value": 3 # response["data"]["user"] if responseIsValid else "?",
+                    "value": 3,  # response["data"]["user"] if responseIsValid else "?",
                 },
                 {
                     "id": 3,
                     "display": "Shared",
                     "icon": "shared",
-                    "value": 2 # response["data"]["admin"] if responseIsValid else "?",
+                    "value": 2,  # response["data"]["admin"] if responseIsValid else "?",
                 },
             ],
             row=1,
@@ -2389,32 +2398,44 @@ class App(ctk.CTk):
             Component.tableDataComponent(
                 containerContentFrame,
                 currentPage=page,
-                totalPage= 1, # (userTotal // 10) + 1,
-                framePage= None, #app.userFrame,
-                idArray= [1, 2, 3, 4, 5], #idArray,
+                totalPage=1,  # (userTotal // 10) + 1,
+                framePage=None,  # app.userFrame,
+                idArray=[1, 2, 3, 4, 5],  # idArray,
                 contentArray=[
                     {
                         "id": 1,
                         "header": "No.",
-                        "data": [1, 2, 3, 4, 5], # countArray,
+                        "data": [1, 2, 3, 4, 5],  # countArray,
                         "align": "center",
                     },
                     {
                         "id": 2,
                         "header": "Author",
-                        "data": ["User 1", "User 1", "User 1", "Test 4", "Test 5"], # authorArray,
+                        "data": [
+                            "User 1",
+                            "User 1",
+                            "User 1",
+                            "Test 4",
+                            "Test 5",
+                        ],  # authorArray,
                         "align": "left",
                     },
                     {
                         "id": 3,
                         "header": "Code",
-                        "data": ["U-1", "U-1", "U-1", "T-4", "T-5"], # codeArray,
+                        "data": ["U-1", "U-1", "U-1", "T-4", "T-5"],  # codeArray,
                         "align": "center",
                     },
                     {
                         "id": 4,
                         "header": "Title",
-                        "data": ["Document 1", "Document 2", "Document 3", "Document 4", "Document 5"], # documentArray,
+                        "data": [
+                            "Document 1",
+                            "Document 2",
+                            "Document 3",
+                            "Document 4",
+                            "Document 5",
+                        ],  # documentArray,
                         "align": "left",
                     },
                     {
@@ -2438,6 +2459,7 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["success"],
                         "hoverColor": Dependency.colorPalette["success-dark"],
                         "event": lambda: None,
+                        "optional": False,
                     },
                     {
                         "id": 2,
@@ -2446,6 +2468,7 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["warning"],
                         "hoverColor": Dependency.colorPalette["warning-dark"],
                         "event": lambda: None,
+                        "optional": False,
                     },
                     {
                         "id": 3,
@@ -2454,6 +2477,7 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["warning"],
                         "hoverColor": Dependency.colorPalette["warning-dark"],
                         "event": lambda: None,
+                        "optional": True,
                     },
                     {
                         "id": 4,
@@ -2462,9 +2486,10 @@ class App(ctk.CTk):
                         "mainColor": Dependency.colorPalette["danger"],
                         "hoverColor": Dependency.colorPalette["danger-dark"],
                         "event": lambda: None,
+                        "optional": True,
                     },
                 ],
-                disabledIdArray = [], #idArray
+                disabledIdArray=[4, 5],  # idArray
                 row=2,
             )
 
@@ -2492,7 +2517,7 @@ class App(ctk.CTk):
             icon="upload",
             mainColor=Dependency.colorPalette["success"],
             hoverColor=Dependency.colorPalette["success-dark"],
-            event=lambda : None,
+            event=lambda: None,
             row=0,
         )
 
