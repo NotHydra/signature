@@ -22,6 +22,10 @@ GET http://localhost:8000/api/document/count/1
 
 ###
 
+GET http://localhost:8000/api/document/count/access/2
+
+###
+
 GET http://localhost:8000/api/document/10
 
 ###

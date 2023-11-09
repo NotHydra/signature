@@ -553,23 +553,56 @@ def document(response: Response, body: DocumentPageModel, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.get("/api/document/count/{id}")
+@app.get("/api/document/count")
+def documentCount(response: Response):
+    try:
+        response.status_code = status.HTTP_200_OK
+
+        document = database.getCollection("document")
+        return Utility.formatResponse(
+            True,
+            response.status_code,
+            "Document Count",
+            {
+                "total": document.count_documents({}),
+            },
+        )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.get("/api/document/count/access/{id}")
 def documentCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK
 
         document = database.getCollection("document")
-        documentTotal = document.count_documents({})
         documentOwned = document.count_documents({"id_author": id})
+        documentShared = document.count_documents(
+            {
+                "_id": {
+                    "$in": [
+                        accessObject["id_document"]
+                        for accessObject in list(
+                            database.getCollection("access").find({"id_user": id})
+                        )
+                    ]
+                }
+            }
+        )
 
         return Utility.formatResponse(
             True,
             response.status_code,
             "Document Count",
             {
-                "total": documentTotal,
+                "total": documentOwned + documentShared,
                 "owned": documentOwned,
-                "shared": documentTotal - documentOwned,
+                "shared": documentShared,
             },
         )
 
