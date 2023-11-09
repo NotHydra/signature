@@ -2526,57 +2526,70 @@ class App(ctk.CTk):
         )
 
     def documentUploadFrame(self) -> None:
-        # def addButtonEvent() -> None:
-        #     if Message.confirmationMessage():
-        #         name = nameDataEntry.get()
-        #         username = usernameDataEntry.get()
-        #         email = emailDataEntry.get()
-        #         newPassword = newPasswordDataEntry.get()
-        #         confirmPassword = confirmPasswordDataEntry.get()
+        def browseButtonEvent() -> None:
+            filePath = ctk.filedialog.askopenfilename(
+                title="Select a document",
+                filetypes=[
+                    ("PDF files", "*.pdf"),
+                    ("Word files", "*.docx"),
+                    ("Image files", "*.jpg *.jpeg *.png"),
+                ],
+            )
 
-        #         if "" not in [name, username, email, newPassword, confirmPassword]:
-        #             if newPassword == confirmPassword:
-        #                 response = None
-        #                 try:
-        #                     response = requests.post(
-        #                         f"http://localhost:8000/api/user/create",
-        #                         json={
-        #                             "name": name,
-        #                             "username": username,
-        #                             "email": email,
-        #                             "password": newPassword,
-        #                             "role": "user",
-        #                             "isActive": True,
-        #                         },
-        #                     ).json()
+            if filePath:
+                nameFileValue.set(filePath)
 
-        #                 except requests.ConnectionError:
-        #                     Message.errorMessage(
-        #                         "Make Sure You Are Connected To The Internet"
-        #                     )
+            else:
+                nameFileValue.set("choose a document to upload")
 
-        #                 except:
-        #                     Message.errorMessage("Server Error")
+        def uploadButtonEvent() -> None:
+            if Message.confirmationMessage():
+                code = codeDataEntry.get()
+                title = titleDataEntry.get()
+                category = categoryDataEntry.get()
+                description = descriptionDataEntry.get()
+                filePath = nameFileValue.get()
 
-        #                 if response != None:
-        #                     if response["success"] == True:
-        #                         Message.successMessage(response["message"])
+                if (
+                    "" not in [code, title, category, description]
+                    and filePath != "choose a document to upload"
+                ):
+                    try:
+                        response = None
+                        response = requests.post(
+                            f"http://localhost:8000/api/document/upload",
+                            data={
+                                "id_author": self.userObject["_id"],
+                                "code": code,
+                                "title": title,
+                                "category": category,
+                                "description": description,
+                            },
+                            files={"file": open(filePath, "rb")}
+                        ).json()
 
-        #                         Call.resetFrameCall()
-        #                         Middleware.refreshSessionDataMiddleware(
-        #                             self.userAddFrame
-        #                         )
+                    except requests.ConnectionError:
+                        Message.errorMessage(
+                            "Make Sure You Are Connected To The Internet"
+                        )
 
-        #                     else:
-        #                         Message.errorMessage(response["message"])
+                    except:
+                        Message.errorMessage("Server Error")
 
-        #             else:
-        #                 Message.errorMessage(
-        #                     "Confirmation Password Doesn't Match New Password"
-        #                 )
+                    if response != None:
+                        if response["success"] == True:
+                            Message.successMessage(response["message"])
 
-        #         else:
-        #             Message.errorMessage("Please Fill Out The Form")
+                            Call.resetFrameCall()
+                            Middleware.refreshSessionDataMiddleware(
+                                self.documentUploadFrame
+                            )
+
+                        else:
+                            Message.errorMessage(response["message"])
+
+                else:
+                    Message.errorMessage("Please Fill Out The Form")
 
         def backButtonEvent() -> None:
             Call.resetFrameCall()
@@ -2701,7 +2714,7 @@ class App(ctk.CTk):
         nameFileEntry.grid(
             row=1,
             column=0,
-            padx=(0,5),
+            padx=(0, 5),
             sticky="nsew",
         )
 
@@ -2723,7 +2736,7 @@ class App(ctk.CTk):
             text_color=Dependency.colorPalette["text"],
             fg_color=Dependency.colorPalette["warning"],
             hover_color=Dependency.colorPalette["warning-dark"],
-            command=lambda: None,
+            command=browseButtonEvent,
         ).grid(
             row=1,
             column=1,
@@ -2737,7 +2750,7 @@ class App(ctk.CTk):
             icon="upload",
             mainColor=Dependency.colorPalette["success"],
             hoverColor=Dependency.colorPalette["success-dark"],
-            event=lambda: None,
+            event=uploadButtonEvent,
             row=3,
         )
         Component.buttonDataComponent(
