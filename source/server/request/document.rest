@@ -8,6 +8,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:8000/api/document/count/1
+
+###
+
 POST http://localhost:8000/api/document/upload
 Content-Type: multipart/form-data
 

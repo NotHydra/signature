@@ -502,6 +502,33 @@ def document(response: Response, body: DocumentPageModel):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.get("/api/document/count/{id}")
+def user(response: Response, id: int):
+    try:
+        response.status_code = status.HTTP_200_OK
+
+        document = database.getCollection("document")
+        documentTotal = document.count_documents({})
+        documentOwned = document.count_documents({"id_author": id})
+
+        return Utility.formatResponse(
+            True,
+            response.status_code,
+            "Document Count",
+            {
+                "total": documentTotal,
+                "owned": documentOwned,
+                "shared": documentTotal - documentOwned,
+            },
+        )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 @app.post("/api/document/upload")
 def documentUpload(
     response: Response,
