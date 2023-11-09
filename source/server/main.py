@@ -575,7 +575,7 @@ def documentCount(response: Response):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.get("/api/document/count/access/{id}")
+@app.get("/api/document/access/{id}/count")
 def documentCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK

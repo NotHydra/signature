@@ -2320,17 +2320,17 @@ class App(ctk.CTk):
 
         Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
 
-        # response = None
-        # try:
-        #     response = requests.get(
-        #         "http://localhost:8000/api/document/count",
-        #     ).json()
+        response = None
+        try:
+            response = requests.get(
+                f"http://localhost:8000/api/document/access/{self.userObject['_id']}/count",
+            ).json()
 
-        # except:
-        #     pass
+        except:
+            pass
 
-        # responseIsValid = response != None and response["success"]
-        # userTotal = response["data"]["total"]
+        responseIsValid = response != None and response["success"]
+        documentTotal = response["data"]["total"]
         Component.boxContentComponent(
             contentFrame,
             boxArray=[
@@ -2338,19 +2338,19 @@ class App(ctk.CTk):
                     "id": 1,
                     "display": "Total",
                     "icon": "document-total",
-                    "value": 5,  # userTotal if responseIsValid else "?",
+                    "value": documentTotal if responseIsValid else "?",
                 },
                 {
                     "id": 2,
                     "display": "Owned",
                     "icon": "owned",
-                    "value": 3,  # response["data"]["user"] if responseIsValid else "?",
+                    "value": response["data"]["owned"] if responseIsValid else "?",
                 },
                 {
                     "id": 3,
                     "display": "Shared",
                     "icon": "shared",
-                    "value": 2,  # response["data"]["admin"] if responseIsValid else "?",
+                    "value": response["data"]["shared"] if responseIsValid else "?",
                 },
             ],
             row=1,
