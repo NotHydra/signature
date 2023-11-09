@@ -2714,11 +2714,15 @@ class App(ctk.CTk):
                 size=18,
                 weight="bold",
             ),
+            image=ctk.CTkImage(
+                Image.open(Utility.getIcon(f"browse.png")),
+                size=(22, 22),
+            ),
             cursor="hand2",
             corner_radius=8,
-            text_color=Dependency.colorPalette["main"],
-            fg_color=Dependency.colorPalette["text"],
-            hover_color=Dependency.colorPalette["text-dark"],
+            text_color=Dependency.colorPalette["text"],
+            fg_color=Dependency.colorPalette["warning"],
+            hover_color=Dependency.colorPalette["warning-dark"],
             command=lambda: None,
         ).grid(
             row=1,
