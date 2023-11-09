@@ -1,7 +1,8 @@
 import datetime
 
+from click import File
 from database import Database
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Form, Response, UploadFile, status
 from model.login import LoginModel
 from model.user import (
     UserModel,
@@ -458,6 +459,56 @@ def userDelete(response: Response, id: int):
 
             return Utility.formatResponse(
                 False, response.status_code, "User Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.post("/api/document/upload")
+def documentUpload(
+    response: Response,
+    id_author: int = Form(...),
+    code: str = Form(...),
+    title: str = Form(...),
+    category: str = Form(...),
+    description: str = Form(...),
+    file: UploadFile = File(),
+):
+    try:
+        document = database.getCollection("document")
+        newDocument = {
+            "_id": database.newId("document"),
+            "id_author": id_author,
+            "id_file": database.fileSystemInsert(file),
+            "code": code,
+            "title": title,
+            "category": category,
+            "description": description,
+            "createdAt": datetime.datetime.now(),
+            "updatedAt": datetime.datetime.now(),
+        }
+
+        documentObject = document.insert_one(newDocument)
+
+        if documentObject:
+            response.status_code = status.HTTP_201_CREATED
+
+            return Utility.formatResponse(
+                True, response.status_code, "Document Uploaded", newDocument
+            )
+
+        else:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "Document Failed To Be Uploaded",
+                None,
             )
 
     except Exception as e:
