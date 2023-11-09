@@ -51,7 +51,7 @@ class Database:
         return documentObject[f"{collection}Increment"]
 
     def fileSystemInsert(self, file: UploadFile):
-        return str(Database.fileSystem.put(file.file, filename=file.filename))
+        return str(self.fileSystem.put(file.file, filename=file.filename))
 
 
 # Database().resetCollection()
