@@ -1,0 +1,22 @@
+GET http://localhost:8000/api/document
+Content-Type: application/json
+
+{
+    "count": 10,
+    "page": 1
+}
+
+###
+
+POST http://localhost:8000/api/document/upload
+Content-Type: multipart/form-data
+
+{
+    "id_author": 1,
+    "code": "ABC-1",
+    "title": "First Document",
+    "category": "Important",
+    "description": "First attempt on document upload",
+}
+
+###
