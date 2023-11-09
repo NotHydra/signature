@@ -91,7 +91,7 @@ def user(response: Response, body: UserPageModel):
 
 
 @app.get("/api/user/count")
-def user(response: Response):
+def userCount(response: Response):
     try:
         response.status_code = status.HTTP_200_OK
 
@@ -115,7 +115,7 @@ def user(response: Response):
 
 
 @app.get("/api/user/{id}")
-def user(response: Response, id: int):
+def userFind(response: Response, id: int):
     try:
         documentObject = database.getCollection("user").find_one({"_id": id})
 
@@ -503,7 +503,7 @@ def document(response: Response, body: DocumentPageModel):
 
 
 @app.get("/api/document/count/{id}")
-def user(response: Response, id: int):
+def documentCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK
 
@@ -521,6 +521,35 @@ def user(response: Response, id: int):
                 "shared": documentTotal - documentOwned,
             },
         )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.get("/api/document/{id}")
+def documentFind(response: Response, id: int):
+    try:
+        documentObject = database.getCollection("document").find_one({"_id": id})
+
+        if documentObject:
+            response.status_code = status.HTTP_200_OK
+
+            return Utility.formatResponse(
+                True, response.status_code, "Document Found", documentObject
+            )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "Document Not Found",
+                None,
+            )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

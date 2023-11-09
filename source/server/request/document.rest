@@ -12,6 +12,10 @@ GET http://localhost:8000/api/document/count/1
 
 ###
 
+GET http://localhost:8000/api/document/10
+
+###
+
 POST http://localhost:8000/api/document/upload
 Content-Type: multipart/form-data
 
