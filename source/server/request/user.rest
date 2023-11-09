@@ -1,0 +1,60 @@
+GET http://localhost:8000/api/user
+Content-Type: application/json
+
+{
+    "count": 10,
+    "page": 1
+}
+
+###
+
+GET http://localhost:8000/api/user/count
+
+###
+
+GET  http://localhost:8000/api/user/1
+
+###
+
+POST http://localhost:8000/api/user/create
+Content-Type: application/json
+
+{
+    "name": "user14",
+    "username": "user14",
+    "email": "user14@gmail.com",
+    "password": "user12345678",
+    "role": "user",
+    "isActive": true
+}
+
+###
+
+PUT http://localhost:8000/api/user/update/1
+Content-Type: application/json
+
+{
+    "name": "Rizky Irswanda Ramadhana",
+    "username": "rz_irswanda",
+    "email": "rizky.irswanda115@gmail.com",
+    "role": "user"
+}
+
+###
+
+PUT http://localhost:8000/api/user/update-active/1
+
+###
+
+PUT http://localhost:8000/api/user/update-password/1
+Content-Type: application/json
+
+{
+    "password": "10102005"
+}
+
+###
+
+DELETE http://localhost:8000/api/user/delete/1
+
+###
