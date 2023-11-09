@@ -502,6 +502,57 @@ def document(response: Response, body: DocumentPageModel):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.get("/api/document/access/{id}")
+def document(response: Response, body: DocumentPageModel, id: int):
+    try:
+        documentArray = list(
+            database.getCollection("document")
+            .find(
+                {
+                    "$or": [
+                        {"id_author": id},
+                        {
+                            "_id": {
+                                "$in": [
+                                    accessObject["id_document"]
+                                    for accessObject in list(
+                                        database.getCollection("access").find(
+                                            {"id_user": id}
+                                        )
+                                    )
+                                ]
+                            }
+                        },
+                    ]
+                }
+            )
+            .skip(body.count * (body.page - 1))
+            .limit(body.count)
+            if body.count != 0 and body.page != 0
+            else database.getCollection("document").find()
+        )
+
+        if documentArray:
+            response.status_code = status.HTTP_200_OK
+
+            return Utility.formatResponse(
+                True, response.status_code, "Document Found", documentArray
+            )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Document Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 @app.get("/api/document/count/{id}")
 def documentCount(response: Response, id: int):
     try:
