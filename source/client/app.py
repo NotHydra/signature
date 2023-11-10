@@ -1277,6 +1277,7 @@ class App(ctk.CTk):
         Component.sidebarComponent()
 
         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
         contentFrame.columnconfigure(0, weight=1)
         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -1413,6 +1414,7 @@ class App(ctk.CTk):
         Component.sidebarComponent()
 
         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
         contentFrame.columnconfigure(0, weight=1)
         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -1759,6 +1761,7 @@ class App(ctk.CTk):
         Component.sidebarComponent()
 
         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
         contentFrame.columnconfigure(0, weight=1)
         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -1929,6 +1932,7 @@ class App(ctk.CTk):
             Component.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.rowconfigure(1, weight=1)
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -2082,6 +2086,7 @@ class App(ctk.CTk):
             Component.sidebarComponent()
 
             contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.rowconfigure(1, weight=1)
             contentFrame.columnconfigure(0, weight=1)
             contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -2611,6 +2616,7 @@ class App(ctk.CTk):
         Component.sidebarComponent()
 
         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
         contentFrame.columnconfigure(0, weight=1)
         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
@@ -2784,6 +2790,7 @@ class App(ctk.CTk):
         Component.sidebarComponent()
 
         contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
         contentFrame.columnconfigure(0, weight=1)
         contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
 
