@@ -645,19 +645,19 @@ class Component:
                     ctk.CTkButton(
                         buttonActionFrame,
                         width=0,
-                        height=14,
+                        height=16,
                         image=ctk.CTkImage(
                             Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
-                            size=(14, 14),
+                            size=(16, 16),
                         ),
                         text=f'{actionObject["text"]}',
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"],
-                            size=14,
+                            size=16,
                             weight="bold",
                         ),
                         cursor="hand2",
-                        corner_radius=8,
+                        corner_radius=0,
                         text_color=Dependency.colorPalette["text"],
                         fg_color=actionObject["mainColor"]
                         if buttonActive
@@ -673,8 +673,6 @@ class Component:
                     ).grid(
                         row=0,
                         column=actionIndex,
-                        padx=1,
-                        pady=1,
                         sticky="nsew",
                     )
 
