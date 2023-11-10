@@ -2770,7 +2770,7 @@ if __name__ == "__main__":
 
     skipObject = {
         "status": True,
-        "id": 2,
+        "id": 4,
         "frame": app.documentUploadFrame,
         "tag": None,
     }
