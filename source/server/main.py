@@ -530,7 +530,7 @@ def document(response: Response, body: DocumentPageModel):
 
 
 @app.get("/api/document/access/{id}")
-def document(response: Response, body: DocumentPageModel, id: int):
+def documentAccess(response: Response, body: DocumentPageModel, id: int):
     try:
         query = [
             {
@@ -631,7 +631,7 @@ def documentCount(response: Response):
 
 
 @app.get("/api/document/access/{id}/count")
-def documentCount(response: Response, id: int):
+def documentAccessCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK
 
