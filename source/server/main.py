@@ -505,10 +505,18 @@ def document(response: Response, body: DocumentPageModel):
 @app.get("/api/document/access/{id}")
 def document(response: Response, body: DocumentPageModel, id: int):
     try:
-        documentArray = list(
-            database.getCollection("document")
-            .find(
-                {
+        query = [
+            {
+                "$lookup": {
+                    "from": "user",
+                    "localField": "id_author",
+                    "foreignField": "_id",
+                    "as": "author_extend",
+                }
+            },
+            {"$unwind": "$author_extend"},
+            {
+                "$match": {
                     "$or": [
                         {"id_author": id},
                         {
@@ -525,12 +533,32 @@ def document(response: Response, body: DocumentPageModel, id: int):
                         },
                     ]
                 }
-            )
-            .skip(body.count * (body.page - 1))
-            .limit(body.count)
-            if body.count != 0 and body.page != 0
-            else database.getCollection("document").find()
-        )
+            },
+        ]
+
+        if body.count != 0 and body.page != 0:
+            query = query + [
+                {"$skip": body.count * (body.page - 1)},
+                {"$limit": body.count},
+            ]
+
+        query = query + [
+            {
+                "$project": {
+                    "_id": 1,
+                    "id_author": 1,
+                    "code": 1,
+                    "title": 1,
+                    "category": 1,
+                    "description": 1,
+                    "createdAt": 1,
+                    "updatedAt": 1,
+                    "author_extend.username": 1,
+                }
+            },
+        ]
+
+        documentArray = list(database.getCollection("document").aggregate(query))
 
         if documentArray:
             response.status_code = status.HTTP_200_OK
