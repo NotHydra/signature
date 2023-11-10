@@ -2401,7 +2401,7 @@ class App(ctk.CTk):
                 titleArray.append(documentObject["title"])
                 categoryArray.append(documentObject["category"])
                 descriptionArray.append(documentObject["description"])
-                
+
                 if documentObject["id_author"] != self.userObject["_id"]:
                     disabledIdArray.append(documentObject["_id"])
 
@@ -2452,6 +2452,15 @@ class App(ctk.CTk):
                 actionArray=[
                     {
                         "id": 1,
+                        "text": "View",
+                        "icon": "view",
+                        "mainColor": Dependency.colorPalette["success"],
+                        "hoverColor": Dependency.colorPalette["success-dark"],
+                        "event": lambda: None,
+                        "optional": False,
+                    },
+                    {
+                        "id": 2,
                         "text": "Download",
                         "icon": "download",
                         "mainColor": Dependency.colorPalette["success"],
@@ -2460,7 +2469,7 @@ class App(ctk.CTk):
                         "optional": False,
                     },
                     {
-                        "id": 2,
+                        "id": 3,
                         "text": "Sign",
                         "icon": "sign",
                         "mainColor": Dependency.colorPalette["warning"],
@@ -2469,7 +2478,7 @@ class App(ctk.CTk):
                         "optional": False,
                     },
                     {
-                        "id": 3,
+                        "id": 4,
                         "text": "Access",
                         "icon": "access",
                         "mainColor": Dependency.colorPalette["warning"],
@@ -2478,7 +2487,7 @@ class App(ctk.CTk):
                         "optional": True,
                     },
                     {
-                        "id": 4,
+                        "id": 5,
                         "text": "Remove",
                         "icon": "remove",
                         "mainColor": Dependency.colorPalette["danger"],
