@@ -1665,7 +1665,7 @@ class App(ctk.CTk):
         else:
             Component.labelDataComponent(
                 containerContentFrame,
-                text="No Data Found",
+                text="Data Not Found",
                 size=24,
                 row=2,
                 padx=80,
@@ -2501,7 +2501,7 @@ class App(ctk.CTk):
         else:
             Component.labelDataComponent(
                 containerContentFrame,
-                text="No Data Found",
+                text="Data Not Found",
                 size=24,
                 row=2,
                 padx=80,
