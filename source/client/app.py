@@ -2370,88 +2370,82 @@ class App(ctk.CTk):
 
         Component.lineHorizontalComponent(containerContentFrame, row=1)
 
-        # response = None
-        # try:
-        #     response = requests.get(
-        #         "http://localhost:8000/api/user", json={"count": 10, "page": page}
-        #     ).json()
+        response = None
+        try:
+            response = requests.get(
+                f"http://localhost:8000/api/document/access/{self.userObject['_id']}",
+                json={"count": 10, "page": page},
+            ).json()
 
-        # except:
-        #     pass
+        except:
+            pass
 
         if (
-            # response != None
-            # and response["success"] == True
-            # and len(response["data"]) > 0
-            True
+            response != None
+            and response["success"] == True
+            and len(response["data"]) > 0
         ):
-            # countArray = []
-            # idArray = []
-            # nameArray = []
-            # usernameArray = []
-            # emailArray = []
-            # roleArray = []
-            # for userIndex, userObject in enumerate(response["data"]):
-            #     countArray.append((10 * (page - 1)) + userIndex + 1)
-            #     idArray.append(userObject["_id"])
-            #     nameArray.append(userObject["name"])
-            #     usernameArray.append(userObject["username"])
-            #     emailArray.append(userObject["email"])
-            #     roleArray.append(str(userObject["role"]).capitalize())
+            countArray = []
+            idArray = []
+            authorArray = []
+            codeArray = []
+            titleArray = []
+            categoryArray = []
+            descriptionArray = []
+            disabledIdArray = []
+            for documentIndex, documentObject in enumerate(response["data"]):
+                countArray.append((10 * (page - 1)) + documentIndex + 1)
+                idArray.append(documentObject["_id"])
+                authorArray.append(documentObject["author_extend"]["username"])
+                codeArray.append(documentObject["code"])
+                titleArray.append(documentObject["title"])
+                categoryArray.append(documentObject["category"])
+                descriptionArray.append(documentObject["description"])
+                
+                if documentObject["id_author"] != self.userObject["_id"]:
+                    disabledIdArray.append(documentObject["_id"])
 
             Component.tableDataComponent(
                 containerContentFrame,
                 currentPage=page,
-                totalPage=1,  # (userTotal // 10) + 1,
-                framePage=None,  # app.userFrame,
-                idArray=[1, 2, 3, 4, 5],  # idArray,
+                totalPage=(documentTotal // 10) + 1,
+                framePage=app.documentFrame,
+                idArray=idArray,
                 contentArray=[
                     {
                         "id": 1,
                         "header": "No.",
-                        "data": [1, 2, 3, 4, 5],  # countArray,
+                        "data": countArray,
                         "align": "center",
                     },
                     {
                         "id": 2,
                         "header": "Author",
-                        "data": [
-                            "User 1",
-                            "User 1",
-                            "User 1",
-                            "Test 4",
-                            "Test 5",
-                        ],  # authorArray,
+                        "data": authorArray,
                         "align": "left",
                     },
                     {
                         "id": 3,
                         "header": "Code",
-                        "data": ["U-1", "U-1", "U-1", "T-4", "T-5"],  # codeArray,
+                        "data": codeArray,
                         "align": "center",
                     },
                     {
                         "id": 4,
                         "header": "Title",
-                        "data": [
-                            "Document 1",
-                            "Document 2",
-                            "Document 3",
-                            "Document 4",
-                            "Document 5",
-                        ],  # documentArray,
+                        "data": titleArray,
                         "align": "left",
                     },
                     {
                         "id": 5,
                         "header": "Category",
-                        "data": ["ABC", "DEF", "GHI", "JKL", "MNO"],
+                        "data": categoryArray,
                         "align": "center",
                     },
                     {
                         "id": 6,
                         "header": "Description",
-                        "data": ["Lorem 1", "Lorem 2", "Lorem 3", "Lorem 4", "Lorem 5"],
+                        "data": descriptionArray,
                         "align": "left",
                     },
                 ],
@@ -2493,7 +2487,7 @@ class App(ctk.CTk):
                         "optional": True,
                     },
                 ],
-                disabledIdArray=[4, 5],  # idArray
+                disabledIdArray=disabledIdArray,
                 row=2,
             )
 
@@ -2565,7 +2559,7 @@ class App(ctk.CTk):
                                 "category": category,
                                 "description": description,
                             },
-                            files={"file": open(filePath, "rb")}
+                            files={"file": open(filePath, "rb")},
                         ).json()
 
                     except requests.ConnectionError:
