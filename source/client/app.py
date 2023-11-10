@@ -1,6 +1,7 @@
 import os
 import random
 import time
+from io import BytesIO
 from typing import Callable
 
 import customtkinter as ctk
@@ -2300,9 +2301,13 @@ class App(ctk.CTk):
             )
 
     def documentFrame(self, page: int = 1) -> None:
-        def uploadButtonEvent():
+        def uploadButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentUploadFrame)
+
+        def viewButtonEvent(id: int) -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentViewFrame, id)
 
         self.sidebarId = 2
 
@@ -2455,7 +2460,7 @@ class App(ctk.CTk):
                         "icon": "view",
                         "mainColor": Dependency.colorPalette["success"],
                         "hoverColor": Dependency.colorPalette["success-dark"],
-                        "event": lambda: None,
+                        "event": viewButtonEvent,
                         "optional": False,
                     },
                     {
@@ -2763,6 +2768,74 @@ class App(ctk.CTk):
             hoverColor=Dependency.colorPalette["danger-dark"],
             event=backButtonEvent,
             row=4,
+        )
+
+    def documentViewFrame(self, id: int) -> None:
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentFrame)
+
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="View Document", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        response = None
+        try:
+            response = requests.get(f"http://localhost:8000/api/document/view/{id}")
+
+        except:
+            pass
+
+        if response.status_code == 200:
+            fileDataLabel = ctk.CTkLabel(
+                dataContainerFrame,
+                image=ctk.CTkImage(
+                    Image.open(BytesIO(response.content)), size=(800, 400)
+                ),
+            )
+            fileDataLabel.grid(
+                row=0, column=0, columnspan=2, pady=(0, 10), sticky="nsew"
+            )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=backButtonEvent,
+            row=1,
         )
 
 
