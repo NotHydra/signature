@@ -673,6 +673,7 @@ class Component:
                     ).grid(
                         row=0,
                         column=actionIndex,
+                        ipadx=2,
                         sticky="nsew",
                     )
 
@@ -2771,7 +2772,7 @@ if __name__ == "__main__":
     skipObject = {
         "status": True,
         "id": 4,
-        "frame": app.documentUploadFrame,
+        "frame": app.documentFrame,
         "tag": None,
     }
 
