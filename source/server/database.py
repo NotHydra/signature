@@ -1,9 +1,10 @@
 import datetime
 import os
 
+from bson import ObjectId
 from dotenv import load_dotenv
 from fastapi import UploadFile
-from gridfs import GridFS
+from gridfs import GridFS, GridOut
 from pymongo import ASCENDING, MongoClient
 
 load_dotenv()
@@ -85,8 +86,11 @@ class Database:
 
         return documentObject[f"{collection}Increment"]
 
-    def fileSystemInsert(self, file: UploadFile):
+    def fileSystemInsert(self, file: UploadFile) -> str:
         return str(self.fileSystem.put(file.file, filename=file.filename))
+
+    def fileSystemFind(self, id: str) -> GridOut:
+        return self.fileSystem.get(ObjectId(id))
 
 
 # Database().resetCollection()
