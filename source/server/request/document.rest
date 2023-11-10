@@ -26,7 +26,7 @@ GET http://localhost:8000/api/document/access/2/count
 
 ###
 
-GET http://localhost:8000/api/document/10
+GET http://localhost:8000/api/document/1
 
 ###
 
@@ -40,5 +40,9 @@ Content-Type: multipart/form-data
     "category": "Important",
     "description": "First attempt on document upload",
 }
+
+###
+
+GET http://localhost:8000/api/document/view/1
 
 ###

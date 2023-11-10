@@ -1,8 +1,10 @@
 import datetime
+from io import BytesIO
 
 from click import File
 from database import Database
 from fastapi import FastAPI, Form, Response, UploadFile, status
+from fastapi.responses import StreamingResponse
 from model.document import DocumentPageModel
 from model.login import LoginModel
 from model.user import (
@@ -766,6 +768,48 @@ def documentUpload(
                 False,
                 response.status_code,
                 "Document Failed To Be Uploaded",
+                None,
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.get("/api/document/view/{id}", response_model=dict)
+def documentView(response: Response, id: int):
+    try:
+        documentObject = database.getCollection("document").find_one(
+            {"_id": id}, {"id_file": True}
+        )
+
+        if documentObject:
+            file = database.fileSystemFind(documentObject["id_file"])
+
+            if file:
+                response.status_code = status.HTTP_200_OK
+
+                return StreamingResponse(BytesIO(file.read()), media_type="image/jpeg")
+
+            else:
+                response.status_code = status.HTTP_404_NOT_FOUND
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    "File Not Found",
+                    None,
+                )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "Document Not Found",
                 None,
             )
 
