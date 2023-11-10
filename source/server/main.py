@@ -671,13 +671,42 @@ def documentCount(response: Response, id: int):
 @app.get("/api/document/{id}")
 def documentFind(response: Response, id: int):
     try:
-        documentObject = database.getCollection("document").find_one({"_id": id})
+        documentArray = list(
+            database.getCollection("document").aggregate(
+                [
+                    {
+                        "$lookup": {
+                            "from": "user",
+                            "localField": "id_author",
+                            "foreignField": "_id",
+                            "as": "author_extend",
+                        }
+                    },
+                    {"$unwind": "$author_extend"},
+                    {"$match": {"_id": id}},
+                    {"$limit": 1},
+                    {
+                        "$project": {
+                            "_id": 1,
+                            "id_author": 1,
+                            "code": 1,
+                            "title": 1,
+                            "category": 1,
+                            "description": 1,
+                            "createdAt": 1,
+                            "updatedAt": 1,
+                            "author_extend.username": 1,
+                        }
+                    },
+                ]
+            )
+        )
 
-        if documentObject:
+        if len(documentArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Document Found", documentObject
+                True, response.status_code, "Document Found", documentArray[0]
             )
 
         else:
