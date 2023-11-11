@@ -519,7 +519,9 @@ class Component:
     ) -> None:
         def changePageEvent(page):
             Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(framePage, tag=tag, page=page)
+            Middleware.refreshSessionDataMiddleware(
+                framePage, firstTag=tag, secondTag=page
+            )
 
         tableFrame = ctk.CTkFrame(
             master, height=0, corner_radius=0, fg_color="transparent"
@@ -774,7 +776,7 @@ class Component:
 
 class Middleware:
     def refreshSessionDataMiddleware(
-        frameFunction: Callable[[], None], tag=None, page=None
+        frameFunction: Callable[[], None], firstTag=None, secondTag=None
     ) -> None:
         def fetchSessionData() -> None:
             response = None
@@ -801,15 +803,15 @@ class Middleware:
 
                     Call.resetFrameCall()
 
-                    if tag == None:
+                    if firstTag == None:
                         frameFunction()
 
-                    elif tag != None:
-                        if page == None:
-                            frameFunction(tag)
+                    elif firstTag != None:
+                        if secondTag == None:
+                            frameFunction(firstTag)
 
                         else:
-                            frameFunction(tag, page)
+                            frameFunction(firstTag, secondTag)
 
                 else:
                     Message.errorMessage(response["message"])
@@ -2251,12 +2253,6 @@ class App(ctk.CTk):
                 row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
             )
 
-            try:
-                response = requests.get(f"http://localhost:8000/api/user/{id}").json()
-
-            except:
-                pass
-
             Component.entryDataComponent(
                 dataContainerFrame,
                 title="Name",
@@ -2863,11 +2859,11 @@ class App(ctk.CTk):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentAccessAddFrame, id)
 
-        def removeButtonEvent() -> None:
-            pass
-
-            # Call.resetFrameCall()
-            # Middleware.refreshSessionDataMiddleware(self.documentUploadFrame)
+        def removeButtonEvent(idAccess: int) -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(
+                self.documentAccessRemoveFrame, id, idAccess
+            )
 
         def backButtonEvent() -> None:
             Call.resetFrameCall()
@@ -2959,7 +2955,7 @@ class App(ctk.CTk):
                         "icon": "remove",
                         "mainColor": Dependency.colorPalette["danger"],
                         "hoverColor": Dependency.colorPalette["danger-dark"],
-                        "event": lambda: None,
+                        "event": removeButtonEvent,
                         "optional": False,
                     },
                 ],
@@ -3112,6 +3108,129 @@ class App(ctk.CTk):
             event=backButtonEvent,
             row=2,
         )
+
+    def documentAccessRemoveFrame(self, id: int, idAccess: int) -> None:
+        def removeButtonEvent() -> None:
+            if Message.confirmationMessage():
+                response = None
+
+                try:
+                    response = requests.delete(
+                        f"http://localhost:8000/api/access/remove/{idAccess}",
+                    ).json()
+
+                except requests.ConnectionError:
+                    Message.errorMessage("Make Sure You Are Connected To The Internet")
+
+                except:
+                    Message.errorMessage("Server Error")
+
+                if response != None:
+                    if response["success"] == True:
+                        Message.successMessage(response["message"])
+
+                        Call.resetFrameCall()
+                        Middleware.refreshSessionDataMiddleware(
+                            self.documentAccessFrame, id, idAccess
+                        )
+
+                    else:
+                        Message.errorMessage(response["message"])
+
+                        if response["status"] == 404:
+                            Call.logoutCall()
+
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(
+                self.documentAccessFrame, id, idAccess
+            )
+
+        response = None
+        try:
+            response = requests.get(
+                f"http://localhost:8000/api/access/{idAccess}"
+            ).json()
+
+        except:
+            Message.errorMessage("Server Error")
+
+            backButtonEvent()
+
+        if response != None and response["success"] == False:
+            Message.errorMessage(response["message"])
+
+            backButtonEvent()
+
+        else:
+            self.sidebarId = 2
+
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
+            self.columnconfigure(1, weight=31)
+
+            Component.sidebarComponent()
+
+            contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+            contentFrame.rowconfigure(1, weight=1)
+            contentFrame.columnconfigure(0, weight=1)
+            contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+            Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+            containerContentFrame = ctk.CTkFrame(
+                contentFrame,
+                corner_radius=8,
+                fg_color=Dependency.colorPalette["main"],
+            )
+            containerContentFrame.columnconfigure(0, weight=1)
+            containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+            Component.titleContainerComponent(
+                containerContentFrame, title="Remove Access Document", row=0
+            )
+
+            Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+            dataContainerFrame = ctk.CTkFrame(
+                containerContentFrame,
+                corner_radius=0,
+                fg_color="transparent",
+            )
+            dataContainerFrame.columnconfigure([0, 1], weight=1)
+            dataContainerFrame.grid(
+                row=2, column=0, padx=10, pady=(5, 0), sticky="nsew"
+            )
+
+            Component.entryDataComponent(
+                dataContainerFrame,
+                title="Username",
+                placeholder="username",
+                value=response["data"]["user_extend"]["username"],
+                state=False,
+                row=0,
+                column=0,
+                span=2,
+            )
+
+            Component.buttonDataComponent(
+                dataContainerFrame,
+                text="Remove",
+                icon="remove",
+                mainColor=Dependency.colorPalette["danger"],
+                hoverColor=Dependency.colorPalette["danger-dark"],
+                event=removeButtonEvent,
+                row=1,
+            )
+            Component.buttonDataComponent(
+                dataContainerFrame,
+                text="Back",
+                icon="back",
+                mainColor=Dependency.colorPalette["danger"],
+                hoverColor=Dependency.colorPalette["danger-dark"],
+                event=backButtonEvent,
+                row=2,
+            )
 
 
 if __name__ == "__main__":
