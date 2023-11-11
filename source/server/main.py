@@ -938,6 +938,28 @@ def accessDocument(response: Response, body: AccessPageModel, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.get("/api/access/document/{id}/count")
+def accessCount(response: Response):
+    try:
+        response.status_code = status.HTTP_200_OK
+
+        access = database.getCollection("access")
+        return Utility.formatResponse(
+            True,
+            response.status_code,
+            "Access Document Count",
+            {
+                "total": access.count_documents({}),
+            },
+        )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 if __name__ == "__main__":
     import uvicorn
 
