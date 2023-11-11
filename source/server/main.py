@@ -962,7 +962,7 @@ def accessDocument(response: Response, body: AccessPageModel, id: int):
 
 
 @app.get("/api/access/document/{id}/count")
-def accessDocumentCount(response: Response):
+def accessDocumentCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK
 
@@ -972,7 +972,7 @@ def accessDocumentCount(response: Response):
             response.status_code,
             "Access Document Count",
             {
-                "total": access.count_documents({}),
+                "total": access.count_documents({"id_document": id}),
             },
         )
 
