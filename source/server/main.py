@@ -905,6 +905,39 @@ def accessFind(response: Response, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.get("/api/access/document/{id}")
+def accessDocument(response: Response, body: AccessPageModel, id: int):
+    try:
+        documentArray = list(
+            database.getCollection("access")
+            .find({"id_document": id})
+            .skip(body.count * (body.page - 1))
+            .limit(body.count)
+            if body.count != 0 and body.page != 0
+            else database.getCollection("access").find({"id_document": id})
+        )
+
+        if documentArray:
+            response.status_code = status.HTTP_200_OK
+
+            return Utility.formatResponse(
+                True, response.status_code, "Access Document Found", documentArray
+            )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Access Document Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 if __name__ == "__main__":
     import uvicorn
 

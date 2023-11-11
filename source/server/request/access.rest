@@ -16,3 +16,13 @@ GET http://localhost:8000/api/access/1
 
 ###
 
+GET http://localhost:8000/api/access/document/2
+Content-Type: application/json
+
+{
+    "count": 10,
+    "page": 1
+}
+
+###
+
