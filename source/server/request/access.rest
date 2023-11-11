@@ -1,0 +1,9 @@
+GET http://localhost:8000/api/access
+Content-Type: application/json
+
+{
+    "count": 10,
+    "page": 1
+}
+
+###

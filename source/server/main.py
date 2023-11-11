@@ -5,6 +5,7 @@ from click import File
 from database import Database
 from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.responses import StreamingResponse
+from model.access import AccessPageModel
 from model.document import DocumentPageModel
 from model.login import LoginModel
 from model.user import (
@@ -811,6 +812,39 @@ def documentView(response: Response, id: int):
                 response.status_code,
                 "Document Not Found",
                 None,
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.get("/api/access")
+def user(response: Response, body: AccessPageModel):
+    try:
+        documentArray = list(
+            database.getCollection("access")
+            .find()
+            .skip(body.count * (body.page - 1))
+            .limit(body.count)
+            if body.count != 0 and body.page != 0
+            else database.getCollection("access").find()
+        )
+
+        if documentArray:
+            response.status_code = status.HTTP_200_OK
+
+            return Utility.formatResponse(
+                True, response.status_code, "Access Found", documentArray
+            )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Access Not Found", None
             )
 
     except Exception as e:
