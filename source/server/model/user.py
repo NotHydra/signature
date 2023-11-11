@@ -6,7 +6,7 @@ class UserPageModel(BaseModel):
     page: int
 
 
-class UserModel(BaseModel):
+class UserAddModel(BaseModel):
     name: str
     username: str
     email: str
@@ -15,12 +15,12 @@ class UserModel(BaseModel):
     isActive: bool
 
 
-class UserUpdateModel(BaseModel):
+class UserChangeModel(BaseModel):
     name: str
     username: str
     email: str
     role: str
 
 
-class UserUpdatePasswordModel(BaseModel):
+class UserChangePasswordModel(BaseModel):
     password: str

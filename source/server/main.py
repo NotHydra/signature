@@ -6,13 +6,13 @@ from database import Database
 from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.responses import StreamingResponse
 from model.access import AccessAddModel, AccessPageModel
+from model.auth import AuthLoginModel
 from model.document import DocumentPageModel
-from model.login import LoginModel
 from model.user import (
-    UserModel,
+    UserAddModel,
+    UserChangeModel,
+    UserChangePasswordModel,
     UserPageModel,
-    UserUpdateModel,
-    UserUpdatePasswordModel,
 )
 from utility import Utility
 
@@ -21,7 +21,7 @@ database = Database()
 
 
 @app.post("/api/auth/login")
-def auth(response: Response, body: LoginModel):
+def auth(response: Response, body: AuthLoginModel):
     try:
         user = database.getCollection("user")
         documentObject = user.find_one(
@@ -146,8 +146,8 @@ def userFind(response: Response, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.post("/api/user/create")
-def userCreate(response: Response, body: UserModel):
+@app.post("/api/user/add")
+def userAdd(response: Response, body: UserAddModel):
     try:
         if Utility.checkEmail(body.email):
             if len(body.password) >= 8:
@@ -160,9 +160,9 @@ def userCreate(response: Response, body: UserModel):
                         "email": body.email,
                         "password": Utility.encrypt(body.password),
                         "role": body.role,
-                        "isActive": body.isActive,
-                        "createdAt": datetime.datetime.now(),
-                        "updatedAt": datetime.datetime.now(),
+                        "is_active": body.isActive,
+                        "created_at": datetime.datetime.now(),
+                        "updated_at": datetime.datetime.now(),
                     }
                     documentObject = user.insert_one(newDocument)
 
@@ -170,7 +170,7 @@ def userCreate(response: Response, body: UserModel):
                         response.status_code = status.HTTP_201_CREATED
 
                         return Utility.formatResponse(
-                            True, response.status_code, "User Created", newDocument
+                            True, response.status_code, "User Added", newDocument
                         )
 
                     else:
@@ -179,7 +179,7 @@ def userCreate(response: Response, body: UserModel):
                         return Utility.formatResponse(
                             False,
                             response.status_code,
-                            "User Failed To Be Created",
+                            "User Failed To Be Added",
                             None,
                         )
 
@@ -234,8 +234,8 @@ def userCreate(response: Response, body: UserModel):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.put("/api/user/update/{id}")
-def userUpdate(response: Response, id: int, body: UserUpdateModel):
+@app.put("/api/user/change/{id}")
+def userChange(response: Response, id: int, body: UserChangeModel):
     try:
         if Utility.checkEmail(body.email):
             if body.role in ["user", "admin"]:
@@ -251,7 +251,7 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                                 "username": body.username,
                                 "email": body.email,
                                 "role": body.role,
-                                "updatedAt": datetime.datetime.now(),
+                                "updated_at": datetime.datetime.now(),
                             }
                         },
                     )
@@ -262,7 +262,7 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                         return Utility.formatResponse(
                             True,
                             response.status_code,
-                            "User Updated",
+                            "User Changed",
                             user.find_one({"_id": id}),
                         )
 
@@ -272,7 +272,7 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
                         return Utility.formatResponse(
                             False,
                             response.status_code,
-                            "User Failed To Be Updated",
+                            "User Failed To Be Changed",
                             None,
                         )
 
@@ -324,8 +324,8 @@ def userUpdate(response: Response, id: int, body: UserUpdateModel):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.put("/api/user/update-password/{id}")
-def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordModel):
+@app.put("/api/user/change-password/{id}")
+def userChangePassword(response: Response, id: int, body: UserChangePasswordModel):
     try:
         if len(body.password) >= 8:
             user = database.getCollection("user")
@@ -337,7 +337,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
                     {
                         "$set": {
                             "password": Utility.encrypt(body.password),
-                            "updatedAt": datetime.datetime.now(),
+                            "updated_at": datetime.datetime.now(),
                         }
                     },
                 )
@@ -348,7 +348,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
                     return Utility.formatResponse(
                         True,
                         response.status_code,
-                        "User Password Updated",
+                        "User Password Changed",
                         user.find_one({"_id": id}),
                     )
 
@@ -358,7 +358,7 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
                     return Utility.formatResponse(
                         False,
                         response.status_code,
-                        "User Password Failed To Be Updated",
+                        "User Password Failed To Be Changed",
                         None,
                     )
 
@@ -386,19 +386,19 @@ def userUpdatePassword(response: Response, id: int, body: UserUpdatePasswordMode
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.put("/api/user/update-active/{id}")
-def userUpdateActive(response: Response, id: int):
+@app.put("/api/user/change-active/{id}")
+def userChangeActive(response: Response, id: int):
     try:
         user = database.getCollection("user")
-        documentObject = user.find_one({"_id": id}, {"isActive": 1})
+        documentObject = user.find_one({"_id": id}, {"is_active": True})
 
         if documentObject:
             documentObject = user.update_one(
                 {"_id": id},
                 {
                     "$set": {
-                        "isActive": not documentObject["isActive"],
-                        "updatedAt": datetime.datetime.now(),
+                        "is_active": not documentObject["is_active"],
+                        "updated_at": datetime.datetime.now(),
                     }
                 },
             )
@@ -409,7 +409,7 @@ def userUpdateActive(response: Response, id: int):
                 return Utility.formatResponse(
                     True,
                     response.status_code,
-                    "User Status Updated",
+                    "User Status Change",
                     user.find_one({"_id": id}),
                 )
 
@@ -419,7 +419,7 @@ def userUpdateActive(response: Response, id: int):
                 return Utility.formatResponse(
                     False,
                     response.status_code,
-                    "User Status Failed To Be Updated",
+                    "User Status Failed To Be Changed",
                     None,
                 )
         else:
@@ -436,8 +436,8 @@ def userUpdateActive(response: Response, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.delete("/api/user/delete/{id}")
-def userDelete(response: Response, id: int):
+@app.delete("/api/user/remove/{id}")
+def userRemove(response: Response, id: int):
     try:
         user = database.getCollection("user")
         documentObject = user.find_one({"_id": id})
@@ -449,14 +449,14 @@ def userDelete(response: Response, id: int):
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
-                    True, response.status_code, "User Deleted", documentObject
+                    True, response.status_code, "User Removed", documentObject
                 )
 
             else:
                 response.status_code = status.HTTP_400_BAD_REQUEST
 
                 return Utility.formatResponse(
-                    False, response.status_code, "User Failed To Be Deleted", None
+                    False, response.status_code, "User Failed To Be Removed", None
                 )
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
@@ -502,8 +502,8 @@ def document(response: Response, body: DocumentPageModel):
                     "title": 1,
                     "category": 1,
                     "description": 1,
-                    "createdAt": 1,
-                    "updatedAt": 1,
+                    "created_at": 1,
+                    "updated_at": 1,
                     "author_extend.username": 1,
                 }
             },
@@ -581,8 +581,8 @@ def documentAccess(response: Response, body: DocumentPageModel, id: int):
                     "title": 1,
                     "category": 1,
                     "description": 1,
-                    "createdAt": 1,
-                    "updatedAt": 1,
+                    "created_at": 1,
+                    "updated_at": 1,
                     "author_extend.username": 1,
                 }
             },
@@ -594,14 +594,14 @@ def documentAccess(response: Response, body: DocumentPageModel, id: int):
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Document Found", documentArray
+                True, response.status_code, "Document Access Found", documentArray
             )
 
         else:
             response.status_code = status.HTTP_404_NOT_FOUND
 
             return Utility.formatResponse(
-                False, response.status_code, "Document Not Found", None
+                False, response.status_code, "Document Access Not Found", None
             )
 
     except Exception as e:
@@ -696,8 +696,8 @@ def documentFind(response: Response, id: int):
                             "title": 1,
                             "category": 1,
                             "description": 1,
-                            "createdAt": 1,
-                            "updatedAt": 1,
+                            "created_at": 1,
+                            "updated_at": 1,
                             "author_extend.username": 1,
                         }
                     },
@@ -749,8 +749,8 @@ def documentUpload(
             "title": title,
             "category": category,
             "description": description,
-            "createdAt": datetime.datetime.now(),
-            "updatedAt": datetime.datetime.now(),
+            "created_at": datetime.datetime.now(),
+            "updated_at": datetime.datetime.now(),
         }
 
         documentObject = document.insert_one(newDocument)
@@ -779,7 +779,7 @@ def documentUpload(
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
-@app.get("/api/document/view/{id}", response_model=dict)
+@app.get("/api/document/view/{id}")
 def documentView(response: Response, id: int):
     try:
         documentObject = database.getCollection("document").find_one(

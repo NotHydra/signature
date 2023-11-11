@@ -32,9 +32,9 @@ class Database:
                     "email": f"admin{index}@gmail.com",
                     "password": "$2a$12$KM2bHq3QeQ7K018L/5YRBumFQgVIyk7iSyhvN11qw1HwTgVTGRN3K",
                     "role": "admin",
-                    "isActive": True,
-                    "createdAt": datetime.datetime.now(),
-                    "updatedAt": datetime.datetime.now(),
+                    "is_active": True,
+                    "created_at": datetime.datetime.now(),
+                    "updated_at": datetime.datetime.now(),
                 }
                 for index in range(1, 4)
             ]
@@ -46,9 +46,9 @@ class Database:
                     "email": f"user{index}@gmail.com",
                     "password": "$2a$12$KM2bHq3QeQ7K018L/5YRBumFQgVIyk7iSyhvN11qw1HwTgVTGRN3K",
                     "role": "user",
-                    "isActive": True,
-                    "createdAt": datetime.datetime.now(),
-                    "updatedAt": datetime.datetime.now(),
+                    "is_active": True,
+                    "created_at": datetime.datetime.now(),
+                    "updated_at": datetime.datetime.now(),
                 }
                 for index in range(1, 4)
             ]
@@ -58,9 +58,9 @@ class Database:
         dependency.insert_one(
             {
                 "_id": 1,
-                "userIncrement": 6,
-                "documentIncrement": 0,
-                "accessIncrement": 0,
+                "user_increment": 6,
+                "document_increment": 0,
+                "access_increment": 0,
             }
         )
 
@@ -79,19 +79,19 @@ class Database:
     def newId(self, collection: str) -> int:
         dependency = self.getCollection("dependency")
 
-        documentObject = dependency.find_one({"_id": 1}, {f"{collection}Increment": 1})
-        documentObject[f"{collection}Increment"] += 1
+        documentObject = dependency.find_one({"_id": 1}, {f"{collection}_increment": 1})
+        documentObject[f"{collection}_increment"] += 1
 
         dependency.update_one(
             {"_id": 1},
             {
                 "$set": {
-                    f"{collection}Increment": documentObject[f"{collection}Increment"]
+                    f"{collection}_increment": documentObject[f"{collection}_increment"]
                 }
             },
         )
 
-        return documentObject[f"{collection}Increment"]
+        return documentObject[f"{collection}_increment"]
 
     def fileSystemInsert(self, file: UploadFile) -> str:
         return str(self.fileSystem.put(file.file, filename=file.filename))

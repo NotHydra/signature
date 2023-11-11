@@ -5,7 +5,7 @@
     "email": "string",
     "password": "string",
     "role": "string",
-    "isActive": "boolean",
-    "createdAt": "datetime",
-    "updatedAt": "datetime"
+    "is_active": "boolean",
+    "created_at": "datetime",
+    "updated_at": "datetime"
 }

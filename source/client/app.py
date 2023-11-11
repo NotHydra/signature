@@ -2845,6 +2845,9 @@ class App(ctk.CTk):
             row=1,
         )
 
+    def documentAccessFrame(self, id: int) -> None:
+        pass
+
 
 if __name__ == "__main__":
     app = App()
