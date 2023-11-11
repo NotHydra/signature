@@ -39,3 +39,7 @@ Content-Type: application/json
 }
 
 ###
+
+DELETE http://localhost:8000/api/access/remove/2
+
+###

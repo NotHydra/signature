@@ -1012,6 +1012,42 @@ def accessAdd(response: Response, body: AccessAddModel):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.delete("/api/access/remove/{id}")
+def accessRemove(response: Response, id: int):
+    try:
+        access = database.getCollection("access")
+        documentObject = access.find_one({"_id": id})
+
+        if documentObject:
+            documentObject = access.find_one_and_delete({"_id": id})
+
+            if documentObject:
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True, response.status_code, "Access Deleted", documentObject
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False, response.status_code, "Access Failed To Be Deleted", None
+                )
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Access Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 if __name__ == "__main__":
     import uvicorn
 
