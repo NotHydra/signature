@@ -2855,8 +2855,6 @@ class App(ctk.CTk):
 
     def documentAccessFrame(self, id: int, page: int = 1) -> None:
         def addButtonEvent() -> None:
-            pass
-
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentAccessAddFrame, id)
 
@@ -3182,8 +3180,8 @@ if __name__ == "__main__":
 
     skipObject = {
         "status": True,
-        "id": 1,
-        "frame": app.userFrame,
+        "id": 4,
+        "frame": app.documentFrame,
         "tag": None,
     }
 
