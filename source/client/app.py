@@ -2854,6 +2854,12 @@ class App(ctk.CTk):
             row=1,
         )
 
+    def documentDownloadFrame(self, id: int) -> None:
+        pass
+
+    def documentSignFrame(self, id: int) -> None:
+        pass
+
     def documentAccessFrame(self, page: int = 1, id: int=None) -> None:
         def addButtonEvent() -> None:
             Call.resetFrameCall()
@@ -3231,6 +3237,9 @@ class App(ctk.CTk):
                 event=backButtonEvent,
                 row=2,
             )
+
+    def documentRemoveFrame(self, id: int) -> None:
+        pass
 
 
 if __name__ == "__main__":
