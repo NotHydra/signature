@@ -7,5 +7,5 @@ class AccessPageModel(BaseModel):
 
 
 class AccessAddModel(BaseModel):
-    usernameUser: str
-    idDocument: int
+    username_user: str
+    id_document: int

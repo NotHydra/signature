@@ -160,7 +160,7 @@ def userAdd(response: Response, body: UserAddModel):
                         "email": body.email,
                         "password": Utility.encrypt(body.password),
                         "role": body.role,
-                        "is_active": body.isActive,
+                        "is_active": body.is_active,
                         "created_at": datetime.datetime.now(),
                         "updated_at": datetime.datetime.now(),
                     }
@@ -964,7 +964,7 @@ def accessDocumentCount(response: Response):
 def accessAdd(response: Response, body: AccessAddModel):
     try:
         documentObject = database.getCollection("user").find_one(
-            {"username": body.usernameUser}, {"_id": True}
+            {"username": body.username_user}, {"_id": True}
         )
 
         if documentObject:
@@ -972,7 +972,7 @@ def accessAdd(response: Response, body: AccessAddModel):
             newDocument = {
                 "_id": database.newId("access"),
                 "id_user": documentObject["_id"],
-                "id_document": body.idDocument,
+                "id_document": body.id_document,
                 "created_at": datetime.datetime.now(),
                 "updated_at": datetime.datetime.now(),
             }

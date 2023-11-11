@@ -16,21 +16,21 @@ GET  http://localhost:8000/api/user/1
 
 ###
 
-POST http://localhost:8000/api/user/create
+POST http://localhost:8000/api/user/add
 Content-Type: application/json
 
 {
-    "name": "user14",
-    "username": "user14",
-    "email": "user14@gmail.com",
-    "password": "user12345678",
+    "name": "user4",
+    "username": "user4",
+    "email": "user4@gmail.com",
+    "password": "12345678",
     "role": "user",
-    "isActive": true
+    "is_active": true
 }
 
 ###
 
-PUT http://localhost:8000/api/user/update/1
+PUT http://localhost:8000/api/user/change/7
 Content-Type: application/json
 
 {
@@ -42,11 +42,8 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8000/api/user/update-active/1
 
-###
-
-PUT http://localhost:8000/api/user/update-password/1
+PUT http://localhost:8000/api/user/change-password/7
 Content-Type: application/json
 
 {
@@ -55,6 +52,11 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8000/api/user/delete/1
+
+PUT http://localhost:8000/api/user/change-active/7
+
+###
+
+DELETE http://localhost:8000/api/user/remove/7
 
 ###

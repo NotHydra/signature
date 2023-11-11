@@ -12,7 +12,7 @@ class UserAddModel(BaseModel):
     email: str
     password: str
     role: str
-    isActive: bool
+    is_active: bool
 
 
 class UserChangeModel(BaseModel):
