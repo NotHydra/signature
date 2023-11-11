@@ -515,10 +515,11 @@ class Component:
         actionArray: list[dict[str, any]] = None,
         disabledIdArray: list[int] = None,
         numbering: bool = True,
+        tag: int = None,
     ) -> None:
         def changePageEvent(page):
             Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(framePage, page)
+            Middleware.refreshSessionDataMiddleware(framePage, tag=tag, page=page)
 
         tableFrame = ctk.CTkFrame(
             master, height=0, corner_radius=0, fg_color="transparent"
@@ -773,7 +774,7 @@ class Component:
 
 class Middleware:
     def refreshSessionDataMiddleware(
-        frameFunction: Callable[[], None], tag=None
+        frameFunction: Callable[[], None], tag=None, page=None
     ) -> None:
         def fetchSessionData() -> None:
             response = None
@@ -804,7 +805,11 @@ class Middleware:
                         frameFunction()
 
                     elif tag != None:
-                        frameFunction(tag)
+                        if page == None:
+                            frameFunction(tag)
+
+                        else:
+                            frameFunction(tag, page)
 
                 else:
                     Message.errorMessage(response["message"])
@@ -2897,8 +2902,13 @@ class App(ctk.CTk):
 
         Component.lineHorizontalComponent(containerContentFrame, row=1)
 
+        accessTotal = None
         response = None
         try:
+            accessTotal = requests.get(
+                f"http://localhost:8000/api/access/document/{id}/count",
+            ).json()["data"]["total"]
+
             response = requests.get(
                 f"http://localhost:8000/api/access/document/{id}",
                 json={"count": 10, "page": page},
@@ -2907,135 +2917,64 @@ class App(ctk.CTk):
         except:
             pass
 
-        # if (
-        #     response != None
-        #     and response["success"] == True
-        #     and len(response["data"]) > 0
-        # ):
-        #     countArray = []
-        #     idArray = []
-        #     authorArray = []
-        #     codeArray = []
-        #     titleArray = []
-        #     categoryArray = []
-        #     descriptionArray = []
-        #     disabledIdArray = []
-        #     for documentIndex, documentObject in enumerate(response["data"]):
-        #         countArray.append((10 * (page - 1)) + documentIndex + 1)
-        #         idArray.append(documentObject["_id"])
-        #         authorArray.append(documentObject["author_extend"]["username"])
-        #         codeArray.append(documentObject["code"])
-        #         titleArray.append(documentObject["title"])
-        #         categoryArray.append(documentObject["category"])
-        #         descriptionArray.append(documentObject["description"])
+        if (
+            response != None
+            and response["success"] == True
+            and len(response["data"]) > 0
+            and accessTotal != None
+        ):
+            countArray = []
+            idArray = []
+            usernameArray = []
+            for documentIndex, documentObject in enumerate(response["data"]):
+                countArray.append((10 * (page - 1)) + documentIndex + 1)
+                idArray.append(documentObject["_id"])
+                usernameArray.append(documentObject["user_extend"]["username"])
 
-        #         if documentObject["id_author"] != self.userObject["_id"]:
-        #             disabledIdArray.append(documentObject["_id"])
+            Component.tableDataComponent(
+                containerContentFrame,
+                currentPage=page,
+                totalPage=(accessTotal // 10) + 1,
+                framePage=app.documentAccessFrame,
+                tag=id,
+                idArray=idArray,
+                contentArray=[
+                    {
+                        "id": 1,
+                        "header": "No.",
+                        "data": countArray,
+                        "align": "center",
+                    },
+                    {
+                        "id": 2,
+                        "header": "Username",
+                        "data": usernameArray,
+                        "align": "left",
+                    },
+                ],
+                actionArray=[
+                    {
+                        "id": 1,
+                        "text": "Remove",
+                        "icon": "remove",
+                        "mainColor": Dependency.colorPalette["danger"],
+                        "hoverColor": Dependency.colorPalette["danger-dark"],
+                        "event": lambda: None,
+                        "optional": False,
+                    },
+                ],
+                row=2,
+            )
 
-        #     Component.tableDataComponent(
-        #         containerContentFrame,
-        #         currentPage=page,
-        #         totalPage=(documentTotal // 10) + 1,
-        #         framePage=app.documentFrame,
-        #         idArray=idArray,
-        #         contentArray=[
-        #             {
-        #                 "id": 1,
-        #                 "header": "No.",
-        #                 "data": countArray,
-        #                 "align": "center",
-        #             },
-        #             {
-        #                 "id": 2,
-        #                 "header": "Author",
-        #                 "data": authorArray,
-        #                 "align": "left",
-        #             },
-        #             {
-        #                 "id": 3,
-        #                 "header": "Code",
-        #                 "data": codeArray,
-        #                 "align": "center",
-        #             },
-        #             {
-        #                 "id": 4,
-        #                 "header": "Title",
-        #                 "data": titleArray,
-        #                 "align": "left",
-        #             },
-        #             {
-        #                 "id": 5,
-        #                 "header": "Category",
-        #                 "data": categoryArray,
-        #                 "align": "center",
-        #             },
-        #             {
-        #                 "id": 6,
-        #                 "header": "Description",
-        #                 "data": descriptionArray,
-        #                 "align": "left",
-        #             },
-        #         ],
-        #         actionArray=[
-        #             {
-        #                 "id": 1,
-        #                 "text": "View",
-        #                 "icon": "view",
-        #                 "mainColor": Dependency.colorPalette["success"],
-        #                 "hoverColor": Dependency.colorPalette["success-dark"],
-        #                 "event": viewButtonEvent,
-        #                 "optional": False,
-        #             },
-        #             {
-        #                 "id": 2,
-        #                 "text": "Download",
-        #                 "icon": "download",
-        #                 "mainColor": Dependency.colorPalette["success"],
-        #                 "hoverColor": Dependency.colorPalette["success-dark"],
-        #                 "event": lambda: None,
-        #                 "optional": False,
-        #             },
-        #             {
-        #                 "id": 3,
-        #                 "text": "Sign",
-        #                 "icon": "sign",
-        #                 "mainColor": Dependency.colorPalette["warning"],
-        #                 "hoverColor": Dependency.colorPalette["warning-dark"],
-        #                 "event": lambda: None,
-        #                 "optional": False,
-        #             },
-        #             {
-        #                 "id": 4,
-        #                 "text": "Access",
-        #                 "icon": "access",
-        #                 "mainColor": Dependency.colorPalette["warning"],
-        #                 "hoverColor": Dependency.colorPalette["warning-dark"],
-        #                 "event": lambda: None,
-        #                 "optional": True,
-        #             },
-        #             {
-        #                 "id": 5,
-        #                 "text": "Remove",
-        #                 "icon": "remove",
-        #                 "mainColor": Dependency.colorPalette["danger"],
-        #                 "hoverColor": Dependency.colorPalette["danger-dark"],
-        #                 "event": lambda: None,
-        #                 "optional": True,
-        #             },
-        #         ],
-        #         disabledIdArray=disabledIdArray,
-        #         row=2,
-        #     )
-
-        # else:
-        #     Component.labelDataComponent(
-        #         containerContentFrame,
-        #         text="Data Not Found",
-        #         size=24,
-        #         row=2,
-        #         padx=80,
-        #         pady=80,
-        #     )
+        else:
+            Component.labelDataComponent(
+                containerContentFrame,
+                text="Data Not Found",
+                size=24,
+                row=2,
+                padx=80,
+                pady=80,
+            )
 
         dataContainerFrame = ctk.CTkFrame(
             containerContentFrame,
@@ -3043,7 +2982,7 @@ class App(ctk.CTk):
             fg_color="transparent",
         )
         dataContainerFrame.columnconfigure([0, 1], weight=1)
-        dataContainerFrame.grid(row=2, column=0, padx=20, pady=(0, 10), sticky="nsew")
+        dataContainerFrame.grid(row=3, column=0, padx=20, pady=(0, 10), sticky="nsew")
 
         Component.buttonDataComponent(
             dataContainerFrame,
