@@ -822,7 +822,7 @@ def documentView(response: Response, id: int):
 
 
 @app.get("/api/access")
-def user(response: Response, body: AccessPageModel):
+def access(response: Response, body: AccessPageModel):
     try:
         documentArray = list(
             database.getCollection("access")
@@ -855,7 +855,7 @@ def user(response: Response, body: AccessPageModel):
 
 
 @app.get("/api/access/count")
-def userCount(response: Response):
+def accessCount(response: Response):
     try:
         response.status_code = status.HTTP_200_OK
 
@@ -868,6 +868,35 @@ def userCount(response: Response):
                 "total": access.count_documents({}),
             },
         )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.get("/api/access/{id}")
+def accessFind(response: Response, id: int):
+    try:
+        documentObject = database.getCollection("access").find_one({"_id": id})
+
+        if documentObject:
+            response.status_code = status.HTTP_200_OK
+
+            return Utility.formatResponse(
+                True, response.status_code, "Access Found", documentObject
+            )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "Access Not Found",
+                None,
+            )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

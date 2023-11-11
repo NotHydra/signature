@@ -11,3 +11,8 @@ Content-Type: application/json
 GET http://localhost:8000/api/access/count
 
 ###
+
+GET http://localhost:8000/api/access/1
+
+###
+
