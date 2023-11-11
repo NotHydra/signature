@@ -16,7 +16,7 @@ GET http://localhost:8000/api/access/1
 
 ###
 
-GET http://localhost:8000/api/access/document/2
+GET http://localhost:8000/api/access/document/1
 Content-Type: application/json
 
 {

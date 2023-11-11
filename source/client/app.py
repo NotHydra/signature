@@ -99,7 +99,7 @@ class Call:
             "username": None,
             "email": None,
             "role": None,
-            "isActive": None,
+            "is_active": None,
         }
 
         Call.resetFrameCall()
@@ -795,7 +795,7 @@ class Middleware:
                     app.userObject["username"] = response["data"]["username"]
                     app.userObject["email"] = response["data"]["email"]
                     app.userObject["role"] = response["data"]["role"]
-                    app.userObject["isActive"] = response["data"]["isActive"]
+                    app.userObject["is_active"] = response["data"]["is_active"]
 
                     Call.resetFrameCall()
 
@@ -852,7 +852,7 @@ class App(ctk.CTk):
         "username": None,
         "email": None,
         "role": None,
-        "isActive": None,
+        "is_active": None,
     }
     sidebarId = 1
 
@@ -1229,7 +1229,7 @@ class App(ctk.CTk):
                     response = None
                     try:
                         response = requests.put(
-                            f"http://localhost:8000/api/user/update/{self.userObject['_id']}",
+                            f"http://localhost:8000/api/user/change/{self.userObject['_id']}",
                             json={
                                 "name": name,
                                 "username": username,
@@ -1364,7 +1364,7 @@ class App(ctk.CTk):
                         response = None
                         try:
                             response = requests.put(
-                                f"http://localhost:8000/api/user/update-password/{self.userObject['_id']}",
+                                f"http://localhost:8000/api/user/change-password/{self.userObject['_id']}",
                                 json={
                                     "password": newPassword,
                                 },
@@ -1709,14 +1709,14 @@ class App(ctk.CTk):
                         response = None
                         try:
                             response = requests.post(
-                                f"http://localhost:8000/api/user/create",
+                                f"http://localhost:8000/api/user/add",
                                 json={
                                     "name": name,
                                     "username": username,
                                     "email": email,
                                     "password": newPassword,
                                     "role": "user",
-                                    "isActive": True,
+                                    "is_active": True,
                                 },
                             ).json()
 
@@ -1869,7 +1869,7 @@ class App(ctk.CTk):
                     response = None
                     try:
                         response = requests.put(
-                            f"http://localhost:8000/api/user/update/{id}",
+                            f"http://localhost:8000/api/user/change/{id}",
                             json={
                                 "name": name,
                                 "username": username,
@@ -2021,7 +2021,7 @@ class App(ctk.CTk):
                         response = None
                         try:
                             response = requests.put(
-                                f"http://localhost:8000/api/user/update-password/{id}",
+                                f"http://localhost:8000/api/user/change-password/{id}",
                                 json={
                                     "password": newPassword,
                                 },
@@ -2163,7 +2163,7 @@ class App(ctk.CTk):
 
                 try:
                     response = requests.delete(
-                        f"http://localhost:8000/api/user/delete/{id}",
+                        f"http://localhost:8000/api/user/remove/{id}",
                     ).json()
 
                 except requests.ConnectionError:
@@ -2313,6 +2313,10 @@ class App(ctk.CTk):
         def viewButtonEvent(id: int) -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentViewFrame, id)
+
+        def accessButtonEvent(id: int) -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, id)
 
         self.sidebarId = 2
 
@@ -2492,7 +2496,7 @@ class App(ctk.CTk):
                         "icon": "access",
                         "mainColor": Dependency.colorPalette["warning"],
                         "hoverColor": Dependency.colorPalette["warning-dark"],
-                        "event": lambda: None,
+                        "event": accessButtonEvent,
                         "optional": True,
                     },
                     {
@@ -2845,8 +2849,327 @@ class App(ctk.CTk):
             row=1,
         )
 
-    def documentAccessFrame(self, id: int) -> None:
-        pass
+    def documentAccessFrame(self, id: int, page: int = 1) -> None:
+        def addButtonEvent() -> None:
+            pass
+
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentAccessAddFrame, id)
+
+        def removeButtonEvent() -> None:
+            pass
+
+            # Call.resetFrameCall()
+            # Middleware.refreshSessionDataMiddleware(self.documentUploadFrame)
+
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentFrame)
+
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Access Document Table", row=0
+        )
+
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        response = None
+        try:
+            response = requests.get(
+                f"http://localhost:8000/api/access/document/{id}",
+                json={"count": 10, "page": page},
+            ).json()
+
+        except:
+            pass
+
+        # if (
+        #     response != None
+        #     and response["success"] == True
+        #     and len(response["data"]) > 0
+        # ):
+        #     countArray = []
+        #     idArray = []
+        #     authorArray = []
+        #     codeArray = []
+        #     titleArray = []
+        #     categoryArray = []
+        #     descriptionArray = []
+        #     disabledIdArray = []
+        #     for documentIndex, documentObject in enumerate(response["data"]):
+        #         countArray.append((10 * (page - 1)) + documentIndex + 1)
+        #         idArray.append(documentObject["_id"])
+        #         authorArray.append(documentObject["author_extend"]["username"])
+        #         codeArray.append(documentObject["code"])
+        #         titleArray.append(documentObject["title"])
+        #         categoryArray.append(documentObject["category"])
+        #         descriptionArray.append(documentObject["description"])
+
+        #         if documentObject["id_author"] != self.userObject["_id"]:
+        #             disabledIdArray.append(documentObject["_id"])
+
+        #     Component.tableDataComponent(
+        #         containerContentFrame,
+        #         currentPage=page,
+        #         totalPage=(documentTotal // 10) + 1,
+        #         framePage=app.documentFrame,
+        #         idArray=idArray,
+        #         contentArray=[
+        #             {
+        #                 "id": 1,
+        #                 "header": "No.",
+        #                 "data": countArray,
+        #                 "align": "center",
+        #             },
+        #             {
+        #                 "id": 2,
+        #                 "header": "Author",
+        #                 "data": authorArray,
+        #                 "align": "left",
+        #             },
+        #             {
+        #                 "id": 3,
+        #                 "header": "Code",
+        #                 "data": codeArray,
+        #                 "align": "center",
+        #             },
+        #             {
+        #                 "id": 4,
+        #                 "header": "Title",
+        #                 "data": titleArray,
+        #                 "align": "left",
+        #             },
+        #             {
+        #                 "id": 5,
+        #                 "header": "Category",
+        #                 "data": categoryArray,
+        #                 "align": "center",
+        #             },
+        #             {
+        #                 "id": 6,
+        #                 "header": "Description",
+        #                 "data": descriptionArray,
+        #                 "align": "left",
+        #             },
+        #         ],
+        #         actionArray=[
+        #             {
+        #                 "id": 1,
+        #                 "text": "View",
+        #                 "icon": "view",
+        #                 "mainColor": Dependency.colorPalette["success"],
+        #                 "hoverColor": Dependency.colorPalette["success-dark"],
+        #                 "event": viewButtonEvent,
+        #                 "optional": False,
+        #             },
+        #             {
+        #                 "id": 2,
+        #                 "text": "Download",
+        #                 "icon": "download",
+        #                 "mainColor": Dependency.colorPalette["success"],
+        #                 "hoverColor": Dependency.colorPalette["success-dark"],
+        #                 "event": lambda: None,
+        #                 "optional": False,
+        #             },
+        #             {
+        #                 "id": 3,
+        #                 "text": "Sign",
+        #                 "icon": "sign",
+        #                 "mainColor": Dependency.colorPalette["warning"],
+        #                 "hoverColor": Dependency.colorPalette["warning-dark"],
+        #                 "event": lambda: None,
+        #                 "optional": False,
+        #             },
+        #             {
+        #                 "id": 4,
+        #                 "text": "Access",
+        #                 "icon": "access",
+        #                 "mainColor": Dependency.colorPalette["warning"],
+        #                 "hoverColor": Dependency.colorPalette["warning-dark"],
+        #                 "event": lambda: None,
+        #                 "optional": True,
+        #             },
+        #             {
+        #                 "id": 5,
+        #                 "text": "Remove",
+        #                 "icon": "remove",
+        #                 "mainColor": Dependency.colorPalette["danger"],
+        #                 "hoverColor": Dependency.colorPalette["danger-dark"],
+        #                 "event": lambda: None,
+        #                 "optional": True,
+        #             },
+        #         ],
+        #         disabledIdArray=disabledIdArray,
+        #         row=2,
+        #     )
+
+        # else:
+        #     Component.labelDataComponent(
+        #         containerContentFrame,
+        #         text="Data Not Found",
+        #         size=24,
+        #         row=2,
+        #         padx=80,
+        #         pady=80,
+        #     )
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=20, pady=(0, 10), sticky="nsew")
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Add",
+            icon="add",
+            mainColor=Dependency.colorPalette["success"],
+            hoverColor=Dependency.colorPalette["success-dark"],
+            event=addButtonEvent,
+            row=0,
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=backButtonEvent,
+            row=1,
+        )
+
+    def documentAccessAddFrame(self, id: int) -> None:
+        def addButtonEvent() -> None:
+            if Message.confirmationMessage():
+                username = usernameDataEntry.get()
+
+                if "" not in [username]:
+                    response = None
+                    try:
+                        response = requests.post(
+                            f"http://localhost:8000/api/access/add",
+                            json={
+                                "username_user": username,
+                                "id_document": id,
+                            },
+                        ).json()
+
+                    except requests.ConnectionError:
+                        Message.errorMessage(
+                            "Make Sure You Are Connected To The Internet"
+                        )
+
+                    except:
+                        Message.errorMessage("Server Error")
+
+                    if response != None:
+                        if response["success"] == True:
+                            Message.successMessage(response["message"])
+
+                            Call.resetFrameCall()
+                            Middleware.refreshSessionDataMiddleware(
+                                self.documentAccessAddFrame, id
+                            )
+
+                        else:
+                            Message.errorMessage(response["message"])
+
+                else:
+                    Message.errorMessage("Please Fill Out The Form")
+
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, id)
+
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Add Access Document", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+
+        usernameDataEntry = Component.entryDataComponent(
+            dataContainerFrame,
+            title="Username",
+            placeholder="username",
+            value=None,
+            state=True,
+            row=0,
+            column=0,
+        )
+
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Add",
+            icon="add",
+            mainColor=Dependency.colorPalette["success"],
+            hoverColor=Dependency.colorPalette["success-dark"],
+            event=addButtonEvent,
+            row=3,
+        )
+        Component.buttonDataComponent(
+            dataContainerFrame,
+            text="Back",
+            icon="back",
+            mainColor=Dependency.colorPalette["danger"],
+            hoverColor=Dependency.colorPalette["danger-dark"],
+            event=backButtonEvent,
+            row=4,
+        )
 
 
 if __name__ == "__main__":
