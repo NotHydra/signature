@@ -55,7 +55,14 @@ class Database:
         )
 
         dependency = self.getCollection("dependency")
-        dependency.insert_one({"_id": 1, "userIncrement": 6, "documentIncrement": 0})
+        dependency.insert_one(
+            {
+                "_id": 1,
+                "userIncrement": 6,
+                "documentIncrement": 0,
+                "accessIncrement": 0,
+            }
+        )
 
     def dropCollection(self) -> None:
         self.getCollection("user").drop()

@@ -29,3 +29,13 @@ Content-Type: application/json
 GET http://localhost:8000/api/access/document/2/count
 
 ###
+
+POST http://localhost:8000/api/access/add
+Content-Type: application/json
+
+{
+    "usernameUser": "user3",
+    "idDocument": 3
+}
+
+###

@@ -5,7 +5,7 @@ from click import File
 from database import Database
 from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.responses import StreamingResponse
-from model.access import AccessPageModel
+from model.access import AccessAddModel, AccessPageModel
 from model.document import DocumentPageModel
 from model.login import LoginModel
 from model.user import (
@@ -939,7 +939,7 @@ def accessDocument(response: Response, body: AccessPageModel, id: int):
 
 
 @app.get("/api/access/document/{id}/count")
-def accessCount(response: Response):
+def accessDocumentCount(response: Response):
     try:
         response.status_code = status.HTTP_200_OK
 
@@ -952,6 +952,58 @@ def accessCount(response: Response):
                 "total": access.count_documents({}),
             },
         )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.post("/api/access/add")
+def accessAdd(response: Response, body: AccessAddModel):
+    try:
+        documentObject = database.getCollection("user").find_one(
+            {"username": body.usernameUser}, {"_id": True}
+        )
+
+        if documentObject:
+            access = database.getCollection("access")
+            newDocument = {
+                "_id": database.newId("access"),
+                "id_user": documentObject["_id"],
+                "id_document": body.idDocument,
+                "created_at": datetime.datetime.now(),
+                "updated_at": datetime.datetime.now(),
+            }
+            documentObject = access.insert_one(newDocument)
+
+            if documentObject:
+                response.status_code = status.HTTP_201_CREATED
+
+                return Utility.formatResponse(
+                    True, response.status_code, "Access Added", newDocument
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    "Access Failed To Be Added",
+                    None,
+                )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "User Not Found",
+                None,
+            )
 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
