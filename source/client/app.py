@@ -397,6 +397,7 @@ class Component:
         row: int,
         column: int,
         show: str = "",
+        span: int = 1,
     ) -> ctk.CTkEntry:
         def focusIn(event):
             if entryObject.get() == placeholder:
@@ -415,7 +416,7 @@ class Component:
         entryFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         entryFrame.rowconfigure([0, 1], weight=1)
         entryFrame.columnconfigure(0, weight=1)
-        entryFrame.grid(row=row, column=column, sticky="nsew")
+        entryFrame.grid(row=row, column=column, columnspan=span, sticky="nsew")
 
         ctk.CTkLabel(
             entryFrame,
@@ -1331,6 +1332,7 @@ class App(ctk.CTk):
             state=True,
             row=1,
             column=0,
+            span=2,
         )
 
         Component.buttonDataComponent(
@@ -1815,18 +1817,19 @@ class App(ctk.CTk):
             state=True,
             row=1,
             column=0,
+            span=2,
         )
+
         newPasswordDataEntry = Component.entryDataComponent(
             dataContainerFrame,
             title="New Password",
             placeholder="new password",
             value=None,
             state=True,
-            row=1,
-            column=1,
+            row=2,
+            column=0,
             show="*",
         )
-
         confirmPasswordDataEntry = Component.entryDataComponent(
             dataContainerFrame,
             title="Confirm Password",
@@ -1834,7 +1837,7 @@ class App(ctk.CTk):
             value=None,
             state=True,
             row=2,
-            column=0,
+            column=1,
             show="*",
         )
 
@@ -1988,6 +1991,7 @@ class App(ctk.CTk):
                 state=True,
                 row=1,
                 column=0,
+                span=2,
             )
 
             Component.buttonDataComponent(
@@ -3150,6 +3154,7 @@ class App(ctk.CTk):
             state=True,
             row=0,
             column=0,
+            span=2,
         )
 
         Component.buttonDataComponent(
@@ -3159,7 +3164,7 @@ class App(ctk.CTk):
             mainColor=Dependency.colorPalette["success"],
             hoverColor=Dependency.colorPalette["success-dark"],
             event=addButtonEvent,
-            row=3,
+            row=1,
         )
         Component.buttonDataComponent(
             dataContainerFrame,
@@ -3168,7 +3173,7 @@ class App(ctk.CTk):
             mainColor=Dependency.colorPalette["danger"],
             hoverColor=Dependency.colorPalette["danger-dark"],
             event=backButtonEvent,
-            row=4,
+            row=2,
         )
 
 
@@ -3177,8 +3182,8 @@ if __name__ == "__main__":
 
     skipObject = {
         "status": True,
-        "id": 4,
-        "frame": app.documentFrame,
+        "id": 1,
+        "frame": app.userFrame,
         "tag": None,
     }
 
