@@ -12,7 +12,7 @@ GET http://localhost:8000/api/access/count
 
 ###
 
-GET http://localhost:8000/api/access/1
+GET http://localhost:8000/api/access/10
 
 ###
 

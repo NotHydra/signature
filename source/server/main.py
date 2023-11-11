@@ -879,13 +879,37 @@ def accessCount(response: Response):
 @app.get("/api/access/{id}")
 def accessFind(response: Response, id: int):
     try:
-        documentObject = database.getCollection("access").find_one({"_id": id})
+        documentArray = list(
+            database.getCollection("access").aggregate(
+                [
+                    {
+                        "$lookup": {
+                            "from": "user",
+                            "localField": "id_user",
+                            "foreignField": "_id",
+                            "as": "user_extend",
+                        }
+                    },
+                    {"$unwind": "$user_extend"},
+                    {"$match": {"_id": id}},
+                    {"$limit": 1},
+                    {
+                        "$project": {
+                            "_id": 1,
+                            "id_user": 1,
+                            "id_document": 1,
+                            "user_extend.username": 1,
+                        }
+                    },
+                ]
+            )
+        )
 
-        if documentObject:
+        if len(documentArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Access Found", documentObject
+                True, response.status_code, "Access Found", documentArray[0]
             )
 
         else:
