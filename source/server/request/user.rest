@@ -20,9 +20,9 @@ POST http://localhost:8000/api/user/add
 Content-Type: application/json
 
 {
-    "name": "user4",
-    "username": "user4",
-    "email": "user4@gmail.com",
+    "name": "user7",
+    "username": "user7",
+    "email": "user7@gmail.com",
     "password": "12345678",
     "role": "user",
     "is_active": true

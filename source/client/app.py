@@ -520,7 +520,7 @@ class Component:
         def changePageEvent(page):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(
-                framePage, firstTag=tag, secondTag=page
+                framePage, firstTag=page, secondTag=tag
             )
 
         tableFrame = ctk.CTkFrame(
@@ -1607,7 +1607,7 @@ class App(ctk.CTk):
             Component.tableDataComponent(
                 containerContentFrame,
                 currentPage=page,
-                totalPage=(userTotal // 10) + 1,
+                totalPage=((userTotal - 1) // 10) + 1,
                 framePage=app.userFrame,
                 idArray=idArray,
                 contentArray=[
@@ -2321,7 +2321,7 @@ class App(ctk.CTk):
 
         def accessButtonEvent(id: int) -> None:
             Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, id)
+            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, 1, id)
 
         self.sidebarId = 2
 
@@ -2426,7 +2426,7 @@ class App(ctk.CTk):
             Component.tableDataComponent(
                 containerContentFrame,
                 currentPage=page,
-                totalPage=(documentTotal // 10) + 1,
+                totalPage=((documentTotal - 1) // 10) + 1,
                 framePage=app.documentFrame,
                 idArray=idArray,
                 contentArray=[
@@ -2854,7 +2854,7 @@ class App(ctk.CTk):
             row=1,
         )
 
-    def documentAccessFrame(self, id: int, page: int = 1) -> None:
+    def documentAccessFrame(self, page: int = 1, id: int=None) -> None:
         def addButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentAccessAddFrame, id)
@@ -2930,7 +2930,7 @@ class App(ctk.CTk):
             Component.tableDataComponent(
                 containerContentFrame,
                 currentPage=page,
-                totalPage=(accessTotal // 10) + 1,
+                totalPage=((accessTotal - 1) // 10) + 1,
                 framePage=app.documentAccessFrame,
                 tag=id,
                 idArray=idArray,
@@ -3041,7 +3041,7 @@ class App(ctk.CTk):
 
         def backButtonEvent() -> None:
             Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, id)
+            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, 1, id)
 
         self.sidebarId = 2
 
@@ -3131,7 +3131,7 @@ class App(ctk.CTk):
 
                         Call.resetFrameCall()
                         Middleware.refreshSessionDataMiddleware(
-                            self.documentAccessFrame, id, idAccess
+                            self.documentAccessFrame, 1, id
                         )
 
                     else:
@@ -3143,7 +3143,7 @@ class App(ctk.CTk):
         def backButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(
-                self.documentAccessFrame, id, idAccess
+                self.documentAccessFrame, 1, id
             )
 
         response = None

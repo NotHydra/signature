@@ -26,7 +26,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/api/access/document/2/count
+GET http://localhost:8000/api/access/document/1/count
 
 ###
 
