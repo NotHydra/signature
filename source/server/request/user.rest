@@ -57,6 +57,6 @@ PUT http://localhost:8000/api/user/change-active/7
 
 ###
 
-DELETE http://localhost:8000/api/user/remove/7
+DELETE http://localhost:8000/api/user/remove/10
 
 ###

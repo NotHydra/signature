@@ -23,20 +23,20 @@ database = Database()
 @app.post("/api/auth/login")
 def auth(response: Response, body: AuthLoginModel):
     try:
-        user = database.getCollection("user")
-        documentObject = user.find_one(
+        userCollection = database.getCollection("user")
+        userObject = userCollection.find_one(
             {"username": body.username}, {"_id": 1, "password": 1}
         )
 
-        if documentObject:
-            if Utility.decrypt(body.password, documentObject["password"]):
+        if userObject != None:
+            if Utility.decrypt(body.password, userObject["password"]):
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
                     True,
                     response.status_code,
                     "Login Successful",
-                    {"_id": documentObject["_id"]},
+                    {"_id": userObject["_id"]},
                 )
 
             else:
@@ -63,7 +63,7 @@ def auth(response: Response, body: AuthLoginModel):
 @app.get("/api/user")
 def user(response: Response, body: UserPageModel):
     try:
-        documentArray = list(
+        userArray = list(
             database.getCollection("user")
             .find()
             .skip(body.count * (body.page - 1))
@@ -72,11 +72,11 @@ def user(response: Response, body: UserPageModel):
             else database.getCollection("user").find()
         )
 
-        if documentArray:
+        if len(userArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "User Found", documentArray
+                True, response.status_code, "User Found", userArray
             )
 
         else:
@@ -98,15 +98,15 @@ def userCount(response: Response):
     try:
         response.status_code = status.HTTP_200_OK
 
-        user = database.getCollection("user")
+        userCollection = database.getCollection("user")
         return Utility.formatResponse(
             True,
             response.status_code,
             "User Count",
             {
-                "total": user.count_documents({}),
-                "user": user.count_documents({"role": "user"}),
-                "admin": user.count_documents({"role": "admin"}),
+                "total": userCollection.count_documents({}),
+                "user": userCollection.count_documents({"role": "user"}),
+                "admin": userCollection.count_documents({"role": "admin"}),
             },
         )
 
@@ -120,13 +120,13 @@ def userCount(response: Response):
 @app.get("/api/user/{id}")
 def userFind(response: Response, id: int):
     try:
-        documentObject = database.getCollection("user").find_one({"_id": id})
+        userObject = database.getCollection("user").find_one({"_id": id})
 
-        if documentObject:
+        if userObject != None:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "User Found", documentObject
+                True, response.status_code, "User Found", userObject
             )
 
         else:
@@ -152,8 +152,8 @@ def userAdd(response: Response, body: UserAddModel):
         if Utility.checkEmail(body.email):
             if len(body.password) >= 8:
                 if body.role in ["user", "admin"]:
-                    user = database.getCollection("user")
-                    newDocument = {
+                    userCollection = database.getCollection("user")
+                    newUserObject = {
                         "_id": database.newId("user"),
                         "name": body.name,
                         "username": body.username,
@@ -164,13 +164,13 @@ def userAdd(response: Response, body: UserAddModel):
                         "created_at": datetime.datetime.now(),
                         "updated_at": datetime.datetime.now(),
                     }
-                    documentObject = user.insert_one(newDocument)
+                    insertedUserObject = userCollection.insert_one(newUserObject)
 
-                    if documentObject:
+                    if insertedUserObject != None:
                         response.status_code = status.HTTP_201_CREATED
 
                         return Utility.formatResponse(
-                            True, response.status_code, "User Added", newDocument
+                            True, response.status_code, "User Added", newUserObject
                         )
 
                     else:
@@ -239,11 +239,11 @@ def userChange(response: Response, id: int, body: UserChangeModel):
     try:
         if Utility.checkEmail(body.email):
             if body.role in ["user", "admin"]:
-                user = database.getCollection("user")
-                documentObject = user.find_one({"_id": id})
+                userCollection = database.getCollection("user")
+                userObject = userCollection.find_one({"_id": id})
 
-                if documentObject:
-                    documentObject = user.update_one(
+                if userObject != None:
+                    updatedUserObject = userCollection.update_one(
                         {"_id": id},
                         {
                             "$set": {
@@ -256,14 +256,14 @@ def userChange(response: Response, id: int, body: UserChangeModel):
                         },
                     )
 
-                    if documentObject:
+                    if updatedUserObject != None:
                         response.status_code = status.HTTP_202_ACCEPTED
 
                         return Utility.formatResponse(
                             True,
                             response.status_code,
                             "User Changed",
-                            user.find_one({"_id": id}),
+                            userCollection.find_one({"_id": id}),
                         )
 
                     else:
@@ -328,11 +328,11 @@ def userChange(response: Response, id: int, body: UserChangeModel):
 def userChangePassword(response: Response, id: int, body: UserChangePasswordModel):
     try:
         if len(body.password) >= 8:
-            user = database.getCollection("user")
-            documentObject = user.find_one({"_id": id})
+            userCollection = database.getCollection("user")
+            userObject = userCollection.find_one({"_id": id})
 
-            if documentObject:
-                documentObject = user.update_one(
+            if userObject != None:
+                updatedUserObject = userCollection.update_one(
                     {"_id": id},
                     {
                         "$set": {
@@ -342,14 +342,14 @@ def userChangePassword(response: Response, id: int, body: UserChangePasswordMode
                     },
                 )
 
-                if documentObject:
+                if updatedUserObject != None:
                     response.status_code = status.HTTP_202_ACCEPTED
 
                     return Utility.formatResponse(
                         True,
                         response.status_code,
                         "User Password Changed",
-                        user.find_one({"_id": id}),
+                        userCollection.find_one({"_id": id}),
                     )
 
                 else:
@@ -389,28 +389,28 @@ def userChangePassword(response: Response, id: int, body: UserChangePasswordMode
 @app.put("/api/user/change-active/{id}")
 def userChangeActive(response: Response, id: int):
     try:
-        user = database.getCollection("user")
-        documentObject = user.find_one({"_id": id}, {"is_active": True})
+        userCollection = database.getCollection("user")
+        userObject = userCollection.find_one({"_id": id}, {"is_active": True})
 
-        if documentObject:
-            documentObject = user.update_one(
+        if userObject != None:
+            updatedUserObject = userCollection.update_one(
                 {"_id": id},
                 {
                     "$set": {
-                        "is_active": not documentObject["is_active"],
+                        "is_active": not userObject["is_active"],
                         "updated_at": datetime.datetime.now(),
                     }
                 },
             )
 
-            if documentObject:
+            if updatedUserObject:
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
                     True,
                     response.status_code,
                     "User Status Change",
-                    user.find_one({"_id": id}),
+                    userCollection.find_one({"_id": id}),
                 )
 
             else:
@@ -439,17 +439,17 @@ def userChangeActive(response: Response, id: int):
 @app.delete("/api/user/remove/{id}")
 def userRemove(response: Response, id: int):
     try:
-        user = database.getCollection("user")
-        documentObject = user.find_one({"_id": id})
+        userCollection = database.getCollection("user")
+        userObject = userCollection.find_one({"_id": id})
 
-        if documentObject:
-            documentObject = user.find_one_and_delete({"_id": id})
+        if userObject != None:
+            deletedUserObject = userCollection.find_one_and_delete({"_id": id})
 
-            if documentObject:
+            if deletedUserObject != None:
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
-                    True, response.status_code, "User Removed", documentObject
+                    True, response.status_code, "User Removed", deletedUserObject
                 )
 
             else:
@@ -475,7 +475,7 @@ def userRemove(response: Response, id: int):
 @app.get("/api/document")
 def document(response: Response, body: DocumentPageModel):
     try:
-        query = [
+        documentQuery = [
             {
                 "$lookup": {
                     "from": "user",
@@ -488,12 +488,12 @@ def document(response: Response, body: DocumentPageModel):
         ]
 
         if body.count != 0 and body.page != 0:
-            query = query + [
+            documentQuery = documentQuery + [
                 {"$skip": body.count * (body.page - 1)},
                 {"$limit": body.count},
             ]
 
-        query = query + [
+        documentQuery = documentQuery + [
             {
                 "$project": {
                     "_id": 1,
@@ -509,9 +509,11 @@ def document(response: Response, body: DocumentPageModel):
             },
         ]
 
-        documentArray = list(database.getCollection("document").aggregate(query))
+        documentArray = list(
+            database.getCollection("document").aggregate(documentQuery)
+        )
 
-        if documentArray:
+        if len(documentArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
@@ -537,13 +539,13 @@ def documentCount(response: Response):
     try:
         response.status_code = status.HTTP_200_OK
 
-        document = database.getCollection("document")
+        documentCollection = database.getCollection("document")
         return Utility.formatResponse(
             True,
             response.status_code,
             "Document Count",
             {
-                "total": document.count_documents({}),
+                "total": documentCollection.count_documents({}),
             },
         )
 
@@ -615,7 +617,7 @@ def documentFind(response: Response, id: int):
 @app.get("/api/document/access/{id}")
 def documentAccess(response: Response, body: DocumentPageModel, id: int):
     try:
-        query = [
+        documentQuery = [
             {
                 "$lookup": {
                     "from": "user",
@@ -647,12 +649,12 @@ def documentAccess(response: Response, body: DocumentPageModel, id: int):
         ]
 
         if body.count != 0 and body.page != 0:
-            query = query + [
+            documentQuery = documentQuery + [
                 {"$skip": body.count * (body.page - 1)},
                 {"$limit": body.count},
             ]
 
-        query = query + [
+        documentQuery = documentQuery + [
             {
                 "$project": {
                     "_id": 1,
@@ -668,9 +670,11 @@ def documentAccess(response: Response, body: DocumentPageModel, id: int):
             },
         ]
 
-        documentArray = list(database.getCollection("document").aggregate(query))
+        documentArray = list(
+            database.getCollection("document").aggregate(documentQuery)
+        )
 
-        if documentArray:
+        if len(documentArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
@@ -696,9 +700,9 @@ def documentAccessCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK
 
-        document = database.getCollection("document")
-        documentOwned = document.count_documents({"id_author": id})
-        documentShared = document.count_documents(
+        documentCollection = database.getCollection("document")
+        documentOwned = documentCollection.count_documents({"id_author": id})
+        documentShared = documentCollection.count_documents(
             {
                 "_id": {
                     "$in": [
@@ -740,8 +744,8 @@ def documentUpload(
     file: UploadFile = File(),
 ):
     try:
-        document = database.getCollection("document")
-        newDocument = {
+        documentCollection = database.getCollection("document")
+        newDocumentObject = {
             "_id": database.newId("document"),
             "id_author": id_author,
             "id_file": database.fileSystemInsert(file),
@@ -753,13 +757,13 @@ def documentUpload(
             "updated_at": datetime.datetime.now(),
         }
 
-        documentObject = document.insert_one(newDocument)
+        insertedDocumentObject = documentCollection.insert_one(newDocumentObject)
 
-        if documentObject:
+        if insertedDocumentObject != None:
             response.status_code = status.HTTP_201_CREATED
 
             return Utility.formatResponse(
-                True, response.status_code, "Document Uploaded", newDocument
+                True, response.status_code, "Document Uploaded", newDocumentObject
             )
 
         else:
@@ -786,13 +790,15 @@ def documentView(response: Response, id: int):
             {"_id": id}, {"id_file": True}
         )
 
-        if documentObject:
-            file = database.fileSystemFind(documentObject["id_file"])
+        if documentObject != None:
+            fileObject = database.fileSystemFind(documentObject["id_file"])
 
-            if file:
+            if fileObject != None:
                 response.status_code = status.HTTP_200_OK
 
-                return StreamingResponse(BytesIO(file.read()), media_type="image/jpeg")
+                return StreamingResponse(
+                    BytesIO(fileObject.read()), media_type="image/jpeg"
+                )
 
             else:
                 response.status_code = status.HTTP_404_NOT_FOUND
@@ -824,7 +830,7 @@ def documentView(response: Response, id: int):
 @app.get("/api/access")
 def access(response: Response, body: AccessPageModel):
     try:
-        documentArray = list(
+        accessArray = list(
             database.getCollection("access")
             .find()
             .skip(body.count * (body.page - 1))
@@ -833,11 +839,11 @@ def access(response: Response, body: AccessPageModel):
             else database.getCollection("access").find()
         )
 
-        if documentArray:
+        if len(accessArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Access Found", documentArray
+                True, response.status_code, "Access Found", accessArray
             )
 
         else:
@@ -859,13 +865,13 @@ def accessCount(response: Response):
     try:
         response.status_code = status.HTTP_200_OK
 
-        access = database.getCollection("access")
+        accessCollection = database.getCollection("access")
         return Utility.formatResponse(
             True,
             response.status_code,
             "Access Count",
             {
-                "total": access.count_documents({}),
+                "total": accessCollection.count_documents({}),
             },
         )
 
@@ -879,7 +885,7 @@ def accessCount(response: Response):
 @app.get("/api/access/{id}")
 def accessFind(response: Response, id: int):
     try:
-        documentArray = list(
+        accessArray = list(
             database.getCollection("access").aggregate(
                 [
                     {
@@ -905,11 +911,11 @@ def accessFind(response: Response, id: int):
             )
         )
 
-        if len(documentArray) > 0:
+        if len(accessArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Access Found", documentArray[0]
+                True, response.status_code, "Access Found", accessArray[0]
             )
 
         else:
@@ -932,7 +938,7 @@ def accessFind(response: Response, id: int):
 @app.get("/api/access/document/{id}")
 def accessDocument(response: Response, body: AccessPageModel, id: int):
     try:
-        query = [
+        accessQuery = [
             {
                 "$lookup": {
                     "from": "user",
@@ -946,12 +952,12 @@ def accessDocument(response: Response, body: AccessPageModel, id: int):
         ]
 
         if body.count != 0 and body.page != 0:
-            query = query + [
+            accessQuery = accessQuery + [
                 {"$skip": body.count * (body.page - 1)},
                 {"$limit": body.count},
             ]
 
-        query = query + [
+        accessQuery = accessQuery + [
             {
                 "$project": {
                     "_id": 1,
@@ -962,13 +968,13 @@ def accessDocument(response: Response, body: AccessPageModel, id: int):
             },
         ]
 
-        documentArray = list(database.getCollection("access").aggregate(query))
+        accessArray = list(database.getCollection("access").aggregate(accessQuery))
 
-        if documentArray:
+        if len(accessArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Access Document Found", documentArray
+                True, response.status_code, "Access Document Found", accessArray
             )
 
         else:
@@ -990,13 +996,13 @@ def accessDocumentCount(response: Response, id: int):
     try:
         response.status_code = status.HTTP_200_OK
 
-        access = database.getCollection("access")
+        accessCollection = database.getCollection("access")
         return Utility.formatResponse(
             True,
             response.status_code,
             "Access Document Count",
             {
-                "total": access.count_documents({"id_document": id}),
+                "total": accessCollection.count_documents({"id_document": id}),
             },
         )
 
@@ -1012,7 +1018,7 @@ def accessAdd(response: Response, body: AccessAddModel):
     try:
         userObject = database.getCollection("user").find_one(
             {"username": body.username_user}, {"_id": True}
-        )   
+        )
 
         if userObject != None:
             accessCollection = database.getCollection("access")
@@ -1031,7 +1037,7 @@ def accessAdd(response: Response, body: AccessAddModel):
                 }
                 insertedAccessObject = accessCollection.insert_one(newAccessObject)
 
-                if insertedAccessObject:
+                if insertedAccessObject != None:
                     response.status_code = status.HTTP_201_CREATED
 
                     return Utility.formatResponse(
@@ -1077,17 +1083,17 @@ def accessAdd(response: Response, body: AccessAddModel):
 @app.delete("/api/access/remove/{id}")
 def accessRemove(response: Response, id: int):
     try:
-        access = database.getCollection("access")
-        documentObject = access.find_one({"_id": id})
+        accessCollection = database.getCollection("access")
+        accessObject = accessCollection.find_one({"_id": id})
 
-        if documentObject:
-            documentObject = access.find_one_and_delete({"_id": id})
+        if accessObject:
+            deletedAccessObject = accessCollection.find_one_and_delete({"_id": id})
 
-            if documentObject:
+            if deletedAccessObject:
                 response.status_code = status.HTTP_202_ACCEPTED
 
                 return Utility.formatResponse(
-                    True, response.status_code, "Access Deleted", documentObject
+                    True, response.status_code, "Access Deleted", deletedAccessObject
                 )
 
             else:
