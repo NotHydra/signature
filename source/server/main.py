@@ -1010,35 +1010,50 @@ def accessDocumentCount(response: Response, id: int):
 @app.post("/api/access/add")
 def accessAdd(response: Response, body: AccessAddModel):
     try:
-        documentObject = database.getCollection("user").find_one(
+        userObject = database.getCollection("user").find_one(
             {"username": body.username_user}, {"_id": True}
-        )
+        )   
 
-        if documentObject:
-            access = database.getCollection("access")
-            newDocument = {
-                "_id": database.newId("access"),
-                "id_user": documentObject["_id"],
-                "id_document": body.id_document,
-                "created_at": datetime.datetime.now(),
-                "updated_at": datetime.datetime.now(),
-            }
-            documentObject = access.insert_one(newDocument)
+        if userObject != None:
+            accessCollection = database.getCollection("access")
+            accessObject = accessCollection.find_one(
+                {"id_user": userObject["_id"], "id_document": body.id_document},
+                {"_id": True},
+            )
 
-            if documentObject:
-                response.status_code = status.HTTP_201_CREATED
+            if accessObject == None:
+                newAccessObject = {
+                    "_id": database.newId("access"),
+                    "id_user": userObject["_id"],
+                    "id_document": body.id_document,
+                    "created_at": datetime.datetime.now(),
+                    "updated_at": datetime.datetime.now(),
+                }
+                insertedAccessObject = accessCollection.insert_one(newAccessObject)
 
-                return Utility.formatResponse(
-                    True, response.status_code, "Access Added", newDocument
-                )
+                if insertedAccessObject:
+                    response.status_code = status.HTTP_201_CREATED
 
+                    return Utility.formatResponse(
+                        True, response.status_code, "Access Added", newAccessObject
+                    )
+
+                else:
+                    response.status_code = status.HTTP_400_BAD_REQUEST
+
+                    return Utility.formatResponse(
+                        False,
+                        response.status_code,
+                        "Access Failed To Be Added",
+                        None,
+                    )
             else:
-                response.status_code = status.HTTP_400_BAD_REQUEST
+                response.status_code = status.HTTP_404_NOT_FOUND
 
                 return Utility.formatResponse(
                     False,
                     response.status_code,
-                    "Access Failed To Be Added",
+                    "Access Already Existed",
                     None,
                 )
 

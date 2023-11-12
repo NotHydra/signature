@@ -2860,7 +2860,7 @@ class App(ctk.CTk):
     def documentSignFrame(self, id: int) -> None:
         pass
 
-    def documentAccessFrame(self, page: int = 1, id: int=None) -> None:
+    def documentAccessFrame(self, page: int = 1, id: int = None) -> None:
         def addButtonEvent() -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentAccessAddFrame, id)
@@ -3148,9 +3148,7 @@ class App(ctk.CTk):
 
         def backButtonEvent() -> None:
             Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(
-                self.documentAccessFrame, 1, id
-            )
+            Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, 1, id)
 
         response = None
         try:
