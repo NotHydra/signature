@@ -827,6 +827,47 @@ def documentView(response: Response, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.delete("/api/document/remove/{id}")
+def documentRemove(response: Response, id: int):
+    try:
+        documentCollection = database.getCollection("document")
+        documentObject = documentCollection.find_one({"_id": id})
+
+        if documentObject != None:
+            database.fileSystemDelete(documentObject["id_file"])
+            database.getCollection("access").delete_many({"id_document": id})
+            deletedDocumentObject = documentCollection.find_one_and_delete({"_id": id})
+
+            if deletedDocumentObject != None:
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True,
+                    response.status_code,
+                    "Document Removed",
+                    deletedDocumentObject,
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False, response.status_code, "Document Failed To Be Removed", None
+                )
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Document Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 @app.get("/api/access")
 def access(response: Response, body: AccessPageModel):
     try:

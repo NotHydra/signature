@@ -46,3 +46,7 @@ Content-Type: multipart/form-data
 GET http://localhost:8000/api/document/view/1
 
 ###
+
+DELETE http://localhost:8000/api/document/remove/3
+
+###
