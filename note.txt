@@ -7,19 +7,27 @@
 python .\source\client\app.py
 python .\source\server\main.py
 
-User
-    Home
-        Change
-        Change Password
+Home DONE
+    Change DONE
+    Change Password DONE
 
-    Document
-        Download Green
-        Sign Yellow
-        Access Yellow
-            Add Green
-            Remove Red
+User DONE
+    Add DONE
 
-        Remove Red
+    Change DONE
+    Change Password DONE
+    remove DONE
 
-        Upload Green
+Document
+    Upload DONE
+
+    View DONE
+    Download
+    Sign
+    Access DONE
+        Add DONE
+        Remove DONE
+
+    Remove DONE
+
 

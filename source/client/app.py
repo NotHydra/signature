@@ -1,13 +1,14 @@
 import os
 import random
 import time
+import tkinter as tk
 from io import BytesIO
 from typing import Callable
 
 import customtkinter as ctk
 import requests
 from CTkMessagebox import CTkMessagebox
-from PIL import Image
+from PIL import Image, ImageTk
 
 
 class Utility:
@@ -2327,7 +2328,6 @@ class App(ctk.CTk):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentRemoveFrame, id)
 
-
         self.sidebarId = 2
 
         self.rowconfigure(0, weight=1)
@@ -2815,6 +2815,7 @@ class App(ctk.CTk):
             corner_radius=8,
             fg_color=Dependency.colorPalette["main"],
         )
+        containerContentFrame.rowconfigure(2, weight=1)
         containerContentFrame.columnconfigure(0, weight=1)
         containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
 
@@ -2828,8 +2829,9 @@ class App(ctk.CTk):
             corner_radius=0,
             fg_color="transparent",
         )
+        dataContainerFrame.rowconfigure(0, weight=1)
         dataContainerFrame.columnconfigure([0, 1], weight=1)
-        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
         response = None
         try:
@@ -2839,15 +2841,36 @@ class App(ctk.CTk):
             pass
 
         if response.status_code == 200:
-            fileDataLabel = ctk.CTkLabel(
-                dataContainerFrame,
-                image=ctk.CTkImage(
-                    Image.open(BytesIO(response.content)), size=(800, 400)
-                ),
+
+            def show_full_image(event):
+                global imageResize
+
+                if (event.width / event.height) > imageRatio:
+                    height = int(event.height)
+                    width = int(height * imageRatio)
+                else:
+                    width = int(event.width)
+                    height = int(width / imageRatio)
+
+                imageResize = ImageTk.PhotoImage(image.resize((width, height)))
+                imageDataCanvas.create_image(
+                    int(event.width / 2),
+                    int(event.height / 2),
+                    anchor=ctk.CENTER,
+                    image=imageResize,
+                )
+
+            image = Image.open(BytesIO(response.content))
+            imageRatio = image.size[0] / image.size[1]
+
+            imageDataCanvas = tk.Canvas(
+                dataContainerFrame, bg=Dependency.colorPalette["main"], bd=2
             )
-            fileDataLabel.grid(
+            imageDataCanvas.grid(
                 row=0, column=0, columnspan=2, pady=(0, 10), sticky="nsew"
             )
+
+            imageDataCanvas.bind("<Configure>", show_full_image)
 
         Component.buttonDataComponent(
             dataContainerFrame,
