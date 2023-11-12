@@ -99,5 +99,8 @@ class Database:
     def fileSystemFind(self, id: str) -> GridOut:
         return self.fileSystem.get(ObjectId(id))
 
+    def fileSystemDelete(self, id: str) -> None:
+        self.fileSystem.delete(ObjectId(id))
+
 
 # Database().resetCollection()
