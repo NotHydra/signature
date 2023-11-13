@@ -35,10 +35,9 @@ class Dependency:
     resolution = {"width": 1200, "height": 700}
     logoResolution = {"width": 639, "height": 799}
 
-    path = os.path.dirname(os.path.realpath(__file__))
-    assetPath = Utility.combinePath(path, "..\\asset")
+    assetPath = Utility.combinePath(os.path.dirname(os.path.realpath(__file__)), "asset")
     iconPath = Utility.combinePath(assetPath, "icon")
-    appIconPath = "./source/asset/icon.ico"
+    appIconPath = "./source/client/asset/icon.ico"
 
     fontFamily = {"main": "Montserrat"}
     colorPalette = {
