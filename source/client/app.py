@@ -3450,9 +3450,9 @@ if __name__ == "__main__":
     app = App()
 
     skipObject = {
-        "status": True,
-        "id": 4,
-        "frame": app.documentFrame,
+        "status": False,
+        "id": 1,
+        "frame": app.homeFrame,
         "tag": None,
     }
 
