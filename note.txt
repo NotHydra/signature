@@ -4,8 +4,8 @@
 #FFFFFF
 #111111
 
-python .\source\client\app.py
-python .\source\server\main.py
+python ./source/client/app.py
+python ./source/server/main.py
 
 uvicorn main:app --port 8000
 pip3 freeze > requirements.txt
