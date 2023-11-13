@@ -4,6 +4,7 @@ import time
 import tkinter as tk
 from io import BytesIO
 from typing import Callable
+from urllib.parse import unquote
 
 import customtkinter as ctk
 import requests
@@ -2320,6 +2321,43 @@ class App(ctk.CTk):
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentViewFrame, id)
 
+        def downloadButtonEvent(id: int) -> None:
+            if Message.confirmationMessage():
+                response = None
+
+                try:
+                    response = requests.get(
+                        f"http://localhost:8000/api/document/download/{id}", stream=True
+                    )
+
+                except requests.ConnectionError:
+                    Message.errorMessage("Make Sure You Are Connected To The Internet")
+
+                except:
+                    Message.errorMessage("Server Error")
+
+                if response != None and response.status_code == 200:
+                    contentDisposition = response.headers.get("content-disposition")
+                    defaultFileName = unquote(contentDisposition.split("filename=")[1]) if contentDisposition else "Downloaded Document.jpg"
+
+                    filePath = ctk.filedialog.asksaveasfilename(
+                        filetypes=[("Image files", "*.jpg *.jpeg *.png")],
+                        initialfile=defaultFileName
+                    )
+
+                    if filePath:
+                        with open(filePath, 'wb') as file:
+                            for chunk in response.iter_content(chunk_size=128):
+                                file.write(chunk)
+
+                        Message.successMessage("Document Downloaded")
+
+                    else:
+                        Message.errorMessage("Document Failed To Be Downloaded")
+
+                else:
+                    Message.errorMessage("Document Failed To Be Downloaded")
+
         def accessButtonEvent(id: int) -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, 1, id)
@@ -2488,7 +2526,7 @@ class App(ctk.CTk):
                         "icon": "download",
                         "mainColor": Dependency.colorPalette["success"],
                         "hoverColor": Dependency.colorPalette["success-dark"],
-                        "event": lambda: None,
+                        "event": downloadButtonEvent,
                         "optional": False,
                     },
                     {
@@ -2840,7 +2878,7 @@ class App(ctk.CTk):
         except:
             pass
 
-        if response.status_code == 200:
+        if response != None and response.status_code == 200:
 
             def show_full_image(event):
                 global imageResize
@@ -2881,9 +2919,6 @@ class App(ctk.CTk):
             event=backButtonEvent,
             row=1,
         )
-
-    def documentDownloadFrame(self, id: int) -> None:
-        pass
 
     def documentSignFrame(self, id: int) -> None:
         pass

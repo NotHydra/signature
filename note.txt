@@ -22,7 +22,7 @@ Document
     Upload DONE
 
     View DONE
-    Download
+    Download DONE
     Sign
     Access DONE
         Add DONE
