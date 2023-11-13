@@ -1363,8 +1363,7 @@ class App(ctk.CTk):
             row=3,
         )
 
-    # Rifky
-    def homeChangePasswordFrame(self) -> None:
+    def homeChangePasswordFrame(self) -> None:  # Rifky
         def changePasswordButtonEvent() -> None:
             if Message.confirmationMessage():
                 newPassword = newPasswordDataEntry.get()
@@ -1705,8 +1704,7 @@ class App(ctk.CTk):
             row=0,
         )
 
-    # Rafly
-    def userAddFrame(self) -> None:
+    def userAddFrame(self) -> None:  # Rafly
         def addButtonEvent() -> None:
             if Message.confirmationMessage():
                 name = nameDataEntry.get()
@@ -1869,8 +1867,7 @@ class App(ctk.CTk):
             row=4,
         )
 
-    # Kanaya
-    def userChangeFrame(self, id: int) -> None:
+    def userChangeFrame(self, id: int) -> None:  # Kanaya
         def changeButtonEvent() -> None:
             if Message.confirmationMessage():
                 name = nameDataEntry.get()
@@ -2022,8 +2019,7 @@ class App(ctk.CTk):
                 row=3,
             )
 
-    # Salma
-    def userChangePasswordFrame(self, id: int) -> None:
+    def userChangePasswordFrame(self, id: int) -> None:  # Salma
         def changePasswordButtonEvent() -> None:
             if Message.confirmationMessage():
                 newPassword = newPasswordDataEntry.get()
@@ -2168,8 +2164,7 @@ class App(ctk.CTk):
                 row=2,
             )
 
-    # Chelsy
-    def userRemoveFrame(self, id: int) -> None:
+    def userRemoveFrame(self, id: int) -> None:  # Chelsy
         def removeButtonEvent() -> None:
             if Message.confirmationMessage():
                 response = None
@@ -2338,15 +2333,19 @@ class App(ctk.CTk):
 
                 if response != None and response.status_code == 200:
                     contentDisposition = response.headers.get("content-disposition")
-                    defaultFileName = unquote(contentDisposition.split("filename=")[1]) if contentDisposition else "Downloaded Document.jpg"
+                    defaultFileName = (
+                        unquote(contentDisposition.split("filename=")[1])
+                        if contentDisposition
+                        else "Downloaded Document.jpg"
+                    )
 
                     filePath = ctk.filedialog.asksaveasfilename(
                         filetypes=[("Image files", "*.jpg *.jpeg *.png")],
-                        initialfile=defaultFileName
+                        initialfile=defaultFileName,
                     )
 
                     if filePath:
-                        with open(filePath, 'wb') as file:
+                        with open(filePath, "wb") as file:
                             for chunk in response.iter_content(chunk_size=128):
                                 file.write(chunk)
 
