@@ -9,7 +9,10 @@ from urllib.parse import unquote
 import customtkinter as ctk
 import requests
 from CTkMessagebox import CTkMessagebox
+from dotenv import load_dotenv
 from PIL import Image, ImageTk
+
+load_dotenv()
 
 
 class Utility:
@@ -24,6 +27,8 @@ class Utility:
 
 
 class Dependency:
+    host = f"http://{os.getenv("HOST")}:{os.getenv("PORT")}" if os.getenv("ENVIRONMENT") == "development" else "https://signature.irswanda.com"
+
     title = "Signature"
     subtitle = "Online Document Application"
 
@@ -784,7 +789,7 @@ class Middleware:
             response = None
             try:
                 response = requests.get(
-                    f"http://localhost:8000/api/user/{app.userObject['_id']}"
+                    f"{Dependency.host}/api/user/{app.userObject['_id']}"
                 ).json()
 
             except requests.ConnectionError:
@@ -988,7 +993,7 @@ class App(ctk.CTk):
                 response = None
                 try:
                     response = requests.post(
-                        "http://localhost:8000/api/auth/login",
+                        f"{Dependency.host}/api/auth/login",
                         json={"username": username, "password": password},
                     ).json()
 
@@ -1239,7 +1244,7 @@ class App(ctk.CTk):
                     response = None
                     try:
                         response = requests.put(
-                            f"http://localhost:8000/api/user/change/{self.userObject['_id']}",
+                            f"{Dependency.host}/api/user/change/{self.userObject['_id']}",
                             json={
                                 "name": name,
                                 "username": username,
@@ -1374,7 +1379,7 @@ class App(ctk.CTk):
                         response = None
                         try:
                             response = requests.put(
-                                f"http://localhost:8000/api/user/change-password/{self.userObject['_id']}",
+                                f"{Dependency.host}/api/user/change-password/{self.userObject['_id']}",
                                 json={
                                     "password": newPassword,
                                 },
@@ -1526,7 +1531,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                "http://localhost:8000/api/user/count",
+                f"{Dependency.host}/api/user/count",
             ).json()
 
         except:
@@ -1576,7 +1581,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                "http://localhost:8000/api/user", json={"count": 10, "page": page}
+                f"{Dependency.host}/api/user", json={"count": 10, "page": page}
             ).json()
 
         except:
@@ -1718,7 +1723,7 @@ class App(ctk.CTk):
                         response = None
                         try:
                             response = requests.post(
-                                f"http://localhost:8000/api/user/add",
+                                f"{Dependency.host}/api/user/add",
                                 json={
                                     "name": name,
                                     "username": username,
@@ -1878,7 +1883,7 @@ class App(ctk.CTk):
                     response = None
                     try:
                         response = requests.put(
-                            f"http://localhost:8000/api/user/change/{id}",
+                            f"{Dependency.host}/api/user/change/{id}",
                             json={
                                 "name": name,
                                 "username": username,
@@ -1919,7 +1924,7 @@ class App(ctk.CTk):
 
         response = None
         try:
-            response = requests.get(f"http://localhost:8000/api/user/{id}").json()
+            response = requests.get(f"{Dependency.host}/api/user/{id}").json()
 
         except:
             Message.errorMessage("Server Error")
@@ -2030,7 +2035,7 @@ class App(ctk.CTk):
                         response = None
                         try:
                             response = requests.put(
-                                f"http://localhost:8000/api/user/change-password/{id}",
+                                f"{Dependency.host}/api/user/change-password/{id}",
                                 json={
                                     "password": newPassword,
                                 },
@@ -2073,7 +2078,7 @@ class App(ctk.CTk):
 
         response = None
         try:
-            response = requests.get(f"http://localhost:8000/api/user/{id}").json()
+            response = requests.get(f"{Dependency.host}/api/user/{id}").json()
 
         except:
             Message.errorMessage("Server Error")
@@ -2171,7 +2176,7 @@ class App(ctk.CTk):
 
                 try:
                     response = requests.delete(
-                        f"http://localhost:8000/api/user/remove/{id}",
+                        f"{Dependency.host}/api/user/remove/{id}",
                     ).json()
 
                 except requests.ConnectionError:
@@ -2199,7 +2204,7 @@ class App(ctk.CTk):
 
         response = None
         try:
-            response = requests.get(f"http://localhost:8000/api/user/{id}").json()
+            response = requests.get(f"{Dependency.host}/api/user/{id}").json()
 
         except:
             Message.errorMessage("Server Error")
@@ -2322,7 +2327,7 @@ class App(ctk.CTk):
 
                 try:
                     response = requests.get(
-                        f"http://localhost:8000/api/document/download/{id}", stream=True
+                        f"{Dependency.host}/api/document/download/{id}", stream=True
                     )
 
                 except requests.ConnectionError:
@@ -2383,7 +2388,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                f"http://localhost:8000/api/document/access/{self.userObject['_id']}/count",
+                f"{Dependency.host}/api/document/access/{self.userObject['_id']}/count",
             ).json()
 
         except:
@@ -2433,7 +2438,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                f"http://localhost:8000/api/document/access/{self.userObject['_id']}",
+                f"{Dependency.host}/api/document/access/{self.userObject['_id']}",
                 json={"count": 10, "page": page},
             ).json()
 
@@ -2620,7 +2625,7 @@ class App(ctk.CTk):
                     try:
                         response = None
                         response = requests.post(
-                            f"http://localhost:8000/api/document/upload",
+                            f"{Dependency.host}/api/document/upload",
                             data={
                                 "id_author": self.userObject["_id"],
                                 "code": code,
@@ -2872,7 +2877,7 @@ class App(ctk.CTk):
 
         response = None
         try:
-            response = requests.get(f"http://localhost:8000/api/document/view/{id}")
+            response = requests.get(f"{Dependency.host}/api/document/view/{id}")
 
         except:
             pass
@@ -2970,11 +2975,11 @@ class App(ctk.CTk):
         response = None
         try:
             accessTotal = requests.get(
-                f"http://localhost:8000/api/access/document/{id}/count",
+                f"{Dependency.host}/api/access/document/{id}/count",
             ).json()["data"]["total"]
 
             response = requests.get(
-                f"http://localhost:8000/api/access/document/{id}",
+                f"{Dependency.host}/api/access/document/{id}",
                 json={"count": 10, "page": page},
             ).json()
 
@@ -3077,7 +3082,7 @@ class App(ctk.CTk):
                     response = None
                     try:
                         response = requests.post(
-                            f"http://localhost:8000/api/access/add",
+                            f"{Dependency.host}/api/access/add",
                             json={
                                 "username_user": username,
                                 "id_document": id,
@@ -3184,7 +3189,7 @@ class App(ctk.CTk):
 
                 try:
                     response = requests.delete(
-                        f"http://localhost:8000/api/access/remove/{idAccess}",
+                        f"{Dependency.host}/api/access/remove/{idAccess}",
                     ).json()
 
                 except requests.ConnectionError:
@@ -3215,7 +3220,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                f"http://localhost:8000/api/access/{idAccess}"
+                f"{Dependency.host}/api/access/{idAccess}"
             ).json()
 
         except:
@@ -3305,7 +3310,7 @@ class App(ctk.CTk):
 
                 try:
                     response = requests.delete(
-                        f"http://localhost:8000/api/document/remove/{id}",
+                        f"{Dependency.host}/api/document/remove/{id}",
                     ).json()
 
                 except requests.ConnectionError:
@@ -3333,7 +3338,7 @@ class App(ctk.CTk):
 
         response = None
         try:
-            response = requests.get(f"http://localhost:8000/api/document/{id}").json()
+            response = requests.get(f"{Dependency.host}/api/document/{id}").json()
 
         except:
             Message.errorMessage("Server Error")
