@@ -47,6 +47,10 @@ GET http://localhost:8000/api/document/view/5
 
 ###
 
+GET http://localhost:8000/api/document/download/5
+
+###
+
 DELETE http://localhost:8000/api/document/remove/3
 
 ###

@@ -827,6 +827,53 @@ def documentView(response: Response, id: int):
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 
+@app.get("/api/document/download/{id}")
+def documentDownload(response: Response, id: int):
+    try:
+        documentObject = database.getCollection("document").find_one(
+            {"_id": id}, {"id_file": True}
+        )
+
+        if documentObject != None:
+            fileObject = database.fileSystemFind(documentObject["id_file"])
+
+            if fileObject != None:
+                response.status_code = status.HTTP_200_OK
+
+                return StreamingResponse(
+                    iter(fileObject),
+                    headers={
+                        "Content-Disposition": f'attachment; filename="{fileObject.filename}"'
+                    },
+                )
+
+            else:
+                response.status_code = status.HTTP_404_NOT_FOUND
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    "File Not Found",
+                    None,
+                )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "Document Not Found",
+                None,
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
 @app.delete("/api/document/remove/{id}")
 def documentRemove(response: Response, id: int):
     try:
