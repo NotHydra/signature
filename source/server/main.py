@@ -1,8 +1,10 @@
 import datetime
+import os
 from io import BytesIO
 
 from click import File
 from database import Database
+from dotenv import load_dotenv
 from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.responses import StreamingResponse
 from model.access import AccessAddModel, AccessPageModel
@@ -15,6 +17,9 @@ from model.user import (
     UserPageModel,
 )
 from utility import Utility
+
+load_dotenv()
+
 
 app = FastAPI()
 database = Database()
@@ -1207,4 +1212,9 @@ def accessRemove(response: Response, id: int):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(
+        "main:app",
+        host=os.getenv("HOST"),
+        port=int(os.getenv("PORT")),
+        reload=True,
+    )
