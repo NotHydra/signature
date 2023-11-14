@@ -644,7 +644,6 @@ class Component:
                     corner_radius=0,
                     fg_color="transparent",
                 )
-                buttonActionFrame.columnconfigure(0, weight=1)
                 buttonActionFrame.grid(row=(idIndex * 2) + 2, column=0, sticky="nsew")
 
                 for actionIndex, actionObject in enumerate(actionArray):
@@ -656,15 +655,15 @@ class Component:
                     ctk.CTkButton(
                         buttonActionFrame,
                         width=0,
-                        height=16,
+                        height=28,
                         image=ctk.CTkImage(
                             Image.open(Utility.getIcon(f"{actionObject['icon']}.png")),
-                            size=(16, 16),
+                            size=(12, 12),
                         ),
                         text=f'{actionObject["text"]}',
                         font=ctk.CTkFont(
                             family=Dependency.fontFamily["main"],
-                            size=16,
+                            size=12,
                             weight="bold",
                         ),
                         cursor="hand2",
