@@ -555,7 +555,7 @@ class Component:
             dataHeaderFrame = ctk.CTkFrame(
                 headerTableFrame,
                 width=0,
-                height=0,
+                height=28,
                 corner_radius=0,
                 fg_color="transparent",
             )
@@ -612,7 +612,7 @@ class Component:
             actionHeaderFrame = ctk.CTkFrame(
                 headerTableFrame,
                 width=0,
-                height=0,
+                height=28,
                 corner_radius=0,
                 fg_color="transparent",
             )
@@ -3449,9 +3449,9 @@ if __name__ == "__main__":
     app = App()
 
     skipObject = {
-        "status": False,
-        "id": 1,
-        "frame": app.homeFrame,
+        "status": True,
+        "id": 2,
+        "frame": app.userFrame,
         "tag": None,
     }
 
