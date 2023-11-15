@@ -442,21 +442,23 @@ class Component:
         )
 
         entryValue = ctk.StringVar()
-        entryValue.set(value if value != None else placeholder)
+        # entryValue.set(value if value != None else placeholder)
+        entryValue.set(value if value != None else "")
 
         entryObject = ctk.CTkEntry(
             entryFrame,
             height=36,
             textvariable=entryValue,
-            show=show if value != None else "",
+            # show=show if value != None else "",
+            show=show,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=18,
                 weight="bold",
             ),
-            text_color=Dependency.colorPalette["text"]
-            if value != None
-            else Dependency.colorPalette["text-dark"],
+            text_color=Dependency.colorPalette["text"],
+            # if value != None
+            # else Dependency.colorPalette["text-dark"],
             fg_color="transparent",
             border_color=Dependency.colorPalette["text"],
             state="normal" if state else "disabled",
@@ -469,8 +471,8 @@ class Component:
             sticky="nsew",
         )
 
-        entryObject.bind("<FocusIn>", focusIn)
-        entryObject.bind("<FocusOut>", focusOut)
+        # entryObject.bind("<FocusIn>", focusIn)
+        # entryObject.bind("<FocusOut>", focusOut)
 
         return entryObject
 
