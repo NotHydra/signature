@@ -1019,8 +1019,8 @@ class App(ctk.CTk):
                 Message.errorMessage("Please Fill Out The Form")
 
         def registerButtonEvent() -> None:
-            pass
-
+            Call.resetFrameCall()
+            self.registerFrame()
 
         def exitButtonEvent() -> None:
             if Message.confirmationMessage():
@@ -1059,7 +1059,7 @@ class App(ctk.CTk):
         loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         loginFrame.rowconfigure(6, weight=1)
         loginFrame.columnconfigure(0, weight=1)
-        loginFrame.grid(row=0, column=1, padx=120, pady=(100, 20), sticky="nsew")
+        loginFrame.grid(row=0, column=1, padx=120, pady=(80, 20), sticky="nsew")
 
         titleLoginLabel = ctk.CTkLabel(
             loginFrame,
@@ -1068,7 +1068,7 @@ class App(ctk.CTk):
                 family=Dependency.fontFamily["main"], size=40, weight="bold"
             ),
         )
-        titleLoginLabel.grid(row=0, column=0, pady=(0, 40), sticky="nsw")
+        titleLoginLabel.grid(row=0, column=0, pady=(0, 20), sticky="nsw")
 
         usernameLoginEntry = ctk.CTkEntry(
             loginFrame,
@@ -1091,7 +1091,7 @@ class App(ctk.CTk):
                 family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        passwordLoginEntry.grid(row=2, column=0, pady=(0, 40), sticky="nsew")
+        passwordLoginEntry.grid(row=2, column=0, pady=(0, 10), sticky="nsew")
 
         submitLoginButton = ctk.CTkButton(
             loginFrame,
@@ -1104,16 +1104,16 @@ class App(ctk.CTk):
             hover_color=Dependency.colorPalette["main-dark"],
             command=loginButtonEvent,
         )
-        submitLoginButton.grid(row=3, column=0, pady=(0, 10), sticky="nsew")
+        submitLoginButton.grid(row=3, column=0, pady=(0, 5), sticky="nsew")
 
-        titleLoginLabel = ctk.CTkLabel(
+        orLoginLabel = ctk.CTkLabel(
             loginFrame,
             text="or",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=24, weight="bold"
             ),
         )
-        titleLoginLabel.grid(row=4, column=0, pady=(0, 10), sticky="nsew")
+        orLoginLabel.grid(row=4, column=0, pady=(0, 5), sticky="nsew")
 
         registerLoginButton = ctk.CTkButton(
             loginFrame,
@@ -1140,6 +1140,197 @@ class App(ctk.CTk):
             command=exitButtonEvent,
         )
         exitLoginButton.grid(row=6, column=0, sticky="se")
+
+    def registerFrame(self) -> None:
+        def registerButtonEvent() -> None:
+            username = nameRegisterEntry.get()
+            password = confirmationPasswordRegisterEntry.get()
+
+            if "" not in [username, password]:
+                response = None
+                try:
+                    response = requests.post(
+                        f"{Dependency.host}/api/auth/login",
+                        json={"username": username, "password": password},
+                    ).json()
+
+                except requests.ConnectionError:
+                    Message.errorMessage("Make Sure You Are Connected To The Internet")
+
+                except:
+                    Message.errorMessage("Server Error")
+
+                if response != None:
+                    if response["success"] == True:
+                        Message.successMessage(response["message"])
+
+                        self.userObject["_id"] = response["data"]["_id"]
+
+                        Call.resetFrameCall()
+                        Middleware.refreshSessionDataMiddleware(self.homeFrame)
+
+                    else:
+                        Message.errorMessage(response["message"])
+
+            else:
+                Message.errorMessage("Please Fill Out The Form")
+
+        def loginButtonEvent() -> None:
+            Call.resetFrameCall()
+            self.loginFrame()
+
+        def exitButtonEvent() -> None:
+            if Message.confirmationMessage():
+                self.quit()
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=3)
+
+        aboutFrame = ctk.CTkFrame(
+            self, corner_radius=0, fg_color=Dependency.colorPalette["main"]
+        )
+        aboutFrame.rowconfigure(0, weight=1)
+        aboutFrame.columnconfigure(0, weight=1)
+        aboutFrame.grid(row=0, column=0, sticky="nsew")
+
+        descriptionAboutLabel = ctk.CTkLabel(
+            aboutFrame,
+            image=ctk.CTkImage(
+                Image.open(Utility.getAsset("logo-opacity.png")),
+                size=(
+                    Dependency.logoResolution["width"] / 2,
+                    Dependency.logoResolution["height"] / 2,
+                ),
+            ),
+            text="SIGNATURE\nDesktop-based application\nthat is capable of digitally\nmanaging multiple kinds of\ndocument online. Such as\nuploading, downloading and\nsigning digital documents.",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=20,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        )
+        descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
+
+        registerFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        registerFrame.rowconfigure(9, weight=1)
+        registerFrame.columnconfigure(0, weight=1)
+        registerFrame.grid(row=0, column=1, padx=120, pady=(40, 20), sticky="nsew")
+
+        titleRegisterLabel = ctk.CTkLabel(
+            registerFrame,
+            text="Register Details",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=40, weight="bold"
+            ),
+        )
+        titleRegisterLabel.grid(row=0, column=0, pady=(0, 20), sticky="nsw")
+
+        nameRegisterEntry = ctk.CTkEntry(
+            registerFrame,
+            height=60,
+            placeholder_text="name",
+            justify="left",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        nameRegisterEntry.grid(row=1, column=0, pady=(0, 10), sticky="nsew")
+
+        usernameRegisterEntry = ctk.CTkEntry(
+            registerFrame,
+            height=60,
+            placeholder_text="username",
+            justify="left",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        usernameRegisterEntry.grid(row=2, column=0, pady=(0, 10), sticky="nsew")
+
+        emailRegisterEntry = ctk.CTkEntry(
+            registerFrame,
+            height=60,
+            placeholder_text="email",
+            justify="left",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        emailRegisterEntry.grid(row=3, column=0, pady=(0, 10), sticky="nsew")     
+        
+        passwordRegisterEntry = ctk.CTkEntry(
+            registerFrame,
+            height=60,
+            show="*",
+            placeholder_text="password",
+            justify="left",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        passwordRegisterEntry.grid(row=4, column=0, pady=(0, 10), sticky="nsew")
+
+        confirmationPasswordRegisterEntry = ctk.CTkEntry(
+            registerFrame,
+            height=60,
+            show="*",
+            placeholder_text="confirmation password",
+            justify="left",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+        )
+        confirmationPasswordRegisterEntry.grid(row=5, column=0, pady=(0, 10), sticky="nsew")
+
+        submitRegisterButton = ctk.CTkButton(
+            registerFrame,
+            text="Register",
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+            command=registerButtonEvent,
+        )
+        submitRegisterButton.grid(row=6, column=0, pady=(0, 5), sticky="nsew")
+
+        orRegisterLabel = ctk.CTkLabel(
+            registerFrame,
+            text="or",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+        )
+        orRegisterLabel.grid(row=7, column=0, pady=(0, 5), sticky="nsew")
+
+        loginRegisterButton = ctk.CTkButton(
+            registerFrame,
+            text="Login",
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+            command=loginButtonEvent,
+        )
+        loginRegisterButton.grid(row=8, column=0, sticky="nsew")
+
+        exitRegisterButton = ctk.CTkButton(
+            registerFrame,
+            text="Exit",
+            height=40,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["danger"],
+            hover_color=Dependency.colorPalette["danger-dark"],
+            command=exitButtonEvent,
+        )
+        exitRegisterButton.grid(row=9, column=0, sticky="se")
 
     def homeFrame(self) -> None:
         def changeButtonEvent() -> None:
