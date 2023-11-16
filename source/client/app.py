@@ -985,7 +985,7 @@ class App(ctk.CTk):
         self.after(500, loadingEvent)
 
     def loginFrame(self) -> None:
-        def submitButtonEvent() -> None:
+        def loginButtonEvent() -> None:
             username = usernameLoginEntry.get()
             password = passwordLoginEntry.get()
 
@@ -1017,6 +1017,10 @@ class App(ctk.CTk):
 
             else:
                 Message.errorMessage("Please Fill Out The Form")
+
+        def registerButtonEvent() -> None:
+            pass
+
 
         def exitButtonEvent() -> None:
             if Message.confirmationMessage():
@@ -1053,8 +1057,9 @@ class App(ctk.CTk):
         descriptionAboutLabel.grid(row=0, column=0, sticky="nsew")
 
         loginFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        loginFrame.rowconfigure(6, weight=1)
         loginFrame.columnconfigure(0, weight=1)
-        loginFrame.grid(row=0, column=1, sticky="nsew")
+        loginFrame.grid(row=0, column=1, padx=120, pady=(100, 20), sticky="nsew")
 
         titleLoginLabel = ctk.CTkLabel(
             loginFrame,
@@ -1063,60 +1068,78 @@ class App(ctk.CTk):
                 family=Dependency.fontFamily["main"], size=40, weight="bold"
             ),
         )
-        titleLoginLabel.grid(row=0, column=0, pady=(180, 20))
+        titleLoginLabel.grid(row=0, column=0, pady=(0, 40), sticky="nsw")
 
         usernameLoginEntry = ctk.CTkEntry(
             loginFrame,
-            width=320,
             height=60,
             placeholder_text="username",
-            justify="center",
+            justify="left",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        usernameLoginEntry.grid(row=1, column=0, pady=(0, 10))
+        usernameLoginEntry.grid(row=1, column=0, pady=(0, 10), sticky="nsew")
 
         passwordLoginEntry = ctk.CTkEntry(
             loginFrame,
-            width=320,
             height=60,
             show="*",
             placeholder_text="password",
-            justify="center",
+            justify="left",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        passwordLoginEntry.grid(row=2, column=0, pady=(0, 10))
+        passwordLoginEntry.grid(row=2, column=0, pady=(0, 40), sticky="nsew")
 
         submitLoginButton = ctk.CTkButton(
             loginFrame,
             text="Login",
-            width=320,
             height=60,
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"], size=24, weight="bold"
             ),
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
-            command=submitButtonEvent,
+            command=loginButtonEvent,
         )
-        submitLoginButton.grid(row=3, column=0, pady=(0, 10))
+        submitLoginButton.grid(row=3, column=0, pady=(0, 10), sticky="nsew")
+
+        titleLoginLabel = ctk.CTkLabel(
+            loginFrame,
+            text="or",
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+        )
+        titleLoginLabel.grid(row=4, column=0, pady=(0, 10), sticky="nsew")
+
+        registerLoginButton = ctk.CTkButton(
+            loginFrame,
+            text="Register",
+            height=60,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"], size=24, weight="bold"
+            ),
+            fg_color=Dependency.colorPalette["main"],
+            hover_color=Dependency.colorPalette["main-dark"],
+            command=registerButtonEvent,
+        )
+        registerLoginButton.grid(row=5, column=0, sticky="nsew")
 
         exitLoginButton = ctk.CTkButton(
             loginFrame,
             text="Exit",
-            width=320,
-            height=60,
+            height=40,
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
             fg_color=Dependency.colorPalette["danger"],
             hover_color=Dependency.colorPalette["danger-dark"],
             command=exitButtonEvent,
         )
-        exitLoginButton.grid(row=4, column=0)
+        exitLoginButton.grid(row=6, column=0, sticky="se")
 
     def homeFrame(self) -> None:
         def changeButtonEvent() -> None:
@@ -3451,7 +3474,7 @@ if __name__ == "__main__":
     app = App()
 
     skipObject = {
-        "status": True,
+        "status": False,
         "id": 2,
         "frame": app.userFrame,
         "tag": None,
