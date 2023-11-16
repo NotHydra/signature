@@ -1143,37 +1143,47 @@ class App(ctk.CTk):
 
     def registerFrame(self) -> None:
         def registerButtonEvent() -> None:
-            username = nameRegisterEntry.get()
-            password = confirmationPasswordRegisterEntry.get()
+            name = nameRegisterEntry.get()
+            username = usernameRegisterEntry.get()
+            email = emailRegisterEntry.get()
+            password = passwordRegisterEntry.get()
+            confirmationPassword = confirmationPasswordRegisterEntry.get()
 
-            if "" not in [username, password]:
-                response = None
-                try:
-                    response = requests.post(
-                        f"{Dependency.host}/api/auth/login",
-                        json={"username": username, "password": password},
-                    ).json()
+            if Message.confirmationMessage():
+                if "" not in [name, username, email, password, confirmationPassword]:
+                    if password == confirmationPassword:
+                        response = None
+                        try:
+                            response = requests.post(
+                                f"{Dependency.host}/api/auth/register",
+                                json={"name": name, "username": username, "email": email, "password": password},
+                            ).json()
 
-                except requests.ConnectionError:
-                    Message.errorMessage("Make Sure You Are Connected To The Internet")
+                        except requests.ConnectionError:
+                            Message.errorMessage("Make Sure You Are Connected To The Internet")
 
-                except:
-                    Message.errorMessage("Server Error")
+                        except:
+                            Message.errorMessage("Server Error")
 
-                if response != None:
-                    if response["success"] == True:
-                        Message.successMessage(response["message"])
+                        if response != None:
+                            if response["success"] == True:
+                                Message.successMessage(response["message"])
 
-                        self.userObject["_id"] = response["data"]["_id"]
+                                self.userObject["_id"] = response["data"]["_id"]
 
-                        Call.resetFrameCall()
-                        Middleware.refreshSessionDataMiddleware(self.homeFrame)
+                                Call.resetFrameCall()
+                                Middleware.refreshSessionDataMiddleware(self.homeFrame)
+
+                            else:
+                                Message.errorMessage(response["message"])
 
                     else:
-                        Message.errorMessage(response["message"])
+                        Message.errorMessage(
+                            "Confirmation Password Doesn't Match Password"
+                        )
 
-            else:
-                Message.errorMessage("Please Fill Out The Form")
+                else:
+                    Message.errorMessage("Please Fill Out The Form")
 
         def loginButtonEvent() -> None:
             Call.resetFrameCall()
@@ -2836,8 +2846,8 @@ class App(ctk.CTk):
                     "" not in [code, title, category, description]
                     and filePath != "choose a document to upload"
                 ):
+                    response = None
                     try:
-                        response = None
                         response = requests.post(
                             f"{Dependency.host}/api/document/upload",
                             data={
