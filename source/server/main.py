@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.responses import StreamingResponse
 from model.access import AccessAddModel, AccessPageModel
-from model.auth import AuthLoginModel
+from model.auth import AuthLoginModel, AuthRegisterModel
 from model.document import DocumentPageModel
 from model.user import (
     UserAddModel,
@@ -59,6 +59,83 @@ def auth(response: Response, body: AuthLoginModel):
             )
 
     except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.post("/api/auth/register")
+def auth(response: Response, body: AuthRegisterModel):
+    try:
+        if Utility.checkEmail(body.email):
+            if len(body.password) >= 8:
+                userCollection = database.getCollection("user")
+                newUserObject = {
+                    "_id": database.newId("user"),
+                    "name": body.name,
+                    "username": body.username,
+                    "email": body.email,
+                    "password": Utility.encrypt(body.password),
+                    "role": "user",
+                    "is_active": True,
+                    "created_at": datetime.datetime.now(),
+                    "updated_at": datetime.datetime.now(),
+                }
+                insertedUserObject = userCollection.insert_one(newUserObject)
+
+                if insertedUserObject != None:
+                    response.status_code = status.HTTP_201_CREATED
+
+                    return Utility.formatResponse(
+                        True, response.status_code, "Register Successful", newUserObject
+                    )
+
+                else:
+                    response.status_code = status.HTTP_400_BAD_REQUEST
+
+                    return Utility.formatResponse(
+                        False,
+                        response.status_code,
+                        "Register Failed",
+                        None,
+                    )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    "Password Needs To Be Atleast 8 Characters Long",
+                    None,
+                )
+
+        else:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+
+            return Utility.formatResponse(
+                False,
+                response.status_code,
+                "Email Format Is Incorrect",
+                None,
+            )
+
+    except Exception as e:
+        errorMessage = str(e)
+        if "E11000 duplicate key error collection" in errorMessage:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+
+            if "username" in errorMessage:
+                return Utility.formatResponse(
+                    False, response.status_code, "Username Already Used", None
+                )
+
+            elif "email" in errorMessage:
+                return Utility.formatResponse(
+                    False, response.status_code, "Email Already Used", None
+                )
+
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
         print(str(e))
