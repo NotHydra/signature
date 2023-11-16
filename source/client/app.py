@@ -1065,14 +1065,14 @@ class App(ctk.CTk):
             loginFrame,
             text="Login Details",
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=40, weight="bold"
+                family=Dependency.fontFamily["main"], size=36, weight="bold"
             ),
         )
         titleLoginLabel.grid(row=0, column=0, pady=(0, 20), sticky="nsw")
 
         usernameLoginEntry = ctk.CTkEntry(
             loginFrame,
-            height=60,
+            height=48,
             placeholder_text="username",
             justify="left",
             font=ctk.CTkFont(
@@ -1083,7 +1083,7 @@ class App(ctk.CTk):
 
         passwordLoginEntry = ctk.CTkEntry(
             loginFrame,
-            height=60,
+            height=48,
             show="*",
             placeholder_text="password",
             justify="left",
@@ -1091,36 +1091,36 @@ class App(ctk.CTk):
                 family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        passwordLoginEntry.grid(row=2, column=0, pady=(0, 10), sticky="nsew")
+        passwordLoginEntry.grid(row=2, column=0, pady=(0, 20), sticky="nsew")
 
         submitLoginButton = ctk.CTkButton(
             loginFrame,
             text="Login",
-            height=60,
+            height=48,
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
             command=loginButtonEvent,
         )
-        submitLoginButton.grid(row=3, column=0, pady=(0, 5), sticky="nsew")
+        submitLoginButton.grid(row=3, column=0, pady=(0, 10), sticky="nsew")
 
         orLoginLabel = ctk.CTkLabel(
             loginFrame,
             text="or",
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        orLoginLabel.grid(row=4, column=0, pady=(0, 5), sticky="nsew")
+        orLoginLabel.grid(row=4, column=0, pady=(0, 10), sticky="nsew")
 
         registerLoginButton = ctk.CTkButton(
             loginFrame,
             text="Register",
-            height=60,
+            height=48,
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
@@ -1216,20 +1216,20 @@ class App(ctk.CTk):
         registerFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         registerFrame.rowconfigure(9, weight=1)
         registerFrame.columnconfigure(0, weight=1)
-        registerFrame.grid(row=0, column=1, padx=120, pady=(40, 20), sticky="nsew")
+        registerFrame.grid(row=0, column=1, padx=120, pady=(80, 20), sticky="nsew")
 
         titleRegisterLabel = ctk.CTkLabel(
             registerFrame,
             text="Register Details",
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=40, weight="bold"
+                family=Dependency.fontFamily["main"], size=36, weight="bold"
             ),
         )
         titleRegisterLabel.grid(row=0, column=0, pady=(0, 20), sticky="nsw")
 
         nameRegisterEntry = ctk.CTkEntry(
             registerFrame,
-            height=60,
+            height=48,
             placeholder_text="name",
             justify="left",
             font=ctk.CTkFont(
@@ -1240,7 +1240,7 @@ class App(ctk.CTk):
 
         usernameRegisterEntry = ctk.CTkEntry(
             registerFrame,
-            height=60,
+            height=48,
             placeholder_text="username",
             justify="left",
             font=ctk.CTkFont(
@@ -1251,7 +1251,7 @@ class App(ctk.CTk):
 
         emailRegisterEntry = ctk.CTkEntry(
             registerFrame,
-            height=60,
+            height=48,
             placeholder_text="email",
             justify="left",
             font=ctk.CTkFont(
@@ -1262,7 +1262,7 @@ class App(ctk.CTk):
         
         passwordRegisterEntry = ctk.CTkEntry(
             registerFrame,
-            height=60,
+            height=48,
             show="*",
             placeholder_text="password",
             justify="left",
@@ -1274,7 +1274,7 @@ class App(ctk.CTk):
 
         confirmationPasswordRegisterEntry = ctk.CTkEntry(
             registerFrame,
-            height=60,
+            height=48,
             show="*",
             placeholder_text="confirmation password",
             justify="left",
@@ -1282,36 +1282,36 @@ class App(ctk.CTk):
                 family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        confirmationPasswordRegisterEntry.grid(row=5, column=0, pady=(0, 10), sticky="nsew")
+        confirmationPasswordRegisterEntry.grid(row=5, column=0, pady=(0, 20), sticky="nsew")
 
         submitRegisterButton = ctk.CTkButton(
             registerFrame,
             text="Register",
-            height=60,
+            height=48,
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
             command=registerButtonEvent,
         )
-        submitRegisterButton.grid(row=6, column=0, pady=(0, 5), sticky="nsew")
+        submitRegisterButton.grid(row=6, column=0, pady=(0, 10), sticky="nsew")
 
         orRegisterLabel = ctk.CTkLabel(
             registerFrame,
             text="or",
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
         )
-        orRegisterLabel.grid(row=7, column=0, pady=(0, 5), sticky="nsew")
+        orRegisterLabel.grid(row=7, column=0, pady=(0, 10), sticky="nsew")
 
         loginRegisterButton = ctk.CTkButton(
             registerFrame,
             text="Login",
-            height=60,
+            height=48,
             font=ctk.CTkFont(
-                family=Dependency.fontFamily["main"], size=24, weight="bold"
+                family=Dependency.fontFamily["main"], size=20, weight="bold"
             ),
             fg_color=Dependency.colorPalette["main"],
             hover_color=Dependency.colorPalette["main-dark"],
