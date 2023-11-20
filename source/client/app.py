@@ -795,7 +795,7 @@ class Component:
             searchValue = event.widget.get()
 
             if searchValue == "":
-                comboBoxObject.configure(values=searchedOption)
+                comboBoxObject.configure(values=option)
 
             else:
                 searchedOption = []
@@ -804,11 +804,15 @@ class Component:
 
                         searchedOption.append(optionObject)
                         
+                        
                 if len(searchedOption) == 0:
                     searchedOption.append("search not found")
 
-                comboBoxObject.configure(values=searchedOption)
+                try:
+                    comboBoxObject.configure(values=searchedOption)
 
+                except:
+                    pass
 
         comboBoxFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         comboBoxFrame.rowconfigure([0, 1], weight=1)
