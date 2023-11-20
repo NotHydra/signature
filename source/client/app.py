@@ -405,19 +405,19 @@ class Component:
         show: str = "",
         span: int = 1,
     ) -> ctk.CTkEntry:
-        def focusIn(event):
-            if entryObject.get() == placeholder:
-                entryObject.delete(0, ctk.END)
-                entryObject.configure(
-                    show=show, text_color=Dependency.colorPalette["text"]
-                )
+        # def focusIn(event):
+        #     if entryObject.get() == placeholder:
+        #         entryObject.delete(0, ctk.END)
+        #         entryObject.configure(
+        #             show=show, text_color=Dependency.colorPalette["text"]
+        #         )
 
-        def focusOut(event):
-            if entryObject.get() == "":
-                entryObject.insert(0, placeholder)
-                entryObject.configure(
-                    show="", text_color=Dependency.colorPalette["text-dark"]
-                )
+        # def focusOut(event):
+        #     if entryObject.get() == "":
+        #         entryObject.insert(0, placeholder)
+        #         entryObject.configure(
+        #             show="", text_color=Dependency.colorPalette["text-dark"]
+        #         )
 
         entryFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         entryFrame.rowconfigure([0, 1], weight=1)
@@ -779,6 +779,77 @@ class Component:
             ),
             text_color=Dependency.colorPalette["text"],
         ).grid(row=row, column=0, padx=padx, pady=pady, sticky="nsew")
+
+    def comboBoxDataComponent(
+        master: ctk.CTk | ctk.CTkFrame,
+        title: str,
+        placeholder: str,
+        value: str,
+        option: list[dict[str, int | str]],
+        state: bool,
+        row: int,
+        column: int,
+        span: int = 1,
+    ) -> ctk.CTkComboBox:
+        comboBoxFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
+        comboBoxFrame.rowconfigure([0, 1], weight=1)
+        comboBoxFrame.columnconfigure(0, weight=1)
+        comboBoxFrame.grid(row=row, column=column, columnspan=span, sticky="nsew")
+
+        ctk.CTkLabel(
+            comboBoxFrame,
+            text=title,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=18,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+        ).grid(
+            row=0,
+            column=0,
+            padx=(0, 5) if column == 0 else (5, 0),
+            pady=(0, 5),
+            sticky="nsw",
+        )
+
+        comboBoxValue = ctk.StringVar()
+        comboBoxValue.set(value if value != None else "")
+
+        comboBoxObject = ctk.CTkComboBox(
+            comboBoxFrame,
+            height=36,
+            font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=18,
+                weight="bold",
+            ),
+            dropdown_font=ctk.CTkFont(
+                family=Dependency.fontFamily["main"],
+                size=18,
+                weight="bold",
+            ),
+            text_color=Dependency.colorPalette["text"],
+            fg_color=Dependency.colorPalette["main"],
+            border_color=Dependency.colorPalette["text"],
+            button_color=Dependency.colorPalette["text"],
+            button_hover_color=Dependency.colorPalette["text-dark"],
+            dropdown_fg_color=Dependency.colorPalette["main"],
+            dropdown_hover_color=Dependency.colorPalette["main-dark"],
+            dropdown_text_color=Dependency.colorPalette["text"],
+            state="normal" if state else "disabled",
+            values=option,
+            variable=comboBoxValue
+        )
+        comboBoxObject.grid(
+            row=1,
+            column=0,
+            padx=(0, 5) if column == 0 else (5, 0),
+            pady=(0, 10),
+            sticky="nsew",
+        )
+
+        return comboBoxObject
 
 
 class Middleware:
@@ -1370,7 +1441,7 @@ class App(ctk.CTk):
             contentFrame,
             height=40,
             corner_radius=8,
-            text=f"Welcome to Signature {self.userObject['username']}!",
+            text=f"Welcome To Signature {self.userObject['username']}!",
             font=ctk.CTkFont(
                 family=Dependency.fontFamily["main"],
                 size=20,
@@ -3300,7 +3371,7 @@ class App(ctk.CTk):
     def documentAccessAddFrame(self, id: int) -> None:
         def addButtonEvent() -> None:
             if Message.confirmationMessage():
-                username = usernameDataEntry.get()
+                username = usernameDataComboBox.get()
 
                 if "" not in [username]:
                     response = None
@@ -3376,11 +3447,12 @@ class App(ctk.CTk):
         dataContainerFrame.columnconfigure([0, 1], weight=1)
         dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
 
-        usernameDataEntry = Component.entryDataComponent(
+        usernameDataComboBox = Component.comboBoxDataComponent(
             dataContainerFrame,
             title="Username",
-            placeholder="username",
+            placeholder="select username",
             value=None,
+            option= ["user1", "user2", "user3"],
             state=True,
             row=0,
             column=0,
@@ -3675,10 +3747,10 @@ if __name__ == "__main__":
     app = App()
 
     skipObject = {
-        "status": False,
-        "id": 2,
-        "frame": app.userFrame,
-        "tag": None,
+        "status": True,
+        "id": 4,
+        "frame": app.documentAccessAddFrame,
+        "tag": 3,
     }
 
     app.mainloop()
