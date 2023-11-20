@@ -785,12 +785,31 @@ class Component:
         title: str,
         placeholder: str,
         value: str,
-        option: list[dict[str, int | str]],
+        option: list[str],
         state: bool,
         row: int,
         column: int,
         span: int = 1,
     ) -> ctk.CTkComboBox:
+        def search(event):
+            searchValue = event.widget.get()
+
+            if searchValue == "":
+                comboBoxObject.configure(values=searchedOption)
+
+            else:
+                searchedOption = []
+                for optionObject in option:
+                    if searchValue in optionObject:
+
+                        searchedOption.append(optionObject)
+                        
+                if len(searchedOption) == 0:
+                    searchedOption.append("search not found")
+
+                comboBoxObject.configure(values=searchedOption)
+
+
         comboBoxFrame = ctk.CTkFrame(master, corner_radius=0, fg_color="transparent")
         comboBoxFrame.rowconfigure([0, 1], weight=1)
         comboBoxFrame.columnconfigure(0, weight=1)
@@ -832,8 +851,10 @@ class Component:
             text_color=Dependency.colorPalette["text"],
             fg_color=Dependency.colorPalette["main"],
             border_color=Dependency.colorPalette["text"],
-            button_color=Dependency.colorPalette["text"],
-            button_hover_color=Dependency.colorPalette["text-dark"],
+            button_color=Dependency.colorPalette["main"],
+            border_button_color=Dependency.colorPalette["text"],
+            button_hover_color=Dependency.colorPalette["main-dark"],
+            border_button_hover_color=Dependency.colorPalette["text"],
             dropdown_fg_color=Dependency.colorPalette["main"],
             dropdown_hover_color=Dependency.colorPalette["main-dark"],
             dropdown_text_color=Dependency.colorPalette["text"],
@@ -848,6 +869,8 @@ class Component:
             pady=(0, 10),
             sticky="nsew",
         )
+
+        comboBoxObject.bind('<KeyRelease>', search)
 
         return comboBoxObject
 
