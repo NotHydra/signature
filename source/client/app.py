@@ -3474,12 +3474,29 @@ class App(ctk.CTk):
         dataContainerFrame.columnconfigure([0, 1], weight=1)
         dataContainerFrame.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="nsew")
 
+        response = None
+        try:
+            response = requests.get(
+                f"{Dependency.host}/api/document/access/available"
+            ).json()
+
+        except:
+            pass
+        
+        option = []
+        if response != None and response["success"] == True:
+            for userObject in response["data"]:
+                option.append(userObject["username"])
+
+        else:
+            option.append("Data not found")
+        
         usernameDataComboBox = Component.comboBoxDataComponent(
             dataContainerFrame,
             title="Username",
             placeholder="select username",
             value=None,
-            option= ["user1", "user2", "user3"],
+            option=option,
             state=True,
             row=0,
             column=0,

@@ -637,6 +637,30 @@ def documentCount(response: Response):
         print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
+@app.get("/api/document/access/available")
+def documentAccessAvailable(response: Response):
+    try:
+        documentArray = list(database.getCollection("user").find({"role": "user"}, {"username": True}))
+
+        if len(documentArray) > 0:
+            response.status_code = status.HTTP_200_OK
+
+            return Utility.formatResponse(
+                True, response.status_code, "Document Access Available Found", documentArray
+            )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Document Access Available Not Found", None
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
 @app.get("/api/document/{id}")
 def documentFind(response: Response, id: int):
@@ -694,7 +718,6 @@ def documentFind(response: Response, id: int):
 
         print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
-
 
 @app.get("/api/document/access/{id}")
 def documentAccess(response: Response, body: DocumentPageModel, id: int):
