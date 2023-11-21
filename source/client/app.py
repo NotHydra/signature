@@ -768,6 +768,7 @@ class Component:
         row: int = 0,
         padx: int = 10,
         pady: int = 10,
+        columnspan: int = 1
     ) -> None:
         ctk.CTkLabel(
             master,
@@ -778,7 +779,7 @@ class Component:
                 weight="bold",
             ),
             text_color=Dependency.colorPalette["text"],
-        ).grid(row=row, column=0, padx=padx, pady=pady, sticky="nsew")
+        ).grid(row=row, column=0, columnspan=columnspan, padx=padx, pady=pady, sticky="nsew")
 
     def comboBoxDataComponent(
         master: ctk.CTk | ctk.CTkFrame,
@@ -2684,6 +2685,10 @@ class App(ctk.CTk):
                 else:
                     Message.errorMessage("Document Failed To Be Downloaded")
 
+        def signButtonEvent(id: int) -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentSignFrame, id)
+
         def accessButtonEvent(id: int) -> None:
             Call.resetFrameCall()
             Middleware.refreshSessionDataMiddleware(self.documentAccessFrame, 1, id)
@@ -2861,7 +2866,7 @@ class App(ctk.CTk):
                         "icon": "sign",
                         "mainColor": Dependency.colorPalette["warning"],
                         "hoverColor": Dependency.colorPalette["warning-dark"],
-                        "event": lambda: None,
+                        "event": signButtonEvent,
                         "optional": False,
                     },
                     {
@@ -3247,7 +3252,429 @@ class App(ctk.CTk):
         )
 
     def documentSignFrame(self, id: int) -> None:
-        pass
+        def backButtonEvent() -> None:
+            Call.resetFrameCall()
+            Middleware.refreshSessionDataMiddleware(self.documentFrame)
+
+        self.sidebarId = 2
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=31)
+
+        Component.sidebarComponent()
+
+        contentFrame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        contentFrame.rowconfigure(1, weight=1)
+        contentFrame.columnconfigure(0, weight=1)
+        contentFrame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+        Component.titleContentComponent(contentFrame, title="DOCUMENT", row=0)
+
+        containerContentFrame = ctk.CTkFrame(
+            contentFrame,
+            corner_radius=8,
+            fg_color=Dependency.colorPalette["main"],
+        )
+        containerContentFrame.rowconfigure(2, weight=1)
+        containerContentFrame.columnconfigure(0, weight=1)
+        containerContentFrame.grid(row=1, column=0, pady=(0, 20), sticky="nsew")
+
+        Component.titleContainerComponent(
+            containerContentFrame, title="Sign Document", row=0
+        )
+        Component.lineHorizontalComponent(containerContentFrame, row=1)
+
+        dataContainerFrame = ctk.CTkFrame(
+            containerContentFrame,
+            corner_radius=0,
+            fg_color="transparent",
+        )
+        dataContainerFrame.rowconfigure(0, weight=1)
+        dataContainerFrame.columnconfigure([0, 1], weight=1)
+        dataContainerFrame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="nsew")
+
+        response = None
+        try:
+            response = requests.get(f"{Dependency.host}/api/document/view/{id}")
+
+        except:
+            pass
+
+        if response != None and response.status_code == 200:
+            def resizeImage(event):
+                global imageResize, width, height, imageWidth, imageHeight
+
+                if (event.width / event.height) > imageRatio:
+                    height = int(event.height)
+                    width = int(height * imageRatio)
+                else:
+                    width = int(event.width)
+                    height = int(width / imageRatio)
+
+                imageWidth = int(event.width / 2)
+                imageHeight = int(event.height / 2)
+
+                imageResize = ImageTk.PhotoImage(image.resize((width, height)))
+                imageDataCanvas.create_image(
+                    imageWidth,
+                    imageHeight,
+                    anchor=ctk.CENTER,
+                    image=imageResize,
+                )
+
+            def insertButtonEvent() -> None:
+                filePath = ctk.filedialog.askopenfilename(
+                    title="Select a signature",
+                    filetypes=[
+                        ("PNG files", "*.png"),
+                    ],
+                )
+
+                if filePath:
+                    global signature, signatureXPosition, signatureYPosition
+
+                    signature = Image.open(filePath)
+
+                    if signature:
+                        signatureXPosition = tk.IntVar(value=0)
+                        signatureYPosition = tk.IntVar(value=0)
+
+                        addSignature()
+
+                else:
+                    Message.errorMessage(
+                        "Signature Failed To Be Inserted"
+                    )
+
+            def addSignature() -> None :
+                image.paste(originalImage, (0, 0))
+                image.paste(signature, (signatureXPosition.get(), signatureYPosition.get()), signature)
+                
+                displaySignature()
+
+            def displaySignature() -> None:
+                global imageResize
+                
+                imageResize = ImageTk.PhotoImage(image.resize((width, height)))
+                imageDataCanvas.create_image(
+                    imageWidth,
+                    imageHeight,
+                    anchor=ctk.CENTER,
+                    image=imageResize,
+                )
+
+            image = Image.open(BytesIO(response.content))
+            originalImage = image.copy() 
+            imageRatio = image.size[0] / image.size[1]
+
+            imageDataCanvas = tk.Canvas(
+                dataContainerFrame, bg=Dependency.colorPalette["main"], bd=2
+            )
+            imageDataCanvas.grid(
+                row=0, column=0, columnspan=2, pady=(0, 10), sticky="nsew"
+            )
+
+            imageDataCanvas.bind("<Configure>", resizeImage)
+
+            actionDataFrame = ctk.CTkFrame(
+                dataContainerFrame,
+                corner_radius=0,
+                fg_color="transparent",
+            )
+            actionDataFrame.rowconfigure([0, 1], weight=1)
+            actionDataFrame.columnconfigure([0, 1, 2, 3, 4], weight=1)
+            actionDataFrame.grid(row=1, column=0, columnspan=2, pady=(0, 10), sticky="nsew")
+
+            moveValue = ctk.StringVar()
+            moveValue.set(10)
+            moveActionEntry = ctk.CTkEntry(
+                actionDataFrame,
+                height=36,
+                textvariable=moveValue,
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                justify="center",
+                text_color=Dependency.colorPalette["text"],
+                fg_color="transparent",
+                border_color=Dependency.colorPalette["text"],
+                state="disabled",
+            ).grid(
+                row=0,
+                column=0,
+                padx=(0, 5),
+                pady=(0, 5),
+                sticky="nsew",
+            )
+
+            ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon(f"back.png")),
+                    size=(22, 22),
+                ),
+                text="Back",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["danger"],
+                hover_color=Dependency.colorPalette["danger-dark"],
+                command=backButtonEvent,
+            ).grid(
+                row=1,
+                column=0,
+                padx=(0, 5),
+                sticky="nsew",
+            )
+
+
+
+            scaleDownActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("sign/scale-down.png")),
+                    size=(22, 22),
+                ),
+                text="",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda :None,
+            ).grid(
+                row=0,
+                column=1,
+                padx=(0, 5),
+                pady=(0, 5),
+                sticky="nsew",
+            )
+
+            leftActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("sign/left.png")),
+                    size=(22, 22),
+                ),
+                text="",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda: None,
+            ).grid(
+                row=1,
+                column=1,
+                padx=(0, 5),
+                sticky="nsew",
+            )
+
+
+
+            upActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon(f"sign/up.png")),
+                    size=(22, 22),
+                ),
+                text="",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda: None,
+            ).grid(
+                row=0,
+                column=2,
+                padx=(0, 5),
+                pady=(0, 5),
+                sticky="nsew",
+            )
+
+            downActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("sign/down.png")),
+                    size=(22, 22),
+                ),
+                text="",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda: None,
+            ).grid(
+                row=1,
+                column=2,
+                padx=(0, 5),
+                sticky="nsew",
+            )
+
+
+
+            scaleUpActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("sign/scale-up.png")),
+                    size=(22, 22),
+                ),
+                text="",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda: None,
+            ).grid(
+                row=0,
+                column=3,
+                padx=(0, 5),
+                pady=(0, 5),
+                sticky="nsew",
+            )
+
+            rightActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("sign/right.png")),
+                    size=(22, 22),
+                ),
+                text="",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda: None,
+            ).grid(
+                row=1,
+                column=3,
+                padx=(0, 5),
+                sticky="nsew",
+            )
+
+            ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon(f"sign.png")),
+                    size=(22, 22),
+                ),
+                text="Insert",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["warning"],
+                hover_color=Dependency.colorPalette["warning-dark"],
+                command=insertButtonEvent,
+            ).grid(
+                row=0,
+                column=4,
+                padx=(0, 5),
+                pady=(0, 5),
+                sticky="nsew",
+            )
+
+            saveActionButton = ctk.CTkButton(
+                actionDataFrame,
+                height=36,
+                image=ctk.CTkImage(
+                    Image.open(Utility.getIcon("sign/save.png")),
+                    size=(22, 22),
+                ),
+                text="Save",
+                font=ctk.CTkFont(
+                    family=Dependency.fontFamily["main"],
+                    size=18,
+                    weight="bold",
+                ),
+                cursor="hand2",
+                corner_radius=8,
+                text_color=Dependency.colorPalette["text"],
+                fg_color=Dependency.colorPalette["background-light"],
+                hover_color=Dependency.colorPalette["background-light"],
+                command=lambda: None,
+            ).grid(
+                row=1,
+                column=4,
+                padx=(0, 5),
+                sticky="nsew",
+            )
+
+
+        else:
+            Component.labelDataComponent(
+                dataContainerFrame,
+                text="Data Not Found",
+                size=24,
+                row=0,
+                columnspan=2,
+                padx=80,
+                pady=80,
+            )
+
+            Component.buttonDataComponent(
+                dataContainerFrame,
+                text="Back",
+                icon="back",
+                mainColor=Dependency.colorPalette["danger"],
+                hoverColor=Dependency.colorPalette["danger-dark"],
+                event=backButtonEvent,
+                row=1,
+            )
 
     def documentAccessFrame(self, page: int = 1, id: int = None) -> None:
         def addButtonEvent() -> None:
@@ -3793,8 +4220,8 @@ if __name__ == "__main__":
     skipObject = {
         "status": True,
         "id": 4,
-        "frame": app.documentAccessAddFrame,
-        "tag": 3,
+        "frame": app.documentFrame,
+        "tag": None,
     }
 
     app.mainloop()
