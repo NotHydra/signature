@@ -3418,7 +3418,13 @@ class App(ctk.CTk):
                     try:
                         response = requests.post(
                             f"{Dependency.host}/api/document/sign/{id}",
-                            files={"file": imageByte},
+                            files={
+                                "file": (
+                                    f"{(requests.get(f"{Dependency.host}/api/document/{id}").json())["data"]["title"]}.png",
+                                    imageByte,
+                                    'image/png'
+                                )
+                            },
                         ).json()
 
                     except requests.ConnectionError:
