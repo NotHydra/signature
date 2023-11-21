@@ -3342,10 +3342,34 @@ class App(ctk.CTk):
 
                         addSignature()
 
+                        moveActionEntry.configure(state="normal")
+                        
+                        upActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("up"))
+                        downActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("down"))
+                        leftActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("left"))
+                        rightActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("right"))
+                        
+                        scaleDownActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"])
+                        scaleUpActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"])
+                        
+                        saveActionButton.configure(state="normal", fg_color=Dependency.colorPalette["success"], hover_color=Dependency.colorPalette["success-dark"])
+
                 else:
                     Message.errorMessage(
                         "Signature Failed To Be Inserted"
                     )
+
+            def moveSignature(direction):
+                if direction == "up":
+                    signatureYPosition.set(signatureYPosition.get() - moveValue.get())
+                elif direction == "down":
+                    signatureYPosition.set(signatureYPosition.get() + moveValue.get())
+                elif direction == "left":
+                    signatureXPosition.set(signatureXPosition.get() - moveValue.get())
+                elif direction == "right":
+                    signatureXPosition.set(signatureXPosition.get() + moveValue.get())
+
+                addSignature()
 
             def addSignature() -> None :
                 image.paste(originalImage, (0, 0))
@@ -3355,7 +3379,7 @@ class App(ctk.CTk):
 
             def displaySignature() -> None:
                 global imageResize
-                
+
                 imageResize = ImageTk.PhotoImage(image.resize((width, height)))
                 imageDataCanvas.create_image(
                     imageWidth,
@@ -3386,7 +3410,7 @@ class App(ctk.CTk):
             actionDataFrame.columnconfigure([0, 1, 2, 3, 4], weight=1)
             actionDataFrame.grid(row=1, column=0, columnspan=2, pady=(0, 10), sticky="nsew")
 
-            moveValue = ctk.StringVar()
+            moveValue = ctk.IntVar()
             moveValue.set(10)
             moveActionEntry = ctk.CTkEntry(
                 actionDataFrame,
@@ -3402,7 +3426,8 @@ class App(ctk.CTk):
                 fg_color="transparent",
                 border_color=Dependency.colorPalette["text"],
                 state="disabled",
-            ).grid(
+            )
+            moveActionEntry.grid(
                 row=0,
                 column=0,
                 padx=(0, 5),
@@ -3457,7 +3482,8 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda :None,
-            ).grid(
+            )
+            scaleDownActionButton.grid(
                 row=0,
                 column=1,
                 padx=(0, 5),
@@ -3484,7 +3510,8 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda: None,
-            ).grid(
+            )
+            leftActionButton.grid(
                 row=1,
                 column=1,
                 padx=(0, 5),
@@ -3512,7 +3539,8 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda: None,
-            ).grid(
+            )
+            upActionButton.grid(
                 row=0,
                 column=2,
                 padx=(0, 5),
@@ -3539,7 +3567,8 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda: None,
-            ).grid(
+            )
+            downActionButton.grid(
                 row=1,
                 column=2,
                 padx=(0, 5),
@@ -3567,7 +3596,8 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda: None,
-            ).grid(
+            )
+            scaleUpActionButton.grid(
                 row=0,
                 column=3,
                 padx=(0, 5),
@@ -3594,12 +3624,15 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda: None,
-            ).grid(
+            )
+            rightActionButton.grid(
                 row=1,
                 column=3,
                 padx=(0, 5),
                 sticky="nsew",
             )
+
+
 
             ctk.CTkButton(
                 actionDataFrame,
@@ -3623,7 +3656,6 @@ class App(ctk.CTk):
             ).grid(
                 row=0,
                 column=4,
-                padx=(0, 5),
                 pady=(0, 5),
                 sticky="nsew",
             )
@@ -3647,10 +3679,10 @@ class App(ctk.CTk):
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
                 command=lambda: None,
-            ).grid(
+            )
+            saveActionButton.grid(
                 row=1,
                 column=4,
-                padx=(0, 5),
                 sticky="nsew",
             )
 
