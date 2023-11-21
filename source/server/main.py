@@ -637,16 +637,22 @@ def documentCount(response: Response):
         print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
 
+
 @app.get("/api/document/access/available")
 def documentAccessAvailable(response: Response):
     try:
-        documentArray = list(database.getCollection("user").find({"role": "user"}, {"username": True}))
+        documentArray = list(
+            database.getCollection("user").find({"role": "user"}, {"username": True})
+        )
 
         if len(documentArray) > 0:
             response.status_code = status.HTTP_200_OK
 
             return Utility.formatResponse(
-                True, response.status_code, "Document Access Available Found", documentArray
+                True,
+                response.status_code,
+                "Document Access Available Found",
+                documentArray,
             )
 
         else:
@@ -661,6 +667,7 @@ def documentAccessAvailable(response: Response):
 
         print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
 
 @app.get("/api/document/{id}")
 def documentFind(response: Response, id: int):
@@ -718,6 +725,7 @@ def documentFind(response: Response, id: int):
 
         print(str(e))
         return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
 
 @app.get("/api/document/access/{id}")
 def documentAccess(response: Response, body: DocumentPageModel, id: int):
@@ -970,6 +978,62 @@ def documentDownload(response: Response, id: int):
                 response.status_code,
                 "Document Not Found",
                 None,
+            )
+
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        print(str(e))
+        return Utility.formatResponse(False, response.status_code, "Server Error", None)
+
+
+@app.post("/api/document/sign/{id}")
+def documentSign(
+    response: Response,
+    id: int,
+    file: UploadFile = File(),
+):
+    try:
+        documentCollection = database.getCollection("document")
+        documentObject = documentCollection.find_one({"_id": id}, {"id_file": True})
+
+        if documentObject != None:
+            database.fileSystemDelete(documentObject["id_file"])
+            updatedDocumentObject = documentCollection.update_one(
+                {"_id": id},
+                {
+                    "$set": {
+                        "id_file": database.fileSystemInsert(file),
+                        "updated_at": datetime.datetime.now(),
+                    }
+                },
+            )
+
+            if updatedDocumentObject != None:
+                response.status_code = status.HTTP_202_ACCEPTED
+
+                return Utility.formatResponse(
+                    True,
+                    response.status_code,
+                    "Document Signed",
+                    documentCollection.find_one({"_id": id}),
+                )
+
+            else:
+                response.status_code = status.HTTP_400_BAD_REQUEST
+
+                return Utility.formatResponse(
+                    False,
+                    response.status_code,
+                    "Document Failed To Be Signed",
+                    None,
+                )
+
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+            return Utility.formatResponse(
+                False, response.status_code, "Document Not Found", None
             )
 
     except Exception as e:
