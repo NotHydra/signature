@@ -3302,6 +3302,10 @@ class App(ctk.CTk):
             pass
 
         if response != None and response.status_code == 200:
+            global scalePercentage
+
+            scalePercentage = 100
+
             def resizeImage(event):
                 global imageResize, width, height, imageWidth, imageHeight
 
@@ -3332,9 +3336,10 @@ class App(ctk.CTk):
                 )
 
                 if filePath:
-                    global signature, signatureXPosition, signatureYPosition
+                    global signature, originalSignature, signatureXPosition, signatureYPosition
 
                     signature = Image.open(filePath)
+                    originalSignature = signature.copy()
 
                     if signature:
                         signatureXPosition = tk.IntVar(value=0)
@@ -3372,12 +3377,12 @@ class App(ctk.CTk):
                 addSignature()
 
             def scaleSignature(type):
-                global signature
+                global signature, scalePercentage
                 
-                scaleValue = 1.1 if type == "increase" else 0.9
-                width, height = signature.size
+                scalePercentage = scalePercentage * 1.1 if type == "increase" else scalePercentage * 0.9
+                width, height = originalSignature.size
                 
-                signature = signature.resize((int(width * scaleValue), int(height * scaleValue)))
+                signature = originalSignature.resize((int(width * (scalePercentage / 100)), int(height * (scalePercentage / 100))))
                 
                 addSignature()
 
