@@ -3349,8 +3349,8 @@ class App(ctk.CTk):
                         leftActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("left"))
                         rightActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("right"))
                         
-                        scaleDownActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"])
-                        scaleUpActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"])
+                        scaleDownActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: scaleSignature("decrease"))
+                        scaleUpActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: scaleSignature("increase"))
                         
                         saveActionButton.configure(state="normal", fg_color=Dependency.colorPalette["success"], hover_color=Dependency.colorPalette["success-dark"])
 
@@ -3369,6 +3369,16 @@ class App(ctk.CTk):
                 elif direction == "right":
                     signatureXPosition.set(signatureXPosition.get() + moveValue.get())
 
+                addSignature()
+
+            def scaleSignature(type):
+                global signature
+                
+                scaleValue = 1.1 if type == "increase" else 0.9
+                width, height = signature.size
+                
+                signature = signature.resize((int(width * scaleValue), int(height * scaleValue)))
+                
                 addSignature()
 
             def addSignature() -> None :
