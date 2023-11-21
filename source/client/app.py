@@ -3304,7 +3304,7 @@ class App(ctk.CTk):
         if response != None and response.status_code == 200:
             global scalePercentage
 
-            scalePercentage = 100
+            scalePercentage = 50
 
             def resizeImage(event):
                 global imageResize, width, height, imageWidth, imageHeight
@@ -3345,6 +3345,9 @@ class App(ctk.CTk):
                         signatureXPosition = tk.IntVar(value=0)
                         signatureYPosition = tk.IntVar(value=0)
 
+                        width, height = originalSignature.size
+                        signature = originalSignature.resize((int(width * (scalePercentage / 100)), int(height * (scalePercentage / 100))))
+                
                         addSignature()
 
                         moveActionEntry.configure(state="normal")
