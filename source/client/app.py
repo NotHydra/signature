@@ -3352,13 +3352,13 @@ class App(ctk.CTk):
 
                         moveActionEntry.configure(state="normal")
                         
-                        upActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("up"))
-                        downActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("down"))
-                        leftActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("left"))
-                        rightActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveSignature("right"))
+                        upActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveButtonEvent("up"))
+                        downActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveButtonEvent("down"))
+                        leftActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveButtonEvent("left"))
+                        rightActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: moveButtonEvent("right"))
                         
-                        scaleDownActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: scaleSignature("decrease"))
-                        scaleUpActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: scaleSignature("increase"))
+                        scaleDownActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: scaleButtonEvent("decrease"))
+                        scaleUpActionButton.configure(state="normal", fg_color=Dependency.colorPalette["warning"], hover_color=Dependency.colorPalette["warning-dark"], command=lambda: scaleButtonEvent("increase"))
                         
                         saveActionButton.configure(state="normal", fg_color=Dependency.colorPalette["success"], hover_color=Dependency.colorPalette["success-dark"])
 
@@ -3367,7 +3367,7 @@ class App(ctk.CTk):
                         "Signature Failed To Be Inserted"
                     )
 
-            def moveSignature(direction):
+            def moveButtonEvent(direction):
                 if direction == "up":
                     signatureYPosition.set(signatureYPosition.get() - moveValue.get())
                 elif direction == "down":
@@ -3379,7 +3379,7 @@ class App(ctk.CTk):
 
                 addSignature()
 
-            def scaleSignature(type):
+            def scaleButtonEvent(type):
                 global signature, scalePercentage
                 
                 scalePercentage = scalePercentage * 1.1 if type == "increase" else scalePercentage * 0.9
@@ -3405,6 +3405,41 @@ class App(ctk.CTk):
                     anchor=ctk.CENTER,
                     image=imageResize,
                 )
+
+            def saveButtonEvent() -> None:
+                global imageResize
+
+                if Message.confirmationMessage():
+                    imageByte = BytesIO()
+                    image.save(imageByte, format='PNG')
+                    imageByte = imageByte.getvalue()
+                    
+                    response = None
+                    try:
+                        response = requests.post(
+                            f"{Dependency.host}/api/document/sign/{id}",
+                            files={"file": imageByte},
+                        ).json()
+
+                    except requests.ConnectionError:
+                        Message.errorMessage(
+                            "Make Sure You Are Connected To The Internet"
+                        )
+
+                    except:
+                        Message.errorMessage("Server Error")
+
+                    if response != None:
+                        if response["success"] == True:
+                            Message.successMessage(response["message"])
+
+                            Call.resetFrameCall()
+                            Middleware.refreshSessionDataMiddleware(
+                                self.documentSignFrame, id
+                            )
+
+                        else:
+                            Message.errorMessage(response["message"])
 
             image = Image.open(BytesIO(response.content))
             originalImage = image.copy() 
@@ -3696,7 +3731,7 @@ class App(ctk.CTk):
                 text_color=Dependency.colorPalette["text"],
                 fg_color=Dependency.colorPalette["background-light"],
                 hover_color=Dependency.colorPalette["background-light"],
-                command=lambda: None,
+                command=saveButtonEvent,
             )
             saveActionButton.grid(
                 row=1,
