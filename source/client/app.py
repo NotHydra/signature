@@ -2925,8 +2925,8 @@ class App(ctk.CTk):
             filePath = ctk.filedialog.askopenfilename(
                 title="Select a document",
                 filetypes=[
-                    ("PDF files", "*.pdf"),
-                    ("Word files", "*.docx"),
+                    # ("PDF files", "*.pdf"),
+                    # ("Word files", "*.docx"),
                     ("Image files", "*.jpg *.jpeg *.png"),
                 ],
             )
@@ -3253,8 +3253,9 @@ class App(ctk.CTk):
 
     def documentSignFrame(self, id: int) -> None:
         def backButtonEvent() -> None:
-            Call.resetFrameCall()
-            Middleware.refreshSessionDataMiddleware(self.documentFrame)
+            if Message.confirmationMessage():
+                Call.resetFrameCall()
+                Middleware.refreshSessionDataMiddleware(self.documentFrame)
 
         self.sidebarId = 2
 
@@ -4309,7 +4310,7 @@ if __name__ == "__main__":
     app = App()
 
     skipObject = {
-        "status": True,
+        "status": False,
         "id": 4,
         "frame": app.documentFrame,
         "tag": None,
