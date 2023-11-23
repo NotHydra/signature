@@ -14,6 +14,8 @@ from PIL import Image, ImageTk
 
 load_dotenv()
 
+ctk.set_appearance_mode("Dark")
+
 
 class Utility:
     def combinePath(base: str, path: str) -> str:
