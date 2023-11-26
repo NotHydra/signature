@@ -29,7 +29,7 @@ class Utility:
 
 
 class Dependency:
-    host = f"http://{os.getenv("HOST")}:{os.getenv("PORT")}" if os.getenv("ENVIRONMENT") == "development" else "https://signature.irswanda.com"
+    host = f"http://{os.getenv("HOST")}:{os.getenv("PORT")}" if os.getenv("ENVIRONMENT") == "development" else "https://signature-api.irswanda.com"
 
     title = "Signature"
     subtitle = "Online Document Application"
