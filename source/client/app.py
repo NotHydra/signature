@@ -3365,6 +3365,9 @@ class App(ctk.CTk):
                         
                         saveActionButton.configure(state="normal", fg_color=Dependency.colorPalette["success"], hover_color=Dependency.colorPalette["success-dark"])
 
+                        imageDataCanvas.bind("<ButtonPress-1>", initializeDrag)
+                        imageDataCanvas.bind("<B1-Motion>", drag)
+
                 else:
                     Message.errorMessage(
                         "Signature Failed To Be Inserted"
@@ -3382,8 +3385,25 @@ class App(ctk.CTk):
 
                 addSignature()
 
+            def initializeDrag(event):
+                global startX, startY
+                startX, startY = event.x, event.y
+
+            def drag(event):
+                global signatureXPosition, signatureYPosition, startX, startY
+
+                dx = event.x - startX
+                dy = event.y - startY
+
+                signatureXPosition.set(signatureXPosition.get() + dx)
+                signatureYPosition.set(signatureYPosition.get() + dy)
+
+                startX, startY = event.x, event.y
+
+                addSignature()
+
             def scaleButtonEvent(type):
-                global signature, scalePercentage
+                global signature, scalePercentage 
                 
                 scalePercentage = scalePercentage * 1.1 if type == "increase" else scalePercentage * 0.9
                 width, height = originalSignature.size
@@ -4312,10 +4332,10 @@ if __name__ == "__main__":
     app = App()
 
     skipObject = {
-        "status": False,
+        "status": True,
         "id": 4,
-        "frame": app.documentFrame,
-        "tag": None,
+        "frame": app.documentSignFrame,
+        "tag": 1,
     }
 
     app.mainloop()
