@@ -54,9 +54,3 @@ class Utility:
         pdfFile.seek(0)
 
         return BytesIO(pdfFile.getvalue())
-
-    def replaceMultiple(text: str, targetArray: list[str], value: str) -> str:
-        for targetObject in targetArray:
-            text = text.replace(targetObject, value)
-
-        return text
