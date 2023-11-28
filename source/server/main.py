@@ -1,8 +1,6 @@
 import datetime
 import os
 from io import BytesIO
-from pdf2image import convert_from_bytes
-from PIL import Image
 
 from click import File
 from database import Database

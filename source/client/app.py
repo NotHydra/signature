@@ -4,7 +4,6 @@ import time
 import tkinter as tk
 from io import BytesIO
 from typing import Callable
-from urllib.parse import unquote
 
 import customtkinter as ctk
 import requests
@@ -2920,8 +2919,9 @@ class App(ctk.CTk):
             filePath = ctk.filedialog.askopenfilename(
                 title="Select a document",
                 filetypes=[
-                    ("PDF files", "*.pdf"),
-                    ("Image files", "*.jpg *.jpeg *.png"),
+                    ("All Files", "*.pdf *.jpg *.jpeg *.png"),
+                    ("PDF Files", "*.pdf"),
+                    ("Image Files", "*.jpg *.jpeg *.png"),
                 ],
             )
 
