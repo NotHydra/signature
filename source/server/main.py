@@ -2,6 +2,7 @@ import datetime
 import os
 from io import BytesIO
 from pdf2image import convert_from_bytes
+from PIL import Image
 
 from click import File
 from database import Database
@@ -966,10 +967,17 @@ def documentDownload(response: Response, id: int):
             if fileObject != None:
                 response.status_code = status.HTTP_200_OK
 
+                image = Image.open(BytesIO(fileObject.read()))
+                pdf = BytesIO()
+
+                image.save(pdf, "PDF")
+
+                pdf.seek(0)
+
                 return StreamingResponse(
-                    iter(fileObject),
+                    BytesIO(pdf.getvalue()),
                     headers={
-                        "Content-Disposition": f'attachment; filename="{fileObject.filename}"'
+                        "Content-Disposition": f'attachment; filename="{fileObject.filename.replace(".png", ".pdf")}"'
                     },
                 )
 

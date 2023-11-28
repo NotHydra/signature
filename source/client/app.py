@@ -2666,11 +2666,11 @@ class App(ctk.CTk):
                     defaultFileName = (
                         unquote(contentDisposition.split("filename=")[1])
                         if contentDisposition
-                        else "Downloaded Document.jpg"
+                        else "Downloaded Document.pdf"
                     )
 
                     filePath = ctk.filedialog.asksaveasfilename(
-                        filetypes=[("Image files", "*.jpg *.jpeg *.png")],
+                        filetypes=[("PDF files", "*.pdf")],
                         initialfile=defaultFileName,
                     )
 
