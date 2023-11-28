@@ -1,6 +1,7 @@
 import datetime
 import os
 from io import BytesIO
+from pdf2image import convert_from_bytes
 
 from click import File
 from database import Database
@@ -857,6 +858,18 @@ def documentUpload(
     file: UploadFile = File(),
 ):
     try:
+        if file.filename.lower().endswith(".pdf"):
+            image = convert_from_bytes(file.file.read(), fmt="png")[0]
+
+            imageByte = BytesIO()
+            image.save(imageByte, format="PNG", optimize=True, quality=50)
+
+            file = UploadFile(
+                filename=file.filename.replace(".pdf", ".png"),
+                file=imageByte.getvalue(),
+                headers="image/png",
+            )
+
         documentCollection = database.getCollection("document")
         newDocumentObject = {
             "_id": database.newId("document"),

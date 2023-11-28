@@ -2927,8 +2927,7 @@ class App(ctk.CTk):
             filePath = ctk.filedialog.askopenfilename(
                 title="Select a document",
                 filetypes=[
-                    # ("PDF files", "*.pdf"),
-                    # ("Word files", "*.docx"),
+                    ("PDF files", "*.pdf"),
                     ("Image files", "*.jpg *.jpeg *.png"),
                 ],
             )
@@ -4334,8 +4333,8 @@ if __name__ == "__main__":
     skipObject = {
         "status": True,
         "id": 4,
-        "frame": app.documentSignFrame,
-        "tag": 1,
+        "frame": app.documentFrame,
+        "tag": None,
     }
 
     app.mainloop()
