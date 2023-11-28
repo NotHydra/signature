@@ -1,5 +1,8 @@
 import bcrypt
 import re
+from pdf2image import convert_from_bytes
+from io import BytesIO
+from fastapi import UploadFile
 
 from typing import Dict, Any
 
@@ -27,3 +30,15 @@ class Utility:
 
         else:
             return False
+
+    def pdfToImage(file: UploadFile) -> UploadFile:
+        imageFile = convert_from_bytes(file.file.read(), fmt="png")[0]
+
+        imageByte = BytesIO()
+        imageFile.save(imageByte, format="PNG", optimize=True, quality=50)
+
+        return UploadFile(
+            filename=file.filename.replace(".pdf", ".png"),
+            file=imageByte.getvalue(),
+            headers="image/png",
+        )

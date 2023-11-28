@@ -860,16 +860,7 @@ def documentUpload(
 ):
     try:
         if file.filename.lower().endswith(".pdf"):
-            image = convert_from_bytes(file.file.read(), fmt="png")[0]
-
-            imageByte = BytesIO()
-            image.save(imageByte, format="PNG", optimize=True, quality=50)
-
-            file = UploadFile(
-                filename=file.filename.replace(".pdf", ".png"),
-                file=imageByte.getvalue(),
-                headers="image/png",
-            )
+            file = Utility.pdfToImage(file)
 
         documentCollection = database.getCollection("document")
         newDocumentObject = {
