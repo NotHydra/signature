@@ -958,10 +958,13 @@ def documentDownload(response: Response, id: int):
             if fileObject != None:
                 response.status_code = status.HTTP_200_OK
 
+                fileName = Utility.replaceMultiple(
+                    fileObject.filename, [".jpg", ".jpeg", ".png"], ".pdf"
+                )
                 return StreamingResponse(
                     Utility.imageToPDF(fileObject),
                     headers={
-                        "Content-Disposition": f'attachment; filename="{Utility.replaceMultiple(fileObject.filename, ['.jpg', '.jpeg', '.png'], '.pdf')}"'
+                        "Content-Disposition": f'attachment; filename="{fileName}"'
                     },
                 )
 
