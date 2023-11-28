@@ -11,7 +11,7 @@ uvicorn main:app --port 8000
 pip3 freeze > requirements.txt
 
 Website
-    Download
+    Download DONE
     Register
 
 Auth DONE
@@ -24,7 +24,7 @@ Home DONE
     Change DONE
     Change Password DONE
 
-User DONE
+User
     Add DONE
 
     Activity
