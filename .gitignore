@@ -3,6 +3,7 @@
 /**/test
 /**/build
 /**/dist
+/**/compile
 
 /**/.env
 /**/secret.txt
