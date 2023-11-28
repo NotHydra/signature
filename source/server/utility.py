@@ -1,8 +1,10 @@
 import bcrypt
 import re
+from gridfs import GridOut
 from pdf2image import convert_from_bytes
 from io import BytesIO
 from fastapi import UploadFile
+from PIL import Image
 
 from typing import Dict, Any
 
@@ -42,3 +44,19 @@ class Utility:
             file=imageByte.getvalue(),
             headers="image/png",
         )
+
+    def imageToPDF(file: GridOut) -> BytesIO:
+        imageFile = Image.open(BytesIO(file.read()))
+        pdfFile = BytesIO()
+
+        imageFile.save(pdfFile, "PDF")
+
+        pdfFile.seek(0)
+
+        return BytesIO(pdfFile.getvalue())
+
+    def replaceMultiple(text: str, targetArray: list[str], value: str) -> str:
+        for targetObject in targetArray:
+            text = text.replace(targetObject, value)
+
+        return text

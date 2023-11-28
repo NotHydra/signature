@@ -2662,16 +2662,9 @@ class App(ctk.CTk):
                     Message.errorMessage("Server Error")
 
                 if response != None and response.status_code == 200:
-                    contentDisposition = response.headers.get("content-disposition")
-                    defaultFileName = (
-                        unquote(contentDisposition.split("filename=")[1])
-                        if contentDisposition
-                        else "Downloaded Document.pdf"
-                    )
-
                     filePath = ctk.filedialog.asksaveasfilename(
+                        initialfile=f"{(requests.get(f"{Dependency.host}/api/document/{id}").json())["data"]["title"]}.pdf",
                         filetypes=[("PDF files", "*.pdf")],
-                        initialfile=defaultFileName,
                     )
 
                     if filePath:

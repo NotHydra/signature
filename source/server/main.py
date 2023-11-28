@@ -958,17 +958,10 @@ def documentDownload(response: Response, id: int):
             if fileObject != None:
                 response.status_code = status.HTTP_200_OK
 
-                image = Image.open(BytesIO(fileObject.read()))
-                pdf = BytesIO()
-
-                image.save(pdf, "PDF")
-
-                pdf.seek(0)
-
                 return StreamingResponse(
-                    BytesIO(pdf.getvalue()),
+                    Utility.imageToPDF(fileObject),
                     headers={
-                        "Content-Disposition": f'attachment; filename="{fileObject.filename.replace(".png", ".pdf")}"'
+                        "Content-Disposition": f'attachment; filename="{Utility.replaceMultiple(fileObject.filename, [".jpg", ".jpeg", ".png"], ".pdf")}"'
                     },
                 )
 
