@@ -1905,7 +1905,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                f"{Dependency.host}/api/user", json={"count": 10, "page": page}
+                f"{Dependency.host}/api/user?count=10&page={page}"
             ).json()
 
         except:
@@ -2759,8 +2759,7 @@ class App(ctk.CTk):
         response = None
         try:
             response = requests.get(
-                f"{Dependency.host}/api/document/access/{self.userObject['_id']}",
-                json={"count": 10, "page": page},
+                f"{Dependency.host}/api/document/access/{self.userObject['_id']}?count=10&page={page}",
             ).json()
 
         except:
@@ -3834,8 +3833,7 @@ class App(ctk.CTk):
             ).json()["data"]["total"]
 
             response = requests.get(
-                f"{Dependency.host}/api/access/document/{id}",
-                json={"count": 10, "page": page},
+                f"{Dependency.host}/api/access/document/{id}?count=10&page={page}",
             ).json()
 
         except:
