@@ -1,12 +1,8 @@
 import axios from "axios";
 import { ReactElement, useEffect, useState } from "react"
 
-interface FormatResponse<T> {
-    success: boolean,
-    status: number,
-    message: string,
-    data: T
-}
+import FormatResponse from "../interface/format-response";
+
 
 interface Document {
     _id: number;
@@ -39,7 +35,11 @@ export const Document = (): ReactElement => {
                 },
             })
 
-            setDocuments(response.data.data)
+            if (response.data.success) {
+                setDocuments(response.data.data)
+            } else {
+                setDocuments([])
+            }
         }
 
         fetchDocument();
@@ -51,9 +51,9 @@ export const Document = (): ReactElement => {
                 <h1 className="title">Document</h1>
                 <p className="subtitle">{documents.length} Total Documents</p>
 
-                {documents.map((document: Document) => (
+                {documents.length > 0 ? documents.map((document: Document) => (
                     <p>{JSON.stringify(document)}</p>
-                ))}
+                )) : <p>Data Not Found</p>}
             </div>
         </section>
     )
