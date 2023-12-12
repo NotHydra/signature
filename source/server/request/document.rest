@@ -1,20 +1,25 @@
+GET https://signature-api.irswanda.com/api/document
+Content-Type: application/json
+
+###
+
 GET http://localhost:8000/api/document
 Content-Type: application/json
 
-{
-    "count": 10,
-    "page": 1
-}
+###
+
+GET http://localhost:8000/api/document?count=1&page=1
+Content-Type: application/json
 
 ###
 
 GET http://localhost:8000/api/document/access/4
 Content-Type: application/json
 
-{
-    "count": 10,
-    "page": 1
-}
+###
+
+GET http://localhost:8000/api/document/access/4?count=1&page=1
+Content-Type: application/json
 
 ###
 

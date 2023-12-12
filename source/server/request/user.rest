@@ -1,10 +1,10 @@
 GET http://localhost:8000/api/user
 Content-Type: application/json
 
-{
-    "count": 10,
-    "page": 1
-}
+###
+
+GET http://localhost:8000/api/user?count=1&page=1
+Content-Type: application/json
 
 ###
 
@@ -42,7 +42,6 @@ Content-Type: application/json
 
 ###
 
-
 PUT http://localhost:8000/api/user/change-password/7
 Content-Type: application/json
 
@@ -51,7 +50,6 @@ Content-Type: application/json
 }
 
 ###
-
 
 PUT http://localhost:8000/api/user/change-active/7
 

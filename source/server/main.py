@@ -9,14 +9,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Form, Response, UploadFile, status
 
 from database import Database
-from model.access import AccessAddModel, AccessPageModel
+from model.access import AccessAddModel
 from model.auth import AuthLoginModel, AuthRegisterModel
-from model.document import DocumentPageModel
 from model.user import (
     UserAddModel,
     UserChangeModel,
     UserChangePasswordModel,
-    UserPageModel,
 )
 from utility import Utility
 
@@ -152,14 +150,14 @@ def auth(response: Response, body: AuthRegisterModel):
 
 
 @app.get("/api/user")
-def user(response: Response, body: UserPageModel):
+def user(response: Response, count: int = 0, page: int = 0):
     try:
         userArray = list(
             database.getCollection("user")
             .find()
-            .skip(body.count * (body.page - 1))
-            .limit(body.count)
-            if body.count != 0 and body.page != 0
+            .skip(count * (page - 1))
+            .limit(count)
+            if count != 0 and page != 0
             else database.getCollection("user").find()
         )
 
@@ -564,7 +562,7 @@ def userRemove(response: Response, id: int):
 
 
 @app.get("/api/document")
-def document(response: Response, body: DocumentPageModel):
+def document(response: Response, count: int = 0, page: int = 0):
     try:
         documentQuery = [
             {
@@ -578,10 +576,10 @@ def document(response: Response, body: DocumentPageModel):
             {"$unwind": "$author_extend"},
         ]
 
-        if body.count != 0 and body.page != 0:
+        if count != 0 and page != 0:
             documentQuery = documentQuery + [
-                {"$skip": body.count * (body.page - 1)},
-                {"$limit": body.count},
+                {"$skip": count * (page - 1)},
+                {"$limit": count},
             ]
 
         documentQuery = documentQuery + [
@@ -737,7 +735,7 @@ def documentFind(response: Response, id: int):
 
 
 @app.get("/api/document/access/{id}")
-def documentAccess(response: Response, body: DocumentPageModel, id: int):
+def documentAccess(response: Response, id: int, count: int = 0, page: int = 0):
     try:
         documentQuery = [
             {
@@ -770,10 +768,10 @@ def documentAccess(response: Response, body: DocumentPageModel, id: int):
             },
         ]
 
-        if body.count != 0 and body.page != 0:
+        if count != 0 and page != 0:
             documentQuery = documentQuery + [
-                {"$skip": body.count * (body.page - 1)},
-                {"$limit": body.count},
+                {"$skip": count * (page - 1)},
+                {"$limit": count},
             ]
 
         documentQuery = documentQuery + [
@@ -1101,14 +1099,14 @@ def documentRemove(response: Response, id: int):
 
 
 @app.get("/api/access")
-def access(response: Response, body: AccessPageModel):
+def access(response: Response, count: int = 0, page: int = 0):
     try:
         accessArray = list(
             database.getCollection("access")
             .find()
-            .skip(body.count * (body.page - 1))
-            .limit(body.count)
-            if body.count != 0 and body.page != 0
+            .skip(count * (page - 1))
+            .limit(count)
+            if count != 0 and page != 0
             else database.getCollection("access").find()
         )
 
@@ -1209,7 +1207,7 @@ def accessFind(response: Response, id: int):
 
 
 @app.get("/api/access/document/{id}")
-def accessDocument(response: Response, body: AccessPageModel, id: int):
+def accessDocument(response: Response, id: int, count: int = 0, page: int = 0):
     try:
         accessQuery = [
             {
@@ -1224,10 +1222,10 @@ def accessDocument(response: Response, body: AccessPageModel, id: int):
             {"$match": {"id_document": id}},
         ]
 
-        if body.count != 0 and body.page != 0:
+        if count != 0 and page != 0:
             accessQuery = accessQuery + [
-                {"$skip": body.count * (body.page - 1)},
-                {"$limit": body.count},
+                {"$skip": count * (page - 1)},
+                {"$limit": count},
             ]
 
         accessQuery = accessQuery + [
