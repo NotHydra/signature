@@ -1,4 +1,6 @@
-export const Profile = () => {
+import { ReactElement } from "react"
+
+export const Profile = (): ReactElement => {
     return (
         <section className="section">
             <div className="container">

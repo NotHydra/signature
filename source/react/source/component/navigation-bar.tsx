@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 import logo from "./../public/image/logo-original.png";
 
 
-export const NavigationBar = () => {
-    const [toggle, setToggle] = useState(false)
+export const NavigationBar = (): ReactElement => {
+    const [toggle, setToggle] = useState<boolean>(false)
 
     return (
         <nav className="navbar is-fixed-top has-shadow" role="navigation" aria-label="main navigation">

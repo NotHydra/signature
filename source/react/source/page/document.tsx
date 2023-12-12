@@ -1,4 +1,6 @@
-export const Document = () => {
+import { ReactElement } from "react"
+
+export const Document = (): ReactElement => {
     return (
         <section className="section">
             <div className="container">
