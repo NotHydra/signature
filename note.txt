@@ -10,6 +10,7 @@ python ./source/server/main.py
 uvicorn main:app --port 8000
 pip3 freeze > requirements.txt
 
+ubuntu
 cd "/mnt/e/Program Files/University/Semester 1/Algoritme Pemrograman/Proyek/Program/source/react"
 
 Website
