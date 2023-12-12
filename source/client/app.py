@@ -82,8 +82,8 @@ class Message:
                 icon="question",
                 title="Confirmation",
                 message=message,
-                option_1="Yes",
-                option_2="No",
+                option_1="No",
+                option_2="Yes",
             ).get()
             == "Yes"
             else False
