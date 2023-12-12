@@ -1,4 +1,4 @@
-import { ReactElement } from "react"
+import { ReactElement } from "react";
 
 export const Profile = (): ReactElement => {
     return (
@@ -8,5 +8,5 @@ export const Profile = (): ReactElement => {
                 <p className="subtitle">This is the profile page</p>
             </div>
         </section>
-    )
-}
+    );
+};
