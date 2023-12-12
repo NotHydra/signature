@@ -11,7 +11,7 @@ export const NavigationBar = () => {
             <div className="navbar-brand">
                 <a className="navbar-item" href="/document">
                     <img className="mr-2" src={logo}></img>
-                    <h1 className="subtitle has-text-info">Signature</h1>
+                    <h4 className="title is-4 has-text-info">Signature</h4>
                 </a>
 
                 <a role="button" className={`navbar-burger ${toggle ? "is-active" : ""}`} onClick={() => { setToggle(!toggle) }}>
@@ -24,21 +24,21 @@ export const NavigationBar = () => {
             <div className={`navbar-menu ${toggle ? "is-active" : ""}`}>
                 <div className="navbar-start">
                     <a className="navbar-item" href="/document">
-                        <h1 className="subtitle">
+                        <h4 className="subtitle">
                             Document
-                        </h1>
+                        </h4>
                     </a>
                 </div>
 
                 <div className="navbar-end">
                     <a className="navbar-item" href="/profile">
-                        <h1 className="subtitle">
+                        <h4 className="subtitle">
                             <span className="icon mr-1 is-medium">
                                 <i className="fas fa-lg fa-user-circle"></i>
                             </span>
 
                             <span>Profile</span>
-                        </h1>
+                        </h4>
                     </a>
                 </div>
             </div>
