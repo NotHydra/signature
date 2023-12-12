@@ -8,7 +8,7 @@ export const NavigationBar = () => {
                 <a className="navbar-item" href="/document">
                     <img className="mr-2" src={logo}></img>
 
-                    <h1 className="subtitle">Signature</h1>
+                    <h1 className="subtitle has-text-info">Signature</h1>
                 </a>
 
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
