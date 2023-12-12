@@ -1,12 +1,14 @@
 import datetime
 import os
-from io import BytesIO
 
+from io import BytesIO
 from click import File
-from database import Database
 from dotenv import load_dotenv
-from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Form, Response, UploadFile, status
+
+from database import Database
 from model.access import AccessAddModel, AccessPageModel
 from model.auth import AuthLoginModel, AuthRegisterModel
 from model.document import DocumentPageModel
@@ -24,6 +26,13 @@ load_dotenv()
 app = FastAPI()
 database = Database()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/api/auth/login")
 def auth(response: Response, body: AuthLoginModel):
