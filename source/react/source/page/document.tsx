@@ -10,8 +10,8 @@ interface Document {
     title: string;
     category: string;
     description: string;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
     author_extend: {
         username: string;
     };
@@ -50,13 +50,46 @@ export const Document = (): ReactElement => {
                 <h1 className="title">Document</h1>
                 <p className="subtitle">{documents.length} Total Documents</p>
 
-                {documents.length > 0 ? (
-                    documents.map((document: Document) => (
-                        <p>{JSON.stringify(document)}</p>
-                    ))
-                ) : (
-                    <p>Data Not Found</p>
-                )}
+                <div className="columns is-multiline">
+                    {documents.length > 0 ? (
+                        documents.map((document: Document) => (
+                            <div className="column is-one-quarter">
+                                <div className="card">
+                                    <div className="card-content">
+                                        <div className="media">
+                                            <div className="media-content">
+                                                <p className="title is-4">
+                                                    {document.title}
+                                                </p>
+
+                                                <p className="subtitle is-6 mb-2">
+                                                    {`${document.code} - ${document.category}`}
+                                                </p>
+
+                                                <p className="subtitle is-7">
+                                                    {
+                                                        document.author_extend
+                                                            .username
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="content">
+                                            {document.description}
+                                            <br />
+                                            {new Date(
+                                                document.created_at
+                                            ).toLocaleDateString("en-GB")}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div>Data Not Found</div>
+                    )}
+                </div>
             </div>
         </section>
     );
