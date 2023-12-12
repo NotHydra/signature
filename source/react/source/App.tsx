@@ -1,14 +1,18 @@
-function App() {
+import { Routes, Route } from "react-router-dom";
+
+import { NavigationBar } from "./component/navigation-bar.tsx";
+import { Document } from "./page/document.tsx";
+import { Profile } from "./page/profile.tsx";
+
+export const App = () => {
   return (
     <div className="App">
-      <section className="section">
-        <div className="container">
-          <h1 className="title">Hello Bulma!</h1>
-          <p className="subtitle">My React App with Bulma</p>
-        </div>
-      </section>
+      <NavigationBar></NavigationBar>
+
+      <Routes>
+        <Route path="/document" element={<Document></Document>}></Route>
+        <Route path="/profile" element={<Profile></Profile>}></Route>
+      </Routes>
     </div>
   );
 }
-
-export default App
