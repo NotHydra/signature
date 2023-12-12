@@ -4,7 +4,7 @@ import { ReactElement, useEffect, useState } from "react";
 import IFormatResponse from "../interface/format-response";
 import IDocument from "../interface/document";
 
-import { Documents } from "../component/documents";
+import { CDocuments } from "../component/documents";
 
 export const Document = (): ReactElement => {
     const [documents, setDocuments] = useState<IDocument[]>([]);
@@ -40,7 +40,7 @@ export const Document = (): ReactElement => {
                 <p className="subtitle">{documents.length} Total Documents</p>
 
                 {documents.length > 0 ? (
-                    <Documents documents={documents} />
+                    <CDocuments documents={documents} />
                 ) : (
                     <div>Data Not Found</div>
                 )}

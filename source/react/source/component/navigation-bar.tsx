@@ -2,7 +2,7 @@ import { ReactElement, useState } from "react";
 
 import logo from "./../public/image/logo-original.png";
 
-export const NavigationBar = (): ReactElement => {
+export const CNavigationBar = (): ReactElement => {
     const [toggle, setToggle] = useState<boolean>(false);
 
     return (
