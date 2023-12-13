@@ -1,4 +1,4 @@
-import IDocument from "../interface/document";
+import { IDocument } from "../interface/document";
 
 import { CDocument } from "./document";
 

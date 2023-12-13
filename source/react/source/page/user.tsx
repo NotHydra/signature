@@ -1,8 +1,8 @@
 import axios from "axios";
 import { ReactElement, useEffect, useState } from "react";
 
-import IFormatResponse from "../interface/format-response";
-import IUser from "../interface/user";
+import { IFormatResponse } from "../interface/format-response";
+import { IUser } from "../interface/user";
 
 import { CUsers } from "../component/users";
 

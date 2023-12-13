@@ -1,4 +1,4 @@
-import IDocument from "../interface/document";
+import { IDocument } from "../interface/document";
 
 export const CDocument: React.FC<{
     document: IDocument;

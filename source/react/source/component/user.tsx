@@ -1,4 +1,4 @@
-import IUser from "../interface/user";
+import { IUser } from "../interface/user";
 
 export const CUser: React.FC<{
     user: IUser;
