@@ -7,11 +7,11 @@ import { IDocument, IDocumentTotal } from "../interface/document";
 import { CDocuments } from "../component/documents";
 
 export const Document = (): ReactElement => {
-    const count = 12;
-
+    const [count, setcount] = useState<number>(12);
     const [page, setPage] = useState<number>(1);
     const [documents, setDocuments] = useState<IDocument[]>([]);
     const [total, setTotal] = useState<number>(0);
+    const [totalPage, setTotalPage] = useState<number>(0);
 
     const fetchDocument = async () => {
         const response = await axios<IFormatResponse<IDocument[]>>({
@@ -43,16 +43,42 @@ export const Document = (): ReactElement => {
         });
 
         if (response.data.success) {
+            const newTotalPage = Math.ceil(response.data.data.total / count);
+
             setTotal(response.data.data.total);
+            setTotalPage(newTotalPage);
+
+            if (page > newTotalPage) {
+                setPage(newTotalPage);
+            }
         } else {
-            setTotal(0);
+            setTotalPage(0);
         }
+    };
+
+    const decreaseCount = () => {
+        setcount(count - 1);
+    };
+
+    const increaseCount = () => {
+        setcount(count + 1);
+    };
+
+    const previousPage = () => {
+        setPage(page - 1);
+    };
+
+    const nextPage = () => {
+        setPage(page + 1);
     };
 
     useEffect(() => {
         fetchDocument();
+    }, [count, page]);
+
+    useEffect(() => {
         fetchTotal();
-    }, []);
+    }, [count]);
 
     return (
         <section className="section">
@@ -60,29 +86,77 @@ export const Document = (): ReactElement => {
                 <h1 className="title">Document</h1>
 
                 <p className="subtitle pb-0 mb-2">
-                    Page {page} out of {Math.ceil(total / count)}
+                    Page {page} out of {totalPage}
                 </p>
 
-                <div className="field has-addons">
-                    <p className="control">
-                        <button className="button button-custom-width">
-                            <span className="icon is-small">
-                                <i className="fas fa-chevron-left"></i>
-                            </span>
+                <div className="columns">
+                    <div className="column is-one-third">
+                        <div className="field has-addons">
+                            <p className="control is-expanded">
+                                <button
+                                    className="button is-fullwidth"
+                                    disabled={page > 1 ? false : true}
+                                    onClick={previousPage}
+                                >
+                                    <span className="icon is-small">
+                                        <i className="fas fa-chevron-left"></i>
+                                    </span>
 
-                            <span>Previous</span>
-                        </button>
-                    </p>
+                                    <span>Previous</span>
+                                </button>
+                            </p>
 
-                    <p className="control">
-                        <button className="button button-custom-width">
-                            <span>Next</span>
+                            <p className="control is-expanded">
+                                <button
+                                    className="button is-fullwidth"
+                                    disabled={page < totalPage ? false : true}
+                                    onClick={nextPage}
+                                >
+                                    <span>Next</span>
 
-                            <span className="icon is-small">
-                                <i className="fas fa-chevron-right"></i>
-                            </span>
-                        </button>
-                    </p>
+                                    <span className="icon is-small">
+                                        <i className="fas fa-chevron-right"></i>
+                                    </span>
+                                </button>
+                            </p>
+                        </div>
+
+                        <div className="field has-addons">
+                            <p className="control is-expanded">
+                                <button
+                                    className="button is-fullwidth"
+                                    disabled={count > 1 ? false : true}
+                                    onClick={decreaseCount}
+                                >
+                                    <span className="icon is-small">
+                                        <i className="fas fa-minus"></i>
+                                    </span>
+                                </button>
+                            </p>
+
+                            <p className="control is-expanded">
+                                <input
+                                    className="input"
+                                    type="number"
+                                    value={count}
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                />
+                            </p>
+
+                            <p className="control is-expanded">
+                                <button
+                                    className="button is-fullwidth"
+                                    disabled={count < total ? false : true}
+                                    onClick={increaseCount}
+                                >
+                                    <span className="icon is-small">
+                                        <i className="fas fa-plus"></i>
+                                    </span>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {documents.length > 0 ? (
