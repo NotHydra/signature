@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 
 import { CNavigationBar } from "./component/navigation-bar.tsx";
 import { Document } from "./page/document.tsx";
-import { Profile } from "./page/profile.tsx";
+import { User } from "./page/user.tsx";
 
 export const App = (): ReactElement => {
     return (
@@ -13,7 +13,7 @@ export const App = (): ReactElement => {
             <Routes>
                 <Route path="/" element={<Document />}></Route>
                 <Route path="/document" element={<Document />}></Route>
-                <Route path="/profile" element={<Profile />}></Route>
+                <Route path="/user" element={<User />}></Route>
             </Routes>
         </div>
     );

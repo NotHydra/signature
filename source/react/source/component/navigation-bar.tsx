@@ -35,17 +35,9 @@ export const CNavigationBar = (): ReactElement => {
                     <a className="navbar-item" href="/document">
                         <h4 className="subtitle">Document</h4>
                     </a>
-                </div>
 
-                <div className="navbar-end">
-                    <a className="navbar-item" href="/profile">
-                        <h4 className="subtitle">
-                            <span className="icon mr-1 is-medium">
-                                <i className="fas fa-lg fa-user-circle"></i>
-                            </span>
-
-                            <span>Profile</span>
-                        </h4>
+                    <a className="navbar-item" href="/user">
+                        <h4 className="subtitle">User</h4>
                     </a>
                 </div>
             </div>
