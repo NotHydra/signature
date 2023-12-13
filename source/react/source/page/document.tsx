@@ -7,6 +7,9 @@ import { IDocument, IDocumentTotal } from "../interface/document";
 import { CDocuments } from "../component/documents";
 
 export const Document = (): ReactElement => {
+    const count = 12;
+
+    const [page, setPage] = useState<number>(1);
     const [documents, setDocuments] = useState<IDocument[]>([]);
     const [total, setTotal] = useState<number>(0);
 
@@ -18,8 +21,8 @@ export const Document = (): ReactElement => {
                 "Content-Type": "application/json",
             },
             params: {
-                count: 12,
-                page: 1,
+                count: count,
+                page: page,
             },
         });
 
@@ -56,9 +59,31 @@ export const Document = (): ReactElement => {
             <div className="container">
                 <h1 className="title">Document</h1>
 
-                <p className="subtitle">
-                    {documents.length} out of {total} total documents
+                <p className="subtitle pb-0 mb-2">
+                    Page {page} out of {Math.ceil(total / count)}
                 </p>
+
+                <div className="field has-addons">
+                    <p className="control">
+                        <button className="button button-custom-width">
+                            <span className="icon is-small">
+                                <i className="fas fa-chevron-left"></i>
+                            </span>
+
+                            <span>Previous</span>
+                        </button>
+                    </p>
+
+                    <p className="control">
+                        <button className="button button-custom-width">
+                            <span>Next</span>
+
+                            <span className="icon is-small">
+                                <i className="fas fa-chevron-right"></i>
+                            </span>
+                        </button>
+                    </p>
+                </div>
 
                 {documents.length > 0 ? (
                     <CDocuments documents={documents} />
