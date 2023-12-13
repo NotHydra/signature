@@ -4,7 +4,7 @@ export const CUser: React.FC<{
     user: IUser;
 }> = ({ user }) => {
     return (
-        <div className="column is-one-quarter">
+        <div className="column is-one-third">
             <div className="card">
                 <div className="card-content">
                     <div className="media">
