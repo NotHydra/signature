@@ -10,8 +10,8 @@ export const Document = (): ReactElement => {
     const [count, setcount] = useState<number>(12);
     const [page, setPage] = useState<number>(1);
     const [documents, setDocuments] = useState<IDocument[]>([]);
-    const [total, setTotal] = useState<number>(0);
-    const [totalPage, setTotalPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(1);
+    const [totalPage, setTotalPage] = useState<number>(1);
 
     const fetchDocument = async () => {
         const response = await axios<IFormatResponse<IDocument[]>>({
@@ -47,6 +47,10 @@ export const Document = (): ReactElement => {
 
             setTotal(response.data.data.total);
             setTotalPage(newTotalPage);
+
+            if (count > response.data.data.total) {
+                setcount(response.data.data.total);
+            }
 
             if (page > newTotalPage) {
                 setPage(newTotalPage);
