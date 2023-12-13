@@ -12,10 +12,12 @@ export const CUser: React.FC<{
                             <p className="title is-4">{user.name}</p>
 
                             <p className="subtitle is-6 mb-2">
-                                {`${user.username} - ${user.role}`}
+                                {`${user.username} - ${user.email}`}
                             </p>
 
-                            <p className="subtitle is-7">{user.email}</p>
+                            <p className="subtitle is-7">
+                                {user.role.toUpperCase()}
+                            </p>
                         </div>
                     </div>
 
