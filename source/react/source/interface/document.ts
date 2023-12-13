@@ -1,4 +1,4 @@
-export default interface IDocument {
+export interface IDocument {
     _id: number;
     id_author: number;
     code: string;
@@ -10,4 +10,8 @@ export default interface IDocument {
     author_extend: {
         username: string;
     };
+}
+
+export interface IDocumentTotal {
+    total: number;
 }

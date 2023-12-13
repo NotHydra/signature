@@ -1,4 +1,4 @@
-export default interface IFormatResponse<T> {
+export interface IFormatResponse<T> {
     success: boolean;
     status: number;
     message: string;
