@@ -18,7 +18,7 @@ export const Document = (): ReactElement => {
                     "Content-Type": "application/json",
                 },
                 params: {
-                    count: 10,
+                    count: 12,
                     page: 1,
                 },
             });

@@ -6,7 +6,7 @@ export const CDocuments: React.FC<{
     documents: IDocument[];
 }> = ({ documents }) => {
     return (
-        <div className="columns is-multiline">
+        <div className="columns is-multiline is-centered">
             {documents.map((document: IDocument) => (
                 <CDocument key={document._id} document={document} />
             ))}
