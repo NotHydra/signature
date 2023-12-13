@@ -11,9 +11,9 @@ export const App = (): ReactElement => {
             <CNavigationBar />
 
             <Routes>
-                <Route path="/" element={<Document />}></Route>
-                <Route path="/document" element={<Document />}></Route>
-                <Route path="/user" element={<User />}></Route>
+                <Route path="/" element={<Document />} />
+                <Route path="/document" element={<Document />} />
+                <Route path="/user" element={<User />} />
             </Routes>
         </div>
     );

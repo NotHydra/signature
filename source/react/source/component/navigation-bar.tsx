@@ -13,7 +13,7 @@ export const CNavigationBar = (): ReactElement => {
         >
             <div className="navbar-brand">
                 <a className="navbar-item" href="/document">
-                    <img className="mr-2" src={logo}></img>
+                    <img className="mr-2" src={logo} />
                     <h4 className="title is-4 has-text-info">Signature</h4>
                 </a>
 
@@ -24,9 +24,9 @@ export const CNavigationBar = (): ReactElement => {
                         setToggle(!toggle);
                     }}
                 >
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true" />
+                    <span aria-hidden="true" />
+                    <span aria-hidden="true" />
                 </a>
             </div>
 

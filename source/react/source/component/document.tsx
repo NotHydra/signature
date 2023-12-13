@@ -23,7 +23,9 @@ export const CDocument: React.FC<{
 
                     <div className="content">
                         {document.description}
+
                         <br />
+
                         {new Date(document.created_at).toLocaleDateString(
                             "en-GB"
                         )}
