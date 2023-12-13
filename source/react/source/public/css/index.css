@@ -1,6 +1,2 @@
 @import "bulma/css/bulma.min.css";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
-
-.button-custom-width {
-    width: 120px;
-}
