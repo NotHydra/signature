@@ -14,7 +14,7 @@ export const Document = (): ReactElement => {
     const [total, setTotal] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(1);
 
-    const fetchDocument = async () => {
+    const fetchDocument = async (): Promise<void> => {
         const response = await axios<IFormatResponse<IDocument[]>>({
             method: "get",
             url: "https://signature-api.irswanda.com/api/document",
@@ -34,7 +34,7 @@ export const Document = (): ReactElement => {
         }
     };
 
-    const fetchTotal = async () => {
+    const fetchTotal = async (): Promise<void> => {
         const response = await axios<IFormatResponse<IDocumentTotal>>({
             method: "get",
             url: "https://signature-api.irswanda.com/api/document/count",
@@ -44,7 +44,9 @@ export const Document = (): ReactElement => {
         });
 
         if (response.data.success) {
-            const newTotalPage = Math.ceil(response.data.data.total / count);
+            const newTotalPage: number = Math.ceil(
+                response.data.data.total / count
+            );
 
             setTotal(response.data.data.total);
             setTotalPage(newTotalPage);
@@ -61,27 +63,27 @@ export const Document = (): ReactElement => {
         }
     };
 
-    const decreaseCount = () => {
+    const decreaseCount = (): void => {
         setcount(count - 1);
     };
 
-    const increaseCount = () => {
+    const increaseCount = (): void => {
         setcount(count + 1);
     };
 
-    const previousPage = () => {
+    const previousPage = (): void => {
         setPage(page - 1);
     };
 
-    const nextPage = () => {
+    const nextPage = (): void => {
         setPage(page + 1);
     };
 
-    useEffect(() => {
+    useEffect((): void => {
         fetchDocument();
     }, [count, page]);
 
-    useEffect(() => {
+    useEffect((): void => {
         fetchTotal();
     }, [count]);
 
