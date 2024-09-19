@@ -4,7 +4,7 @@
 
 <div align="center">
   <h2 align="center"> <strong>Signature</strong> </h2>
-  <p align="center"> <em>Signature is a desktop and a semi web based application that is capable of managing multiple documents online. Starting from uploading, downloading and signing documents digitally.</em> </p>
+  <p align="center"> <em>Signature is a desktop and a semi web-based application that is capable of managing multiple documents online. Starting from uploading, downloading and signing documents digitally.</em> </p>
 
   ![Bulma](https://img.shields.io/badge/bulma-00D0B1?style=for-the-badge&logo=bulma&logoColor=white)
   ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
